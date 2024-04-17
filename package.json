@@ -14,6 +14,8 @@
     "express-openid-connect": "^2.17.1",
     "hbs": "^4.2.0",
     "http-errors": "~1.6.3",
+    "moment": "^2.30.1",
+    "mongoose": "^8.3.2",
     "morgan": "~1.9.1"
   }
 }
