@@ -1,11 +1,12 @@
 <h1>Home</h1>
 <p>
-    <span>Welcome, {{user}}</span>
+    <span>Welcome, {{user}}</span><br>
+    <a href="/admin">Admin</a><br>
     <a href="/logout">Log out</a>
     <ul>
         {{#each shows}}
             <li>
-                {{this.name}} / {{this.date}}
+                <a href="/show/{{this.id}}">{{this.name}} / {{this.date}}</a>
             </li>
         {{/each}}
     </ul>

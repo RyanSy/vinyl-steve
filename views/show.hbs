@@ -1,0 +1,20 @@
+<h1>RSVP</h1>
+
+<h3>{{show.date}}</h3>
+
+<h3>{{show.start}} to {{show.end}}</h3>
+
+<h3>{{show.name}}</h3>
+
+<p>
+    {{show.venue}} <br>
+    {{show.address}} <br>
+    {{show.city}}, {{show.state}} {{show.zip}}
+</p>
+
+<form action="/rsvp" method="post">
+    <input type="hidden" name="id" value="{{show.id}}">
+    <input type="hidden" name="name" value="{{show.name}}">
+    <input type="hidden" name="user" value="{{user}}">
+    <button type="submit" class="btn btn-primary">RSVP - Pay at Event</button>
+</form>

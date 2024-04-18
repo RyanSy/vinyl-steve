@@ -1,0 +1,12 @@
+<h1>Admin</h1>
+<p>
+    <span>Welcome, {{user}}</span>
+    <a href="/logout">Log out</a>
+    <ul>
+        {{#each shows}}
+            <li>
+                <a href="/rsvp/{{this.id}}">{{this.name}} / {{this.date}}</a>
+            </li>
+        {{/each}}
+    </ul>
+</p>
