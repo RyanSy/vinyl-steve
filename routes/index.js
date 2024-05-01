@@ -1,10 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const { requiresAuth } = require('express-openid-connect');
-const mongoose = require('mongoose');
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('MongoDB Connected!'))
-  .catch((err) => console.log('error'));
 const Show = require('../models/show');
 const moment = require('moment');
 const todaysDate = moment().format('YYYY-MM-DD');
@@ -47,11 +43,12 @@ router.get('/show/:id', async (req, res) => {
 
 // save dealer rsvp - pay at event
 router.post('/rsvp', async (req, res) => {
+  // edit: search db for dealer, if not found, create new entry in db; also add fields to update dealer's list, notes
   const show = await Show.find({ _id: req.body.id });
   show[0].dealer_rsvp_list.addToSet(req.body.user);
   show[0].save();
   res.render('confirmation', { name: req.body.name });
-})
+});
 
 // save dealer rsvp - advance payment
 
@@ -62,7 +59,7 @@ router.get('/admin', async (req, res) => {
   if (req.oidc.user) {
     user = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
   }
-  if (req.oidc.user.email == 'clubmekon@gmail.com' || req.oidc.user.email == 'ryanb.sy@gmail.com') {
+  if (req.oidc.user.email == 'clubmekon@gmail.com' || req.oidc.user.email == 'recordriots@gmail.com' ||req.oidc.user.email == 'ryanb.sy@gmail.com') {
     isAdmin = true;
   }
   const shows = await Show.find({ date: {$gte: todaysDate}, name: /record riot/i });
@@ -84,7 +81,6 @@ router.get('/rsvp/:id', async (req, res) => {
   }
   const show = await Show.find({ _id: req.params.id });
   const showObject = createShowObject(show[0]);
-  console.log(showObject)
   const dataObject = {
     user: user,
     show: showObject

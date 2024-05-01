@@ -9,15 +9,22 @@ const logger = require('morgan');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
+// user authentication setup
 const { auth } = require('express-openid-connect');
 const config = {
   authRequired: false,
   auth0Logout: true,
-  secret: 'a094b2f30678b713c9fc9e19a51ab099c63970a071789c99b8b52abbfb60d945',
-  baseURL: process.env.BASE_URL,
-  clientID: 'MVX8JVaIgMpzq3chKKtkzamtoWvwI6YC',
-  issuerBaseURL: 'https://dev-jxowud1dtgycdpp5.us.auth0.com'
+  secret: process.env.AUTH0_SECRET,
+  baseURL: process.env.AUTH0_BASE_URL,
+  clientID: process.env.AUTH0_CLIENT_ID,
+  issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL
 };
+
+// db setup
+const mongoose = require('mongoose');
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('MongoDB Connected!'))
+  .catch((err) => console.log('error'));
 
 const app = express();
 
@@ -36,7 +43,6 @@ app.use(auth(config));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

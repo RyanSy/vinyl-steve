@@ -45,7 +45,11 @@ const showSchema = new Schema(
     message: {type: String, max: 100},
     posted_by: {type: String, required: true, max: 100},
     date_posted: {type: Date},
-    dealer_rsvp_list: [{type: String}]
+    dealer_rsvp_list: [{type: String}],
+    number_of_tables_for_rent: {type: Number},
+    max_tables_per_dealer: {type: Number},
+    dealer_notes: {type: String, max: 200},
+    rsvp: {type: Boolean}
   }, { strict: false }
 );
 
