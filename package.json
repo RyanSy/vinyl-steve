@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "DEBUG=vinyl-steve:* nodemon",
+    "dev": "DEBUG=vinyl-steve:* nodemon -e hbs,js,json",
     "start": "node ./bin/www"
   },
   "dependencies": {

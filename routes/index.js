@@ -9,7 +9,7 @@ const admin_controller = require('../controllers/adminController');
 router.get('/', (req, res) => {
     req.oidc.isAuthenticated()
         ? res.redirect('/home')
-        : res.render('index', { title: 'Vinyl Steve' });
+        : res.render('index', { title: 'Vinyl Steve', isLoggedIn: false });
 });
 
 // render home page with list of record riots
@@ -19,7 +19,7 @@ router.get('/home', show_controller.list_shows);
 router.get('/show/:id', show_controller.list_show);
 
 // save dealer rsvp - pay at event
-router.post('/rsvp-no-payment', dealer_controller.save_rsvp_no_payment);
+router.post('/rsvp-pay-later', dealer_controller.save_rsvp_pay_later);
 
 // save dealer rsvp - advance payment
 
@@ -30,7 +30,7 @@ router.get('/admin', admin_controller.render_admin_dashboard);
 router.get('/admin/rsvp-list/:id', admin_controller.render_rsvp_list);
 
 // render user profile
-router.get('/my-rsvps', requiresAuth(), (req, res) => {
+router.get('/my-shows', requiresAuth(), (req, res) => {
     res.send('Under Construction');
 });
 

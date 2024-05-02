@@ -1,0 +1,18 @@
+{{> navbar}}
+
+<div>
+    <table class="container p-3 table table-dark table-borderless">
+        <tbody>
+            {{#each shows}}
+            <tr>
+                <td class="col-4">
+                    {{this.month}} {{this.day}}, {{this.year}}
+                </td>
+                <td class="col-8">
+                    <a href="/show/{{this.id}}">{{this.name}}<br>{{this.city}}, {{this.state}}</a>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
