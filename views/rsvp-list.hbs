@@ -1,43 +1,46 @@
 {{>navbar}}
 
-<div class="container-fluid">
+<div class="container-fluid mb-3">
     <div class="text-center">
         <h4>RSVP List for {{showName}}</h4>
         <h5>{{showDate}}</h5>
     </div>
 
-    {{!-- {{#each show.dealer_rsvp_list}}
-    {{this}}
-    {{/each}} --}}
-
-    <div>
-        <table class="container p-3 table table-dark table-borderless">
-            <thead>
-                <tr>
-                    <th scope="col-3">Name</th>
-                    <th scope="col-3"># Tables Reserved</th>
-                    <th scope="col-8">Notes</th>
-                    <th scope="col-2">Paid?</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#each dealerRsvpList}}
-                <tr>
-                    <td class="col-3">
-                        {{this.name}}
-                    </td>
-                    <td class="col-3">
-                        {{this.number_of_tables}}
-                    </td>
-                    <td class="col-3">
-                        {{this.notes}}
-                    </td>
-                    <td class="col-3">
-                        {{this.paid}}
-                    </td>
-                </tr>
-                {{/each}}
-            </tbody>
-        </table>
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col-2">
+                Name
+            </div>
+            <div class="col-1">
+                # Tables
+            </div>
+            <div class="col-8">
+                Notes
+            </div>
+            <div class="col-1">
+                Paid?
+            </div>
+        </div>
+        <hr>
+        {{#each dealerRsvpList}}
+        <div class="row">
+            <div class="col-2">
+                {{this.name}}
+            </div>
+            <div class="col-1 text-center">
+                {{this.number_of_tables}}
+            </div>
+            <div class="col-8">
+                {{this.notes}}
+            </div>
+            <div class="col-1">
+                {{#if this.paid}}
+                Yes
+                {{else}}
+                No
+                {{/if}}
+            </div>
+        </div>
+        {{/each}}
     </div>
 </div>
