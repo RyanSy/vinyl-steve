@@ -48,6 +48,7 @@ const showSchema = new Schema(
     rsvp: {type: Boolean},
     dealer_rsvp_list: [{
         name: {type: String, max: 50},
+        email: {type: String, max: 50},
         number_of_tables: {type: Number},
         notes: {type: String, max: 200}
     }],

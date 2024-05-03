@@ -24,6 +24,7 @@ exports.save_rsvp_pay_later = async (req, res) => {
     const show = await Show.find({ _id: showId });
     const dealerRsvp = {
         name: dealerName,
+        email: userEmail,
         number_of_tables: numberOfTables,
         notes: dealerNotes,
         paid: false
@@ -115,27 +116,41 @@ exports.show_dealer_rsvps = async (req, res) => {
     res.render('my-rsvps', dataObject);
 }
 
-exports.delete_rsvp = (req, res) => {
+exports.delete_rsvp = async (req, res) => {
     const user = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
     // *** TODO *** find fallbak image
     const userImage = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
     const userEmail = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
-    const show_id = req.body.show_id;
+    const showId = req.body.show_id;
     const userName = req.body.name;
-    const filter = { 
+
+    // update show collection
+    const showFilter = {
+        _id: showId
+    };
+    const showUpdate = { $pull: {
+        dealer_rsvp_list: {
+            name: userName,
+            email: userEmail
+        }
+    } }
+    await Show.updateOne(showFilter, showUpdate);  
+
+    // update dealer collection
+    const dealerFilter = { 
         name: userName,
         email: userEmail 
     };
-    const update = { $pull: {
+    const dealerUpdate = { $pull: {
         shows: {
-            id: show_id
+            id: showId
         }
     } };
-    Dealer.updateOne(filter, update)
+    Dealer.updateOne(dealerFilter, dealerUpdate)
         .then(() => {
             res.render('delete-confirmation', { userImage: userImage });
         })
         .catch((err) => {
             res.render('error');
-        })
+        });  
 }
