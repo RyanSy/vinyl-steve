@@ -16,6 +16,14 @@ router.get('/', (req, res) => {
     }
 });
 
+// send to signup page
+router.get("/signup", (req, res) => {
+    res.oidc.login({
+      returnTo: "/",
+      authorizationParams: { screen_hint: "signup" },
+    });
+  });
+
 // render home page with list of record riots
 router.get('/home', requiresAuth(), show_controller.list_shows);
 
