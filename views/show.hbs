@@ -2,7 +2,7 @@
 
 <div class="container py-3">
     <p>
-        <h3>{{show.name}}</h3>
+    <h3>{{show.name}}</h3>
     </p>
 
     <p>
@@ -19,7 +19,14 @@
     <form action="/rsvp-pay-later" method="post">
         <input type="hidden" name="id" value="{{show.id}}">
         <input type="hidden" name="name" value="{{show.name}}">
+        <input type="hidden" name="city" value="{{show.city}}">
+        <input type="hidden" name="state" value="{{show.state}}">
+        <input type="hidden" name="date" value="{{show.date}}">
+        <input type="hidden" name="month" value="{{show.month}}">
+        <input type="hidden" name="day" value="{{show.day}}">
+        <input type="hidden" name="year" value="{{show.year}}">
         <input type="hidden" name="user" value="{{user}}">
+        <input type="hidden" name="email" value="{{userEmail}}">
         <input type="hidden" name="number_of_tables_for_rent" value="{{show.number_of_tables_for_rent}}">
 
         {{!-- num of tables --}}

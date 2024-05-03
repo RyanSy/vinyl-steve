@@ -10,6 +10,7 @@ exports.list_shows = async (req, res) => {
 
     // *** TODO *** find fallbak image
     const userImage = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
+    const userEmail = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
 
     const shows = await Show.find({
         $and: [
@@ -22,6 +23,7 @@ exports.list_shows = async (req, res) => {
     const dataObject = {
         user: user,
         userImage: userImage,
+        userEmail: userEmail,
         shows: showsArraySorted,
         isLoggedIn: true
     };
@@ -33,12 +35,14 @@ exports.list_show = async (req, res) => {
     const user = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
     // *** TODO *** find fallbak image
     const userImage = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
+    const userEmail = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
 
     const show = await Show.find({ _id: req.params.id });
     const showObject = helper_functions.createShowObject(show[0]);
     const dataObject = {
         user: user,
         userImage: userImage,
+        userEmail: userEmail,
         show: showObject,
     };
     res.render('show', dataObject);

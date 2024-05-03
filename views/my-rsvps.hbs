@@ -1,0 +1,58 @@
+{{>navbar}}
+
+{{#if message}}
+<div class="container text-center pt-3">
+    <h4>{{message}}</h4>
+    <p>
+        <a href="/home">Return to list of shows</a>
+    </p>
+</div>
+{{/if}}
+
+<div>
+    <table class="container p-3 table table-dark table-borderless">
+        <tbody>
+            {{#each shows}}
+            <tr>
+                <td class="col-4">
+                    {{this.month}} {{this.day}}, {{this.year}}
+                </td>
+                <td class="col-4">
+                    {{this.name}}<br>{{this.city}}, {{this.state}}
+                </td>
+                <td class="col-4">
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+
+            <!-- Modal -->
+            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content text-secondary">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Confirm Delete</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Delete this RSVP?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <form action="/delete-rsvp" method="post">
+                                <input type="hidden" name="show_id" value="{{this.id}}">
+                                <input type="hidden" name="name" value="{{../user}}">
+                                <input type="hidden" name="email" value="{{../userEmail}}">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
