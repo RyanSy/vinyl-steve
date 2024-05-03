@@ -1,7 +1,7 @@
 const Show = require('../models/show');
 const Dealer = require('../models/dealer');
 
-// save dealer rsvp - pay at event
+// save dealer rsvp - pay later
 exports.save_rsvp_pay_later = async (req, res) => {
     const user = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
     // *** TODO *** find fallbak image
@@ -49,7 +49,8 @@ exports.save_rsvp_pay_later = async (req, res) => {
             day: showDay,
             year: showYear,
             number_of_tables: numberOfTables,
-            notes: dealerNotes
+            notes: dealerNotes,
+            paid: false
         }
     } };
 
@@ -73,10 +74,10 @@ exports.save_rsvp_pay_later = async (req, res) => {
         date: showDate
     }
 
-    res.render('confirmation', dataObject);
+    res.render('rsvp-confirmation', dataObject);
 };
 
-
+// show dealer rsvps - user view
 exports.show_dealer_rsvps = async (req, res) => {
     const user = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
     // *** TODO *** find fallbak image
@@ -88,7 +89,15 @@ exports.show_dealer_rsvps = async (req, res) => {
 
     await Dealer.find({ name: user, email: userEmail })
         .then((result) => {
-            result[0] == undefined ?  message = 'You have no RSVPs at this time.' : shows = result[0].shows;
+            if (!result[0]) {
+                message = 'You have no shows listed.';
+            } else if (result[0]) {
+                if (result[0].shows.length == 0) {
+                    message = 'You have no shows listed.';
+                }
+                shows = result[0].shows;
+            } 
+
         })
         .catch((err) =>{
             console.log(err);
@@ -106,9 +115,12 @@ exports.show_dealer_rsvps = async (req, res) => {
 }
 
 exports.delete_rsvp = (req, res) => {
+    const user = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
+    // *** TODO *** find fallbak image
+    const userImage = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
+    const userEmail = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
     const show_id = req.body.show_id;
     const userName = req.body.name;
-    const userEmail = req.body.email;
     const filter = { 
         name: userName,
         email: userEmail 
@@ -120,7 +132,7 @@ exports.delete_rsvp = (req, res) => {
     } };
     Dealer.updateOne(filter, update)
         .then(() => {
-            res.render('delete-confirmation');
+            res.render('delete-confirmation', { userImage: userImage });
         })
         .catch((err) => {
             res.render('error');
