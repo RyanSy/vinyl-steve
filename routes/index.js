@@ -7,9 +7,13 @@ const admin_controller = require('../controllers/adminController');
 
 // render index, redirect to home page if logged in
 router.get('/', (req, res) => {
-    req.oidc.isAuthenticated()
-        ? res.redirect('/home')
-        : res.render('index', { title: 'Vinyl Steve', isLoggedIn: false });
+    if (!req.oidc.isAuthenticated()) {
+        res.render('index', { title: 'Vinyl Steve', isLoggedIn: false });
+    } else if (req.oidc.user.email == 'clubmekon@gmail.com' || req.oidc.user.email == 'recordriots@gmail.com' || req.oidc.user.email == 'recordshowmania@gmail.com') {
+        res.redirect('/admin');
+    } else {
+        res.redirect('/home');
+    }
 });
 
 // render home page with list of record riots

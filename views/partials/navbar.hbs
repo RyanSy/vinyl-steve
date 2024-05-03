@@ -2,7 +2,11 @@
     <div class="container-fluid d-grid gap-3 align-items-center" style="grid-template-columns: 1fr 2fr;">
         <h3><a class="navbar-brand" href="/">Vinyl Steve</a></h3>
         <div class="d-flex align-items-center">
-            <div class="w-100 me-3"></div>
+            <div class="w-100 me-3">
+                {{#if isAdmin}}
+                <span>Admin View</span>
+                {{/if}}
+            </div>
 
             <div class="flex-shrink-0 dropdown">
                 <a href="#" class="d-block link-body-emphasis text-decoration-none" data-bs-toggle="dropdown"

@@ -25,7 +25,8 @@ exports.save_rsvp_pay_later = async (req, res) => {
     const dealerRsvp = {
         name: dealerName,
         number_of_tables: numberOfTables,
-        notes: dealerNotes
+        notes: dealerNotes,
+        paid: false
     };
 
     show[0].number_of_tables_for_rent = numberOfTablesForRent - numberOfTables;
