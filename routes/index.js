@@ -4,6 +4,7 @@ const { requiresAuth } = require('express-openid-connect');
 const show_controller = require('../controllers/showController');
 const dealer_controller = require('../controllers/dealerController');
 const admin_controller = require('../controllers/adminController');
+const payment_controller = require('../controllers/paymentController');
 
 // render index, redirect to home page if logged in
 router.get('/', (req, res) => {
@@ -46,6 +47,15 @@ router.get('/admin', requiresAuth(), admin_controller.render_admin_dashboard);
 
 // render admin rsvp list
 router.get('/admin/rsvp-list/:id', requiresAuth(), admin_controller.render_rsvp_list);
+
+// accept payment
+router.post('/rsvp-pay-now', requiresAuth(), payment_controller.rsvp_pay_now);
+
+// payment confirmation
+router.get('/payment-confirmation', requiresAuth(), payment_controller.payment_confirmation);
+
+// payment cancelled
+router.get('/payment-canceled', requiresAuth(), payment_controller.payment_canceled);
 
 // get user profile info
 router.get('/profile', requiresAuth(), (req, res) => {
