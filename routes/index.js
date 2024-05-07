@@ -25,6 +25,8 @@ router.get("/signup", (req, res) => {
     });
   });
 
+router.post('/save-dealer-info', requiresAuth(), dealer_controller.save_dealer_info);
+
 // render home page with list of record riots
 router.get('/home', requiresAuth(), dealer_controller.check_if_dealer_exists, show_controller.list_shows);
 

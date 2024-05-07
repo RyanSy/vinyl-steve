@@ -9,7 +9,6 @@ exports.check_if_dealer_exists = async (req, res, next) => {
     const userEmail = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
 
     const filter = { 
-        name: user, 
         email: userEmail 
     };
 
@@ -19,6 +18,7 @@ exports.check_if_dealer_exists = async (req, res, next) => {
                 next();
             } else {
                 const userInfo = filter;
+                console.log('userinfo:', userInfo)
                 res.render('signup-form', userInfo);
             }
         })
@@ -26,6 +26,14 @@ exports.check_if_dealer_exists = async (req, res, next) => {
             console.log(err);
             res.render('error');
         });
+}
+
+// save dealer info
+exports.save_dealer_info = async (req, res, next) => {
+    const dealerInfo = req.body;
+    const newDealer = new Dealer(dealerInfo);
+    await newDealer.save();
+    res.redirect('/home');
 }
 
 // show dealer rsvps - dealer view
