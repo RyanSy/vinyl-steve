@@ -8,7 +8,6 @@ const rsvp_controller = require('../controllers/rsvpController');
 
 // render index, redirect to home page if logged in
 router.get('/', (req, res) => {
-    console.log('req.session', req.session)
     if (!req.oidc.isAuthenticated()) {
         res.render('index', { title: 'Vinyl Steve', isLoggedIn: false });
     } else if (req.oidc.user.email == 'clubmekon@gmail.com' || req.oidc.user.email == 'recordriots@gmail.com' || req.oidc.user.email == 'recordshowmania@gmail.com') {
@@ -27,7 +26,7 @@ router.get("/signup", (req, res) => {
   });
 
 // render home page with list of record riots
-router.get('/home', requiresAuth(), show_controller.list_shows);
+router.get('/home', requiresAuth(), dealer_controller.check_if_dealer_exists, show_controller.list_shows);
 
 // render specific record riot page
 router.get('/show/:id', requiresAuth(), show_controller.list_show);

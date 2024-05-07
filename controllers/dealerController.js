@@ -1,6 +1,33 @@
 const Show = require('../models/show');
 const Dealer = require('../models/dealer');
 
+// check if dealer exists, if so, list shows, if not prompt for info
+exports.check_if_dealer_exists = async (req, res, next) => {
+    const user = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
+    // *** TODO *** find fallbak image
+    const userImage = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
+    const userEmail = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
+
+    const filter = { 
+        name: user, 
+        email: userEmail 
+    };
+
+    await Dealer.find(filter)
+        .then((result) => {
+            if (result.length > 0) {
+                next();
+            } else {
+                const userInfo = filter;
+                res.render('signup-form', userInfo);
+            }
+        })
+        .catch((err) =>{
+            console.log(err);
+            res.render('error');
+        });
+}
+
 // show dealer rsvps - dealer view
 exports.show_dealer_rsvps = async (req, res) => {
     const user = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
