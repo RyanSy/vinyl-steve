@@ -1,15 +1,14 @@
 {{>navbar}}
 
-{{#if message}}
-<div class="container text-center pt-3">
-    <h4>{{message}}</h4>
-    <p>
-        <a href="/home">Return to list of shows</a>
-    </p>
-</div>
-{{/if}}
-
-<div>
+<div class="cover-container">
+    {{#if message}}
+    <div class="text-center pt-3">
+        <h4>{{message}}</h4>
+        <p>
+            <a href="/home">Return to list of shows</a>
+        </p>
+    </div>
+    {{/if}}
     <table class="container p-3 table table-dark table-borderless">
         <tbody>
             {{#each shows}}

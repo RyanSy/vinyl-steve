@@ -1,48 +1,197 @@
-{{> navbar}}
+<div class="d-flex w-100 h-100 p-3 mx-auto flex-column">
+    {{> navbar}}
 
-<div class="container py-3">
-    <p>
-    <h3>{{show.name}}</h3>
-    </p>
+    <div class="container">
+        <p>
+        <h3>{{show.name}}</h3>
+        </p>
 
-    <p>
-        {{show.date}}<br>
-        {{show.start}} to {{show.end}}
-    </p>
+        <p>
+            {{show.date}}<br>
+            {{show.start}} to {{show.end}}
+        </p>
 
-    <p>
-        {{show.venue}} <br>
-        {{show.address}} <br>
-        {{show.city}}, {{show.state}} {{show.zip}}
-    </p>
+        <p>
+            {{show.venue}} <br>
+            {{show.address}} <br>
+            {{show.city}}, {{show.state}} {{show.zip}}
+        </p>
 
-    <form action="/rsvp-pay-later" method="post">
-        <input type="hidden" name="id" value="{{show.id}}">
-        <input type="hidden" name="name" value="{{show.name}}">
-        <input type="hidden" name="city" value="{{show.city}}">
-        <input type="hidden" name="state" value="{{show.state}}">
-        <input type="hidden" name="date" value="{{show.date}}">
-        <input type="hidden" name="month" value="{{show.month}}">
-        <input type="hidden" name="day" value="{{show.day}}">
-        <input type="hidden" name="year" value="{{show.year}}">
-        <input type="hidden" name="user" value="{{user}}">
-        <input type="hidden" name="email" value="{{userEmail}}">
-        <input type="hidden" name="number_of_tables_for_rent" value="{{show.number_of_tables_for_rent}}">
+        <form id="rsvpForm" action="/rsvp-confirmation" method="post">
+            <input id="showId" type="hidden" name="id" value="{{show.id}}">
+            <input id="showName" type="hidden" name="name" value="{{show.name}}">
+            <input id="showCity" type="hidden" name="city" value="{{show.city}}">
+            <input id="showState" type="hidden" name="state" value="{{show.state}}">
+            <input id="showDate" type="hidden" name="date" value="{{show.date}}">
+            <input id="showMonth" type="hidden" name="month" value="{{show.month}}">
+            <input id="showDay" type="hidden" name="day" value="{{show.day}}">
+            <input id="showYear" type="hidden" name="year" value="{{show.year}}">
+            <input id="showUser" type="hidden" name="user" value="{{user}}">
+            <input id="showEmail" type="hidden" name="email" value="{{userEmail}}">
+            <input id="showNumberOfTablesForRent" type="hidden" name="number_of_tables_for_rent"
+                value="{{show.number_of_tables_for_rent}}">
 
-        {{!-- num of tables --}}
-        <div class="form-group mb-3 col-xs-2">
-            <label for="number of tables">Number Of Tables: </label>
-            <input type="number" min="0" name="number_of_tables" max="{{show.max_tables_per_dealer}}" required>
-            <div class="form-text text-white">Max: {{show.max_tables_per_dealer}}</div>
-        </div>
-        <div class="form-group mb-3">
-            <label for="notes">Notes (Special requests, etc.)</label>
-            <textarea class="form-control col-8" name="notes" rows="4" cols="40"></textarea>
-            <div class="form-text text-white">Please note, special requests cannot be guaranteed.</div>
-        </div>
+            {{!-- num of tables --}}
+            <div class="form-group mb-3 col-xs-2">
+                <label for="number of tables">Number Of Tables: </label>
+                <input type="number" min="0" name="number_of_tables" max="{{show.max_tables_per_dealer}}" required>
+                <div class="form-text text-white">Max: {{show.max_tables_per_dealer}}</div>
+            </div>
 
-        <div class="form-group mb-3">
-            <button type="submit" class="btn btn-primary">RSVP</button>
-        </div>
-    </form>
+            <div class="form-group mb-3">
+                <label for="notes">Notes (Special requests, etc.)</label>
+                <textarea class="form-control col-8" name="notes" rows="4" cols="40"></textarea>
+                <div class="form-text text-white">Please note, special requests cannot be guaranteed.</div>
+            </div>
+
+            <input id="paidInput" type="hidden" name="paid" value="false">
+
+            <div class="form-group mb-3">
+                <button id="rsvpFormSubmitButton" type="submit" class="btn btn-primary">RSVP - Pay Later</button>
+            </div>
+
+            <div class="form-group mb-3">
+                Or Choose A Payment Method Below:
+            </div>
+
+            <div class="form-group mb-3">
+                <div id="paypal-button-container"></div>
+                <p id="result-message"></p>
+            </div>
+        </form>
+    </div>
 </div>
+
+<script src="https://www.paypal.com/sdk/js?client-id={{paypalClientId}}&components=buttons&enable-funding=venmo,card&disable-funding=paylater" data-sdk-integration-source="integrationbuilder_sc"></script>
+
+<script>
+    let cart = {
+        showId: document.getElementById('showId').value,
+        showName: document.getElementById('showName').value,
+        showCity: document.getElementById('showCity').value,
+        showState: document.getElementById('showState').value,
+        showDate: document.getElementById('showDate').value,
+        showMonth: document.getElementById('showMonth').value,
+        showDay: document.getElementById('showDay').value,
+        showYear: document.getElementById('showYear').value,
+        showUser: document.getElementById('showUser').value,
+        showEmail: document.getElementById('showEmail').value,
+        showNumberOfTablesForRent: document.getElementById('showNumberOfTablesForRent').value,
+        paid: document.getElementById('paidInput').value
+    };
+    const paidInput = document.getElementById("paidInput");
+    const rsvpForm = document.getElementById("rsvpForm");
+    const rsvpFormSubmitButton = document.getElementById("rsvpFormSubmitButton");
+
+    function setPaidInput() {
+        console.log('setpaidinput called')
+        cart.paid = true;
+    }
+
+    async function submitRsvpForm() {
+        console.log('submitrsvp called')
+        await setPaidInput();
+        rsvpForm.requestSubmit(rsvpFormSubmitButton);
+    }
+
+    console.log("paid input:", paidInput.value)
+
+    window.paypal
+        .Buttons({
+            style: {
+                shape: "rect",
+                layout: "vertical",
+            },
+            async createOrder() {
+                try {
+                    const response = await fetch("/api/orders", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        // use the "body" param to optionally pass additional order information
+                        // like product ids and quantities
+                        body: JSON.stringify({
+                            cart: [cart]
+                        }),
+                    });
+
+                    const orderData = await response.json();
+
+                    if (orderData.id) {
+                        return orderData.id;
+                    } else {
+                        const errorDetail = orderData?.details?.[0];
+                        const errorMessage = errorDetail
+                            ? `${errorDetail.issue} ${errorDetail.description} (${orderData.debug_id})`
+                            : JSON.stringify(orderData);
+
+                        throw new Error(errorMessage);
+                    }
+                } catch (error) {
+                    console.error(error);
+                    resultMessage(`Could not initiate PayPal Checkout...<br><br>${error}`);
+                }
+            },
+            async onApprove(data, actions) {
+                console.log(data.orderID);
+                try {
+                    const response = await fetch(`/api/orders/${data.orderID}/capture`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    });
+
+                    const orderData = await response.json();
+                    // Three cases to handle:
+                    //   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
+                    //   (2) Other non-recoverable errors -> Show a failure message
+                    //   (3) Successful transaction -> Show confirmation or thank you message
+
+                    const errorDetail = orderData?.details?.[0];
+
+                    if (errorDetail?.issue === "INSTRUMENT_DECLINED") {
+                        // (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
+                        // recoverable state, per https://developer.paypal.com/docs/checkout/standard/customize/handle-funding-failures/
+                        return actions.restart();
+                    } else if (errorDetail) {
+                        // (2) Other non-recoverable errors -> Show a failure message
+                        throw new Error(`${errorDetail.description} (${orderData.debug_id})`);
+                    } else if (!orderData.purchase_units) {
+                        throw new Error(JSON.stringify(orderData));
+                    } else {
+                        // (3) Successful transaction -> Show confirmation or thank you message
+                        // Or go to another URL:  actions.redirect('thank_you.html');
+                        submitRsvpForm() 
+                        const transaction =
+                            orderData?.purchase_units?.[0]?.payments?.captures?.[0] ||
+                            orderData?.purchase_units?.[0]?.payments?.authorizations?.[0];
+                        resultMessage(
+                            `Transaction ${transaction.status}: ${transaction.id}<br><br>See console for all available details`,
+                        );
+                        console.log(
+                            "Capture result",
+                            orderData,
+                            JSON.stringify(orderData, null, 2),
+                        );
+                    }
+                } catch (error) {
+                    console.error(error);
+
+                    // fetch transaction error page?
+
+                    resultMessage(
+                        `Sorry, your transaction could not be processed...<br><br>${error}`,
+                    );
+                }
+            },
+        })
+        .render("#paypal-button-container");
+
+    // Example function to show a result to the user. Your site's UI library can be used instead.
+    function resultMessage(message) {
+        const container = document.querySelector("#result-message");
+        container.innerHTML = message;
+    }
+</script>

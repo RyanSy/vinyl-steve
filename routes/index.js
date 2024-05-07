@@ -4,7 +4,7 @@ const { requiresAuth } = require('express-openid-connect');
 const show_controller = require('../controllers/showController');
 const dealer_controller = require('../controllers/dealerController');
 const admin_controller = require('../controllers/adminController');
-const payment_controller = require('../controllers/paymentController');
+const rsvp_controller = require('../controllers/rsvpController');
 
 // render index, redirect to home page if logged in
 router.get('/', (req, res) => {
@@ -31,15 +31,10 @@ router.get('/home', requiresAuth(), show_controller.list_shows);
 // render specific record riot page
 router.get('/show/:id', requiresAuth(), show_controller.list_show);
 
-// save dealer rsvp - pay at event
-router.post('/rsvp-pay-later', requiresAuth(), dealer_controller.save_rsvp_pay_later);
-
-// save dealer rsvp - advance payment
-
 // render dealer rsvps - user view
 router.get('/my-rsvps', requiresAuth(), dealer_controller.show_dealer_rsvps);
 
-// delete rsvp
+// delete dealer rsvp - by user 
 router.post('/delete-rsvp', dealer_controller.delete_rsvp);
 
 // render admin dashboard
@@ -48,14 +43,17 @@ router.get('/admin', requiresAuth(), admin_controller.render_admin_dashboard);
 // render admin rsvp list
 router.get('/admin/rsvp-list/:id', requiresAuth(), admin_controller.render_rsvp_list);
 
-// accept payment
-router.post('/rsvp-pay-now', requiresAuth(), payment_controller.rsvp_pay_now);
+// save dealer rsvp
+router.post('/rsvp-confirmation', requiresAuth(), rsvp_controller.save_rsvp);
 
-// payment confirmation
-router.get('/payment-confirmation', requiresAuth(), payment_controller.payment_confirmation);
+// paypal payment routes
+router.post('/api/orders', requiresAuth(), rsvp_controller.create_order);
 
-// payment cancelled
-router.get('/payment-canceled', requiresAuth(), payment_controller.payment_canceled);
+router.post('/api/orders/:orderID/capture', requiresAuth(), rsvp_controller.on_approve);
+
+router.get('/payment-error', requiresAuth(), (req, res) => {
+    res.send('payment error');
+});
 
 // get user profile info
 router.get('/profile', requiresAuth(), (req, res) => {

@@ -1,23 +1,17 @@
 {{> navbar}}
 
-<div class="container py-3">
-    <p>
-    <h4>You have successfully registered for <strong>{{name}}</strong> on <strong>{{date}}</strong>!</h4>
-    </p>
-    <p>
-    <div class="form-group">
-        <form action="/rsvp-pay-now" method="POST">
-            <button class="btn btn-primary" type="submit" id="checkout-button">RSVP - Pay Now</button>
-        </form>
+<main class="px-3">
+    <div class="cover-container py-3">
+        <p>
+        <h4>You have successfully registered for <strong>{{name}}</strong> on <strong>{{date}}</strong>!</h4>
+        </p>
+
+        <p>
+            <a class="btn btn-success" href="/my-rsvps">Go to your RSVPs</a><br>
+        </p>
+
+        <p>
+            <a class="btn btn-success" href="/home">Return to list of shows</a>
+        </p>
     </div>
-
-    </p>
-    <p>
-        <a class="btn btn-success" href="/my-rsvps">Go to your RSVPs</a><br>
-    </p>
-
-    <p>
-        <a class="btn btn-success" href="/home">Return to list of shows</a>
-    </p>
-
-</div>
+</main>

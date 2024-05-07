@@ -36,6 +36,7 @@ exports.list_show = async (req, res) => {
     // *** TODO *** find fallbak image
     const userImage = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
     const userEmail = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
+    const paypalClientId = process.env.PAYPAL_CLIENT_ID;
 
     const show = await Show.find({ _id: req.params.id });
     const showObject = helper_functions.createShowObject(show[0]);
@@ -44,6 +45,7 @@ exports.list_show = async (req, res) => {
         userImage: userImage,
         userEmail: userEmail,
         show: showObject,
+        paypalClientId: paypalClientId
     };
     res.render('show', dataObject);
 };
