@@ -23,8 +23,16 @@ exports.save_rsvp = async (req, res) => {
     const dealerNotes = req.body.notes;
     const paid = req.body.paid;
 
-    // save show details
     const show = await Show.find({ _id: showId });
+
+    // if dealer rsvp list contains user, dont save and inform user
+    const containsDealer = show[0].dealer_rsvp_list.some((user) => user.name === dealerName);
+    if (containsDealer) {
+        res.redirect('/already-registered');
+    }
+
+
+    // save rsvp to shows db
     const dealerRsvp = {
         name: dealerName,
         email: userEmail,
@@ -32,12 +40,11 @@ exports.save_rsvp = async (req, res) => {
         notes: dealerNotes,
         paid: paid
     };
-
     show[0].number_of_tables_for_rent = numberOfTablesForRent - numberOfTables;
     show[0].dealer_rsvp_list.addToSet(dealerRsvp);
     show[0].save();
 
-    // save dealer details
+    // save rsvp to dealers db
     const filter = { 
         name: user,
         email: userEmail 

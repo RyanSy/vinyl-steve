@@ -8,6 +8,7 @@ const rsvp_controller = require('../controllers/rsvpController');
 
 // render index, redirect to home page if logged in
 router.get('/', (req, res) => {
+    console.log('req.session', req.session)
     if (!req.oidc.isAuthenticated()) {
         res.render('index', { title: 'Vinyl Steve', isLoggedIn: false });
     } else if (req.oidc.user.email == 'clubmekon@gmail.com' || req.oidc.user.email == 'recordriots@gmail.com' || req.oidc.user.email == 'recordshowmania@gmail.com') {
@@ -42,6 +43,9 @@ router.get('/admin', requiresAuth(), admin_controller.render_admin_dashboard);
 
 // render admin rsvp list
 router.get('/admin/rsvp-list/:id', requiresAuth(), admin_controller.render_rsvp_list);
+
+// render admin rsvp list
+router.get('/already-registered', requiresAuth(), (req, res) => { res.render('already-registered')});
 
 // save dealer rsvp
 router.post('/rsvp-confirmation', requiresAuth(), rsvp_controller.save_rsvp);
