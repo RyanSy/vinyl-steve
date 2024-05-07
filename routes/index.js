@@ -45,7 +45,9 @@ router.get('/admin', requiresAuth(), admin_controller.render_admin_dashboard);
 router.get('/admin/rsvp-list/:id', requiresAuth(), admin_controller.render_rsvp_list);
 
 // render admin rsvp list
-router.get('/already-registered', requiresAuth(), (req, res) => { res.render('already-registered')});
+router.get('/already-registered', requiresAuth(), (req, res) => 
+    { res.render('already-registered');
+});
 
 // save dealer rsvp
 router.post('/rsvp-confirmation', requiresAuth(), rsvp_controller.save_rsvp);

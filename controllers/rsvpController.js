@@ -4,7 +4,6 @@ const paypalFunctions = require('../util/paypalFunctions');
 
 // save dealer rsvp - pay later
 exports.save_rsvp = async (req, res) => {
-    console.log(req.body)
     const user = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
     // *** TODO *** find fallbak image
     const userImage = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
@@ -29,8 +28,8 @@ exports.save_rsvp = async (req, res) => {
     const containsDealer = show[0].dealer_rsvp_list.some((user) => user.name === dealerName);
     if (containsDealer) {
         res.redirect('/already-registered');
+        return;
     }
-
 
     // save rsvp to shows db
     const dealerRsvp = {
