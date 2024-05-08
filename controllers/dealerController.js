@@ -62,7 +62,7 @@ exports.show_dealer_rsvps = async (req, res) => {
             console.log(err);
             res.render('error');
         });
-
+    console.log(shows)
     const dataObject = {
         user: user,
         userImage: userImage,
