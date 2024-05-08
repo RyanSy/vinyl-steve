@@ -40,15 +40,51 @@ exports.render_rsvp_list = async (req, res) => {
     const userEmail = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
     const show = await Show.find({ _id: req.params.id });
     const showObject = helper_functions.createShowObject(show[0]);
+    const showId = req.params.id;
     const showName = showObject.name;
     const showDate = showObject.date;
     const dealerRsvpList = showObject.dealer_rsvp_list;
     const dataObject = {
         user: user,
         userImage: userImage,
+        showId: showId,
         showName: showName,
         showDate: showDate,
         dealerRsvpList: dealerRsvpList,
     };
     res.render('rsvp-list', dataObject);
 }
+
+// add dealer
+exports.add_dealer_rsvp = async (req, res) => {
+    const id = req.body.id;
+    const name = req.body.name;
+    const show = await Show.find({ _id: id });
+
+        // save rsvp to shows db
+        const dealerRsvp = {
+            name: name
+        };
+        show[0].dealer_rsvp_list.addToSet(dealerRsvp);
+        show[0].save();
+    
+    res.redirect(`/admin/rsvp-list/${id}`);
+}
+
+// render print view
+exports.render_rsvp_print_view = async (req, res) => {
+    const show = await Show.find({ _id: req.params.id });
+    const showObject = helper_functions.createShowObject(show[0]);
+    const showId = req.params.id;
+    const showName = showObject.name;
+    const showDate = showObject.date;
+    const dealerRsvpList = showObject.dealer_rsvp_list;
+    const dataObject = {
+        showId: showId,
+        showName: showName,
+        showDate: showDate,
+        dealerRsvpList: dealerRsvpList,
+    };
+    res.render('print-view', dataObject);
+}
+

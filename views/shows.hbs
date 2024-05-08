@@ -1,18 +1,14 @@
 {{> navbar}}
 
-<div class="cover-container">
-    <table class="container p-3 table table-dark table-borderless">
-        <tbody>
-            {{#each shows}}
-            <tr>
-                <td class="col-4">
-                    {{this.month}} {{this.day}}, {{this.year}}
-                </td>
-                <td class="col-8">
-                    <a href="/show/{{this.id}}">{{this.name}}<br>{{this.city}}, {{this.state}}</a>
-                </td>
-            </tr>
-            {{/each}}
-        </tbody>
-    </table>
+<div class="container-fluid d-flex w-auto h-auto p-3 flex-column">
+    {{#each shows}}
+    <div class="row px-3 pt-3 pb-2 mx-3">
+        <div class="col-4">
+            {{this.month}} {{this.day}}, {{this.year}}
+        </div>
+        <div class="col-8">
+            <a href="/show/{{this.id}}">{{this.name}}<br>{{this.city}}, {{this.state}}</a>
+        </div>
+    </div>
+    {{/each}}
 </div>

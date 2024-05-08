@@ -1,25 +1,56 @@
 {{>navbar}}
 
-<div class="cover-container-fluid mb-3">
+<div class="container-fluid h-auto">
+    <br>
+
     <div class="text-center">
         <h4>RSVP List for {{showName}}</h4>
         <h5>{{showDate}}</h5>
+        <a href="/admin/print-view/{{showId}}" class="btn btn-warning">Print View</a>
     </div>
 
+    <br>
+
     <div class="container mt-3">
+        <br>
+
+        <form class="row row-cols-lg-auto g-3 align-items-center" action="/add-dealer-rsvp" method="post">
+            <input type="hidden" name="id" value="{{showId}}">
+
+            <div class="col-12">
+                <label class="visually-hidden" for="dealerName">Name</label>
+                <input type="text" class="form-control" id="dealerName" name="name">
+            </div>
+
+            {{!-- <div class="col-12">
+                <label class="visually-hidden" for="inlineFormSelectPref">Preference</label>
+                <select class="form-select" id="inlineFormSelectPref">
+                    <option selected>Choose...</option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                </select>
+            </div> --}}
+
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Add Dealer RSVP</button>
+            </div>
+        </form>
+        <br>
+
         <div class="row">
             <div class="col-2">
                 Name
             </div>
-            <div class="col-1">
+            <div class="col-2">
                 # Tables
             </div>
-            <div class="col-8">
+            <div class="col-auto">
                 Notes
             </div>
-            <div class="col-1">
+            {{!-- <div class="col-1">
                 Paid?
-            </div>
+            </div> --}}
         </div>
         <hr>
         {{#each dealerRsvpList}}
@@ -27,20 +58,23 @@
             <div class="col-2">
                 {{this.name}}
             </div>
-            <div class="col-1 text-center">
+            <div class="col-2">
                 {{this.number_of_tables}}
             </div>
             <div class="col-8">
                 {{this.notes}}
             </div>
-            <div class="col-1">
+            {{!-- <div class="col-1">
                 {{#if this.paid}}
                 Yes
                 {{else}}
                 No
                 {{/if}}
-            </div>
+            </div> --}}
         </div>
         {{/each}}
     </div>
+
+    <br>
+
 </div>

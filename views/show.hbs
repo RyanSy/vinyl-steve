@@ -1,7 +1,7 @@
-<div class="d-flex w-100 h-100 p-3 mx-auto flex-column">
-    {{> navbar}}
+{{> navbar}}
 
-    <div class="container">
+<div class="container-fluid h-auto">
+    <div class="px-3 pt-3 pb-3">
         <p>
         <h3>{{show.name}}</h3>
         </p>
@@ -40,7 +40,7 @@
 
             <div class="form-group mb-3">
                 <label for="notes">Notes (Special requests, etc.)</label>
-                <textarea class="form-control col-8" name="notes" rows="4" cols="40"></textarea>
+                <textarea class="form-control col-8" name="notes" rows="3" cols="30" placeholder="I need a table, etc."></textarea>
                 <div class="form-text text-white">Please note, special requests cannot be guaranteed.</div>
             </div>
 
@@ -50,20 +50,40 @@
                 <button id="rsvpFormSubmitButton" type="submit" class="btn btn-primary">RSVP - Pay Later</button>
             </div>
 
-            <div class="form-group mb-3">
+            {{!-- <div class="form-group mb-3">
                 Or Choose A Payment Method Below:
-            </div>
+            </div> --}}
 
-            <div class="form-group mb-3">
+            {{!-- <div class="form-group mb-3">
                 <div id="paypal-button-container"></div>
                 <p id="result-message"></p>
-            </div>
+            </div> --}}
         </form>
+
+        <br>
+
+        <div class="container my-3">
+            <p>
+                * Please note - rent will be collected around 2 PM at the show.
+            </p>
+
+            <p>
+                Additionally, all reservations are subject to approval by Record Riots. If you don't hear from us within
+                48 hours of making your reservation, you are CONFIRMED. At that point there's NO NEED to reach out to
+                confirm verbally with Steve or anyone else. Thanks for supporting Record Riots!
+            </p>
+        </div>
     </div>
 </div>
 
-<script src="https://www.paypal.com/sdk/js?client-id={{paypalClientId}}&components=buttons&enable-funding=venmo,card&disable-funding=paylater" data-sdk-integration-source="integrationbuilder_sc"></script>
 
+
+{{!--
+<script
+    src="https://www.paypal.com/sdk/js?client-id={{paypalClientId}}&components=buttons&enable-funding=venmo,card&disable-funding=paylater"
+    data-sdk-integration-source="integrationbuilder_sc"></script> --}}
+
+{{!--
 <script>
     let cart = {
         showId: document.getElementById('showId').value,
@@ -163,7 +183,7 @@
                     } else {
                         // (3) Successful transaction -> Show confirmation or thank you message
                         // Or go to another URL:  actions.redirect('thank_you.html');
-                        submitRsvpForm() 
+                        submitRsvpForm()
                         const transaction =
                             orderData?.purchase_units?.[0]?.payments?.captures?.[0] ||
                             orderData?.purchase_units?.[0]?.payments?.authorizations?.[0];
@@ -195,3 +215,4 @@
         container.innerHTML = message;
     }
 </script>
+--}}

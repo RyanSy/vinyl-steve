@@ -1,0 +1,55 @@
+<div class="bg-white text-black vw-100 h-100">
+    <br>
+
+    <div class="text-center">
+        <h4>RSVP List for {{showName}}</h4>
+        <h5>{{showDate}}</h5>
+    </div>
+
+    <br>
+
+    <div>
+        <br>
+
+        <div class="row">
+            <div class="col-2">
+                Name
+            </div>
+            <div class="col-2">
+                # Tables
+            </div>
+            <div class="col-auto">
+                Notes
+            </div>
+            {{!-- <div class="col-1">
+                Paid?
+            </div> --}}
+        </div>
+
+        <hr>
+
+        {{#each dealerRsvpList}}
+        <div class="row">
+            <div class="col-2">
+                {{this.name}}
+            </div>
+            <div class="col-2">
+                {{this.number_of_tables}}
+            </div>
+            <div class="col-8">
+                {{this.notes}}
+            </div>
+            {{!-- <div class="col-1">
+                {{#if this.paid}}
+                Yes
+                {{else}}
+                No
+                {{/if}}
+            </div> --}}
+        </div>
+        {{/each}}
+    </div>
+
+    <br>
+
+</div>

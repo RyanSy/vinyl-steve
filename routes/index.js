@@ -45,13 +45,19 @@ router.get('/admin', requiresAuth(), admin_controller.render_admin_dashboard);
 // render admin rsvp list
 router.get('/admin/rsvp-list/:id', requiresAuth(), admin_controller.render_rsvp_list);
 
-// render admin rsvp list
+// render admin rsvp print view
+router.get('/admin/print-view/:id', requiresAuth(), admin_controller.render_rsvp_print_view);
+
+// inform user of registration
 router.get('/already-registered', requiresAuth(), (req, res) => 
     { res.render('already-registered');
 });
 
-// save dealer rsvp
+// save dealer rsvp - user
 router.post('/rsvp-confirmation', requiresAuth(), rsvp_controller.save_rsvp);
+
+// add dealer rsvp - admin
+router.post('/add-dealer-rsvp', requiresAuth(), admin_controller.add_dealer_rsvp);
 
 // paypal payment routes
 router.post('/api/orders', requiresAuth(), rsvp_controller.create_order);
