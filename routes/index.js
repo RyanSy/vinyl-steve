@@ -37,16 +37,7 @@ router.get('/show/:id', requiresAuth(), show_controller.list_show);
 router.get('/my-rsvps', requiresAuth(), dealer_controller.show_dealer_rsvps);
 
 // delete dealer rsvp - by user 
-router.post('/delete-rsvp', dealer_controller.delete_rsvp);
-
-// render admin dashboard
-router.get('/admin', requiresAuth(), admin_controller.render_admin_dashboard);
-
-// render admin rsvp list
-router.get('/admin/rsvp-list/:id', requiresAuth(), admin_controller.render_rsvp_list);
-
-// render admin rsvp print view
-router.get('/admin/print-view/:id', requiresAuth(), admin_controller.render_rsvp_print_view);
+router.post('/delete-rsvp/:id', requiresAuth(), dealer_controller.delete_rsvp, (req, res) => { res.redirect('/my-rsvps') });
 
 // inform user of registration
 router.get('/already-registered', requiresAuth(), (req, res) => 
@@ -55,9 +46,6 @@ router.get('/already-registered', requiresAuth(), (req, res) =>
 
 // save dealer rsvp - user
 router.post('/rsvp-confirmation', requiresAuth(), rsvp_controller.save_rsvp);
-
-// add dealer rsvp - admin
-router.post('/add-dealer-rsvp', requiresAuth(), admin_controller.add_dealer_rsvp);
 
 // paypal payment routes
 router.post('/api/orders', requiresAuth(), rsvp_controller.create_order);

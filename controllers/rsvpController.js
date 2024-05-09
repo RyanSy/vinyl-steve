@@ -2,12 +2,13 @@ const Show = require('../models/show');
 const Dealer = require('../models/dealer');
 const paypalFunctions = require('../util/paypalFunctions');
 
-// save dealer rsvp - pay later
+// save rsvp
 exports.save_rsvp = async (req, res) => {
     const user = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
     // *** TODO *** find fallbak image
     const userImage = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
     const userEmail = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
+
     const showId = req.body.id;
     const showName = req.body.name;
     const showCity = req.body.city;
@@ -88,6 +89,49 @@ exports.save_rsvp = async (req, res) => {
     res.render('rsvp-confirmation', dataObject);
 };
 
+exports.delete_rsvp = async (req, res, next) => {
+    console.log('rsvpController.js:93', req.body);
+    const user = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
+    // *** TODO *** find fallbak image
+    const userImage = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
+    const userEmail = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
+    const showId = req.body.show_id;
+    const userName = req.body.name;
+
+    // update show collection
+    const showFilter = {
+        _id: showId
+    };
+    const showUpdate = { $pull: {
+        dealer_rsvp_list: {
+            name: userName
+            // email: userEmail
+        }
+    } }
+    await Show.updateOne(showFilter, showUpdate)
+        .catch((err) => {
+            res.render('error');    
+        });
+
+    // update dealer collection
+    const dealerFilter = { 
+        name: userName,
+        email: userEmail 
+    };
+    const dealerUpdate = { $pull: {
+        shows: {
+            id: showId
+        }
+    } };
+    await Dealer.updateOne(dealerFilter, dealerUpdate)
+        .catch((err) => {
+            res.render('error');    
+        });
+
+    next();
+}
+
+// paypal routes
 exports.create_order = async (req, res) => {
     try {
         // use the cart information passed from the front-end to calculate the order amount detals

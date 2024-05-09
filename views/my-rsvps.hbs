@@ -38,9 +38,9 @@
                 <div class="modal-body">
                     Delete this RSVP?
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer text-white">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <form action="/delete-rsvp" method="post">
+                    <form action="/delete-rsvp/{{this.id}}" method="post">
                         <input type="hidden" name="show_id" value="{{this.id}}">
                         <input type="hidden" name="name" value="{{../user}}">
                         <input type="hidden" name="email" value="{{../userEmail}}">

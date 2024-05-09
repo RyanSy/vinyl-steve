@@ -1,14 +1,11 @@
 {{> navbar}}
-<div class="container-fluid justify-content-center align-items-center d-flex w-auto vh-100 p-3 flex-column">
+
+<div class="container-fluid align-items-center d-flex w-auto vh-100 p-3 flex-column">
     <p>
-        <strong>Your RSVP has bees successfully deleted.</strong>
+        <strong>This RSVP has bees successfully deleted.</strong>
     </p>
 
     <p>
-        <a class="btn btn-success" href="/my-rsvps">Go to your RSVPs</a><br>
-    </p>
-
-    <p>
-        <a class="btn btn-success" href="/home">Return to list of shows</a>
+        <a class="btn btn-success" href="/admin/rsvp-list/{{showId}}">Back to RSVP List</a><br>
     </p>
 </div>

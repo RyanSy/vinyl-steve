@@ -3,7 +3,7 @@ const moment = require("moment");
 const todaysDate = moment().format("YYYY-MM-DD");
 const helper_functions = require('../util/helperFunctions');
 
-// render dashboard (admin or user depending on login)
+// render admin dashboard
 exports.render_admin_dashboard = async (req, res) => {
     const user = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
     // *** TODO *** find fallbak image
@@ -34,25 +34,46 @@ exports.render_admin_dashboard = async (req, res) => {
 
 // render rsvp list
 exports.render_rsvp_list = async (req, res) => {
+    console.log('adminController.js:37', req.body)
     const user = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
     // *** TODO *** find fallbak image
     const userImage = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
     const userEmail = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
-    const show = await Show.find({ _id: req.params.id });
-    const showObject = helper_functions.createShowObject(show[0]);
-    const showId = req.params.id;
-    const showName = showObject.name;
-    const showDate = showObject.date;
-    const dealerRsvpList = showObject.dealer_rsvp_list;
-    const dataObject = {
-        user: user,
-        userImage: userImage,
-        showId: showId,
-        showName: showName,
-        showDate: showDate,
-        dealerRsvpList: dealerRsvpList,
-    };
-    res.render('rsvp-list', dataObject);
+
+    let isAdmin = false;
+
+    if (req.oidc.user.email == 'clubmekon@gmail.com' || req.oidc.user.email == 'recordriots@gmail.com' || req.oidc.user.email == 'recordshowmania@gmail.com') {
+        isAdmin = true;
+    }
+
+    console.log('adminController.js:49', req.params.id)
+    await Show.find({ _id: req.params.id })
+        .then((show) => {
+            if (show.length === 0) {
+                console.log('none found')
+                res.send('none found')
+            } else {
+                const showObject = helper_functions.createShowObject(show[0]);
+                const showId = req.params.id;
+                const showName = showObject.name;
+                const showDate = showObject.date;
+                const dealerRsvpList = showObject.dealer_rsvp_list;
+                const dataObject = {
+                    user: user,
+                    userImage: userImage,
+                    userEmail: userEmail,
+                    showId: showId,
+                    showName: showName,
+                    showDate: showDate,
+                    dealerRsvpList: dealerRsvpList,
+                };
+                isAdmin ? res.render('rsvp-list', dataObject) : res.send('Unauthorized');
+            }
+        })
+        .catch((err) => {
+            console.log('error:', err)
+            res.send('error')
+        });
 }
 
 // add dealer
@@ -67,6 +88,28 @@ exports.add_dealer_rsvp = async (req, res) => {
         };
         show[0].dealer_rsvp_list.addToSet(dealerRsvp);
         show[0].save();
+    
+    res.redirect(`/admin/rsvp-list/${id}`);
+}
+
+exports.delete_dealer_rsvp = async (req, res) => {
+    console.log(req.body)
+    const id = req.body.id;
+    const name = req.body.name;
+    
+    const showFilter = {
+        _id: id
+    };
+    const showUpdate = { $pull: {
+        dealer_rsvp_list: {
+            name: name
+            // email: userEmail
+        }
+    } }
+    await Show.updateOne(showFilter, showUpdate)
+        .catch((err) => {
+            res.render('error');    
+        });
     
     res.redirect(`/admin/rsvp-list/${id}`);
 }

@@ -73,7 +73,8 @@ exports.show_dealer_rsvps = async (req, res) => {
     res.render('my-rsvps', dataObject);
 }
 
-exports.delete_rsvp = async (req, res) => {
+exports.delete_rsvp = async (req, res, next) => {
+    console.log('dealerController.js:77', req.body);
     const user = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
     // *** TODO *** find fallbak image
     const userImage = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
@@ -87,11 +88,14 @@ exports.delete_rsvp = async (req, res) => {
     };
     const showUpdate = { $pull: {
         dealer_rsvp_list: {
-            name: userName,
-            email: userEmail
+            name: userName
+            // email: userEmail
         }
     } }
-    await Show.updateOne(showFilter, showUpdate);  
+    await Show.updateOne(showFilter, showUpdate)
+        .catch((err) => {
+            res.render('error');    
+        });
 
     // update dealer collection
     const dealerFilter = { 
@@ -103,11 +107,10 @@ exports.delete_rsvp = async (req, res) => {
             id: showId
         }
     } };
-    Dealer.updateOne(dealerFilter, dealerUpdate)
-        .then(() => {
-            res.render('delete-confirmation', { userImage: userImage });
-        })
+    await Dealer.updateOne(dealerFilter, dealerUpdate)
         .catch((err) => {
-            res.render('error');
-        });  
+            res.render('error');    
+        });
+
+    next();
 }

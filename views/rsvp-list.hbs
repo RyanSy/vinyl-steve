@@ -1,6 +1,6 @@
 {{>navbar}}
 
-<div class="container-fluid h-auto">
+<div class="container-fluid vh-100">
     <br>
 
     <div class="text-center">
@@ -14,7 +14,8 @@
     <div class="container mt-3">
         <br>
 
-        <form class="row row-cols-lg-auto g-3 align-items-center" action="/add-dealer-rsvp" method="post">
+        {{!-- add dealer --}}
+        <form class="row row-cols-lg-auto g-3 align-items-center" action="/admin/add-dealer-rsvp" method="post">
             <input type="hidden" name="id" value="{{showId}}">
 
             <div class="col-12">
@@ -54,16 +55,45 @@
         </div>
         <hr>
         {{#each dealerRsvpList}}
-        <div class="row">
+        <div class="row mb-3">
             <div class="col-2">
                 {{this.name}}
             </div>
             <div class="col-2">
                 {{this.number_of_tables}}
             </div>
-            <div class="col-8">
+            <div class="col-6">
                 {{this.notes}}
             </div>
+            <div class="col-2">
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content text-secondary">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Confirm Delete</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Delete this dealer?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary text-white" data-bs-dismiss="modal">Close</button>
+                            <form action="/admin/delete-rsvp" method="post">
+                                <input type="hidden" name="id" value="{{../showId}}">
+                                <input type="hidden" name="name" value="{{this.name}}">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
             {{!-- <div class="col-1">
                 {{#if this.paid}}
                 Yes
