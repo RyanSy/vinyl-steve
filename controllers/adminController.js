@@ -1,4 +1,5 @@
 const Show = require("../models/show");
+const Dealer = require("../models/dealer");
 const moment = require("moment");
 const todaysDate = moment().format("YYYY-MM-DD");
 const helper_functions = require('../util/helperFunctions');
@@ -97,6 +98,7 @@ exports.delete_dealer_rsvp = async (req, res) => {
     const id = req.body.id;
     const name = req.body.name;
     
+    // update show db
     const showFilter = {
         _id: id
     };
@@ -107,6 +109,20 @@ exports.delete_dealer_rsvp = async (req, res) => {
         }
     } }
     await Show.updateOne(showFilter, showUpdate)
+        .catch((err) => {
+            res.render('error');    
+        });
+
+    // update dealer db
+    const dealerFilter = { 
+        name: name
+    };
+    const dealerUpdate = { $pull: {
+        shows: {
+            id: id
+        }
+    } };
+    await Dealer.updateOne(dealerFilter, dealerUpdate)
         .catch((err) => {
             res.render('error');    
         });
@@ -122,12 +138,20 @@ exports.render_rsvp_print_view = async (req, res) => {
     const showName = showObject.name;
     const showDate = showObject.date;
     const dealerRsvpList = showObject.dealer_rsvp_list;
+
+    let isAdmin = false;
+
+    if (req.oidc.user.email == 'clubmekon@gmail.com' || req.oidc.user.email == 'recordriots@gmail.com' || req.oidc.user.email == 'recordshowmania@gmail.com') {
+        isAdmin = true;
+    }
+    
     const dataObject = {
         showId: showId,
         showName: showName,
         showDate: showDate,
         dealerRsvpList: dealerRsvpList,
     };
-    res.render('print-view', dataObject);
+
+    isAdmin? res.render('print-view', dataObject) : res.send('unauthorized');
 }
 

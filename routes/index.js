@@ -61,4 +61,9 @@ router.get('/profile', requiresAuth(), (req, res) => {
     res.send(JSON.stringify(req.oidc.user));
 });
 
+// get user profile info
+router.get('/privacy-policy', (req, res) => {
+    res.render('privacy-policy');
+});
+
 module.exports = router;
