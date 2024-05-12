@@ -23,7 +23,7 @@ router.get("/signup", (req, res) => {
       returnTo: "/",
       authorizationParams: { screen_hint: "signup" },
     });
-  });
+});
 
 router.post('/save-dealer-info', requiresAuth(), dealer_controller.save_dealer_info);
 
@@ -65,5 +65,11 @@ router.get('/profile', requiresAuth(), (req, res) => {
 router.get('/privacy-policy', (req, res) => {
     res.render('privacy-policy');
 });
+
+router.get('/test', (req, res) => {
+    res.render('test');
+});
+
+router.post('/test', show_controller.test1, show_controller.test2);
 
 module.exports = router;

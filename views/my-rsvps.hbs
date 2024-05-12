@@ -42,6 +42,7 @@
                     <button type="button" class="btn btn-secondary text-white" data-bs-dismiss="modal">Close</button>
                     <form action="/delete-rsvp/{{this.id}}" method="post">
                         <input type="hidden" name="show_id" value="{{this.id}}">
+                        <input type="hidden" name="number_of_tables" value="{{this.number_of_tables}}">
                         <input type="hidden" name="name" value="{{../user}}">
                         <input type="hidden" name="email" value="{{../userEmail}}">
                         <button type="submit" class="btn btn-danger">Delete</button>

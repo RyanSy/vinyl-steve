@@ -77,27 +77,36 @@ exports.delete_rsvp = async (req, res, next) => {
     const userImage = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
     const userEmail = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
     const showId = req.body.show_id;
-    const userName = req.body.name;
+    const name = req.body.name;
+    const numberOfTables = Number(req.body.number_of_tables);
+    console.log(numberOfTables);
 
     // update show collection
     const showFilter = {
         _id: showId
     };
-    const showUpdate = { $pull: {
-        dealer_rsvp_list: {
-            name: userName
-            // email: userEmail
+    const showUpdate = { 
+        $pull: {
+            dealer_rsvp_list: {
+                name: name
+                // email: userEmail
+            }
+        },
+        $inc: {
+            number_of_tables_for_rent: numberOfTables
         }
-    } }
+    };
     await Show.updateOne(showFilter, showUpdate)
         .catch((err) => {
-            res.render('error');    
+            console.log(err)
+            res.render('error');
+            return;    
         });
 
     // update dealer collection
     const dealerFilter = { 
-        name: userName,
-        email: userEmail 
+        name: name
+        // email: userEmail 
     };
     const dealerUpdate = { $pull: {
         shows: {
@@ -106,7 +115,9 @@ exports.delete_rsvp = async (req, res, next) => {
     } };
     await Dealer.updateOne(dealerFilter, dealerUpdate)
         .catch((err) => {
-            res.render('error');    
+            consolw.log(err)
+            res.render('error');
+            return;    
         });
 
     next();

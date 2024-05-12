@@ -49,3 +49,12 @@ exports.list_show = async (req, res) => {
     };
     res.render('show', dataObject);
 };
+
+exports.test1 = (req, res, next) => {
+    next();
+}
+
+exports.test2 = (req, res) => {
+    console.log(req.body)
+    res.send(req.body)
+}
