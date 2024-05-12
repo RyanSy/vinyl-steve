@@ -5,7 +5,6 @@ const helper_functions = require('../util/helperFunctions');
 
 // render home page with list of record riots
 exports.list_shows = async (req, res) => {
-    // console.log(req.oidc.user)
     const user = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
 
     // *** TODO *** find fallbak image
@@ -16,6 +15,7 @@ exports.list_shows = async (req, res) => {
         $and: [
             { date: { $gte: todaysDate } },
             { $or: [{ name: /record riot/i }, { name: /ryan record show/i }] },
+            { rsvp: true }
         ],
     });
     const showsArray = helper_functions.createShowsArray(shows);

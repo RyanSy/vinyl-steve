@@ -90,7 +90,6 @@ exports.save_rsvp = async (req, res) => {
 };
 
 exports.delete_rsvp = async (req, res, next) => {
-    console.log('rsvpController.js:93', req.body);
     const user = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
     // *** TODO *** find fallbak image
     const userImage = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');

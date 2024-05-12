@@ -18,7 +18,6 @@ exports.check_if_dealer_exists = async (req, res, next) => {
                 next();
             } else {
                 const userInfo = filter;
-                console.log('userinfo:', userInfo)
                 res.render('signup-form', userInfo);
             }
         })
@@ -62,7 +61,6 @@ exports.show_dealer_rsvps = async (req, res) => {
             console.log(err);
             res.render('error');
         });
-    console.log(shows)
     const dataObject = {
         user: user,
         userImage: userImage,
@@ -74,7 +72,6 @@ exports.show_dealer_rsvps = async (req, res) => {
 }
 
 exports.delete_rsvp = async (req, res, next) => {
-    console.log('dealerController.js:77', req.body);
     const user = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
     // *** TODO *** find fallbak image
     const userImage = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');

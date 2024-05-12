@@ -35,7 +35,6 @@ exports.render_admin_dashboard = async (req, res) => {
 
 // render rsvp list
 exports.render_rsvp_list = async (req, res) => {
-    console.log('adminController.js:37', req.body)
     const user = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
     // *** TODO *** find fallbak image
     const userImage = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
@@ -47,11 +46,9 @@ exports.render_rsvp_list = async (req, res) => {
         isAdmin = true;
     }
 
-    console.log('adminController.js:49', req.params.id)
     await Show.find({ _id: req.params.id })
         .then((show) => {
             if (show.length === 0) {
-                console.log('none found')
                 res.send('none found')
             } else {
                 const showObject = helper_functions.createShowObject(show[0]);
@@ -59,6 +56,7 @@ exports.render_rsvp_list = async (req, res) => {
                 const showName = showObject.name;
                 const showDate = showObject.date;
                 const dealerRsvpList = showObject.dealer_rsvp_list;
+                const numberOfTablesForRent = showObject.number_of_tables_for_rent;
                 const dataObject = {
                     user: user,
                     userImage: userImage,
@@ -67,6 +65,7 @@ exports.render_rsvp_list = async (req, res) => {
                     showName: showName,
                     showDate: showDate,
                     dealerRsvpList: dealerRsvpList,
+                    numberOfTablesForRent: numberOfTablesForRent
                 };
                 isAdmin ? res.render('rsvp-list', dataObject) : res.send('Unauthorized');
             }
@@ -94,7 +93,6 @@ exports.add_dealer_rsvp = async (req, res) => {
 }
 
 exports.delete_dealer_rsvp = async (req, res) => {
-    console.log(req.body)
     const id = req.body.id;
     const name = req.body.name;
     

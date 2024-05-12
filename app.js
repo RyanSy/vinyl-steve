@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 const hbs = require('hbs');
-const favicon = require('serve-favicon');
+// const favicon = require('serve-favicon');
 
 const indexRouter = require('./routes/index');
 const adminRouter = require('./routes/admin');
@@ -42,7 +42,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(favicon(path.join(__dirname, 'public', 'favicon.png')))
+// app.use(favicon(path.join(__dirname, 'public', 'favicon.png')))
 
 // auth router attaches /login, /logout and /callback routes to the baseURL
 app.use(auth(config));
