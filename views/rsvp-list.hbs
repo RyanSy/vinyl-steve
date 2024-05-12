@@ -16,25 +16,26 @@
         <br>
 
         {{!-- add dealer --}}
-        <form class="row row-cols-lg-auto g-3 align-items-center" action="/admin/add-dealer-rsvp" method="post">
+        <form action="/admin/add-dealer-rsvp" method="post">
             <input type="hidden" name="id" value="{{showId}}">
+            <input type="hidden" name="number_of_tables_for_rent" value="{{numberOfTablesForRent}}">
 
-            <div class="col-12">
-                <label class="visually-hidden" for="dealerName">Name</label>
-                <input type="text" class="form-control" id="dealerName" name="name">
+            <div class="row">
+                <label for="dealerName">Name:</label>
+                <div class="form-group col-md-4 mb-3">
+                    <input type="text" class="form-control" id="dealerName" name="name">
+                </div>
             </div>
 
-            {{!-- <div class="col-12">
-                <label class="visually-hidden" for="inlineFormSelectPref">Preference</label>
-                <select class="form-select" id="inlineFormSelectPref">
-                    <option selected>Choose...</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                </select>
-            </div> --}}
+            <div class="row">
+                <label for="number of tables">Number Of Tables: </label>
+                <div class="form-group col-4 col-md-2 mb-3">
+                    <input class="form-control" type="number" min="0" name="number_of_tables" max="{{maxTablesPerDealer}}" required>
+                    <div class="form-text text-white">Max: {{maxTablesPerDealer}}</div>
+                </div>
+            </div>
 
-            <div class="col-12">
+            <div class="col-3">
                 <button type="submit" class="btn btn-primary">Add Dealer RSVP</button>
             </div>
         </form>
@@ -87,6 +88,8 @@
                             <form action="/admin/delete-rsvp" method="post">
                                 <input type="hidden" name="id" value="{{../showId}}">
                                 <input type="hidden" name="name" value="{{this.name}}">
+                                <input type="hidden" name="number_of_tables_for_rent" value="{{../numberOfTablesForRent}}">
+                                <input type="hidden" name="number_of_tables" value="{{this.number_of_tables}}">
                                 <button type="submit" class="btn btn-danger">Delete</button>
                             </form>
                         </div>

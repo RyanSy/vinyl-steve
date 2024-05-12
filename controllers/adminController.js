@@ -57,6 +57,7 @@ exports.render_rsvp_list = async (req, res) => {
                 const showDate = showObject.date;
                 const dealerRsvpList = showObject.dealer_rsvp_list;
                 const numberOfTablesForRent = showObject.number_of_tables_for_rent;
+                const maxTablesPerDealer = showObject.max_tables_per_dealer;
                 const dataObject = {
                     user: user,
                     userImage: userImage,
@@ -65,7 +66,8 @@ exports.render_rsvp_list = async (req, res) => {
                     showName: showName,
                     showDate: showDate,
                     dealerRsvpList: dealerRsvpList,
-                    numberOfTablesForRent: numberOfTablesForRent
+                    numberOfTablesForRent: numberOfTablesForRent,
+                    maxTablesPerDealer: maxTablesPerDealer
                 };
                 isAdmin ? res.render('rsvp-list', dataObject) : res.send('Unauthorized');
             }
@@ -80,14 +82,23 @@ exports.render_rsvp_list = async (req, res) => {
 exports.add_dealer_rsvp = async (req, res) => {
     const id = req.body.id;
     const name = req.body.name;
-    const show = await Show.find({ _id: id });
+    const numberOfTablesForRent = Number(req.body.number_of_tables_for_rent);
+    const numberOfTables = Number(req.body.number_of_tables);
+    const newNumberOfTablesForRent = numberOfTablesForRent - numberOfTables;
 
-        // save rsvp to shows db
-        const dealerRsvp = {
-            name: name
-        };
-        show[0].dealer_rsvp_list.addToSet(dealerRsvp);
-        show[0].save();
+    // save rsvp to shows db
+    const show = await Show.find({ _id: id });
+    const dealerRsvp = {
+        name: name,
+        number_of_tables: numberOfTables
+    };
+    show[0].number_of_tables_for_rent = newNumberOfTablesForRent;
+    show[0].dealer_rsvp_list.addToSet(dealerRsvp);
+    show[0].save()
+        .catch((err) => {
+            console.log(err);
+            res.send('error');
+        });
     
     res.redirect(`/admin/rsvp-list/${id}`);
 }
@@ -95,17 +106,23 @@ exports.add_dealer_rsvp = async (req, res) => {
 exports.delete_dealer_rsvp = async (req, res) => {
     const id = req.body.id;
     const name = req.body.name;
-    
+    const numberOfTablesForRent = req.body.number_of_tables_for_rent;
+    const numberOfTables = req.body.number_of_tables;
+    const newNumberOfTablesForRent = Number(numberOfTablesForRent ) + Number(numberOfTables);
+
     // update show db
     const showFilter = {
         _id: id
     };
-    const showUpdate = { $pull: {
-        dealer_rsvp_list: {
-            name: name
+    const showUpdate = { 
+        $pull: {
+            dealer_rsvp_list: {
+                name: name
             // email: userEmail
-        }
-    } }
+            }
+        },
+        number_of_tables_for_rent: newNumberOfTablesForRent
+    };
     await Show.updateOne(showFilter, showUpdate)
         .catch((err) => {
             res.render('error');    

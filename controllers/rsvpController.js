@@ -22,7 +22,7 @@ exports.save_rsvp = async (req, res) => {
     const numberOfTables = req.body.number_of_tables;
     const dealerNotes = req.body.notes;
     const paid = req.body.paid;
-
+    const newNumberOfTablesForRent = numberOfTablesForRent - numberOfTables;
     const show = await Show.find({ _id: showId });
 
     // if dealer rsvp list contains user, dont save and inform user
@@ -40,7 +40,7 @@ exports.save_rsvp = async (req, res) => {
         notes: dealerNotes,
         paid: paid
     };
-    show[0].number_of_tables_for_rent = numberOfTablesForRent - numberOfTables;
+    show[0].number_of_tables_for_rent = newNumberOfTablesForRent;
     show[0].dealer_rsvp_list.addToSet(dealerRsvp);
     show[0].save();
 

@@ -32,15 +32,16 @@
                 value="{{show.number_of_tables_for_rent}}">
 
             {{!-- num of tables --}}
-            <div class="form-group mb-3 col-xs-2">
-                <label for="number of tables">Number Of Tables: </label>
-                <input type="number" min="0" name="number_of_tables" max="{{show.max_tables_per_dealer}}" required>
+            <label for="number of tables">Number Of Tables: </label>
+            <div class="form-group col-4 col-md-2 mb-3">
+                <input class="form-control" type="number" min="0" name="number_of_tables" max="{{show.max_tables_per_dealer}}" required>
                 <div class="form-text text-white">Max: {{show.max_tables_per_dealer}}</div>
             </div>
 
-            <div class="form-group mb-3">
+            <div class="form-group col-lg-6 mb-3">
                 <label for="notes">Notes (Special requests, etc.)</label>
-                <textarea class="form-control col-8" name="notes" rows="3" cols="30" placeholder="I need a table, etc."></textarea>
+                <textarea class="form-control mb-3" name="notes" rows="3" cols="30"
+                    placeholder="I need a table, etc."></textarea>
                 <div class="form-text text-white">Please note, special requests cannot be guaranteed.</div>
             </div>
 
