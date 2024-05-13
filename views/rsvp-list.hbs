@@ -13,10 +13,13 @@
 
     <div class="container mt-3">
         <p>Number of tables available: {{numberOfTablesForRent}}</p>
+        <p>
+            <a href="/admin/waitlist/{{showId}}" class="btn btn-warning">Waiting List</a>
+        </p>
         <br>
-
         {{!-- add dealer --}}
         <form action="/admin/add-dealer-rsvp" method="post">
+            <h4>Add a dealer:</h4>
             <input type="hidden" name="id" value="{{showId}}">
             <input type="hidden" name="number_of_tables_for_rent" value="{{numberOfTablesForRent}}">
 

@@ -79,7 +79,6 @@ exports.delete_rsvp = async (req, res, next) => {
     const showId = req.body.show_id;
     const name = req.body.name;
     const numberOfTables = Number(req.body.number_of_tables);
-    console.log(numberOfTables);
 
     // update show collection
     const showFilter = {
@@ -121,4 +120,12 @@ exports.delete_rsvp = async (req, res, next) => {
         });
 
     next();
+}
+
+// save dealer to waitlist
+exports.save_dealer_to_waitlist = async (req, res) => {
+    const show = await Show.find({ _id: req.body.id });
+    show[0].waiting_list.addToSet({ email: req.body.email });
+    show[0].save();
+    res.render('waitlist-confirmation');
 }

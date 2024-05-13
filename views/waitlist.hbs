@@ -1,0 +1,18 @@
+{{> navbar}}
+
+<div class="container">
+    <div class="vh-100 w-100">
+        <div class="text-center">
+            Waiting List for {{show.name}}<br>
+            {{show.date}}
+        </div>
+        
+        <hr>
+
+        <ul>
+            {{#each show.waiting_list}}
+            <li>{{this.email}}</li>
+            {{/each}}
+        </ul>
+    </div>
+</div>

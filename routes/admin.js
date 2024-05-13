@@ -1,10 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { requiresAuth } = require('express-openid-connect');
-const show_controller = require('../controllers/showController');
-const dealer_controller = require('../controllers/dealerController');
 const admin_controller = require('../controllers/adminController');
-const rsvp_controller = require('../controllers/rsvpController');
 
 // render admin dashboard
 router.get('/', requiresAuth(), admin_controller.render_admin_dashboard);
@@ -20,5 +17,8 @@ router.post('/add-dealer-rsvp', requiresAuth(), admin_controller.add_dealer_rsvp
 
 // delete dealer rsvp
 router.post('/delete-rsvp', requiresAuth(), admin_controller.delete_dealer_rsvp);
+
+// view waiting list
+router.get('/waitlist/:id', requiresAuth(), admin_controller.render_waiting_list);
 
 module.exports = router;

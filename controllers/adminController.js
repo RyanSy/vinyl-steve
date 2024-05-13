@@ -56,6 +56,7 @@ exports.render_rsvp_list = async (req, res) => {
                 const showName = showObject.name;
                 const showDate = showObject.date;
                 const dealerRsvpList = showObject.dealer_rsvp_list;
+                const waitingList = showObject.waiting_list;
                 const numberOfTablesForRent = showObject.number_of_tables_for_rent;
                 const maxTablesPerDealer = showObject.max_tables_per_dealer;
                 const dataObject = {
@@ -66,6 +67,7 @@ exports.render_rsvp_list = async (req, res) => {
                     showName: showName,
                     showDate: showDate,
                     dealerRsvpList: dealerRsvpList,
+                    waitingList: waitingList,
                     numberOfTablesForRent: numberOfTablesForRent,
                     maxTablesPerDealer: maxTablesPerDealer
                 };
@@ -170,3 +172,12 @@ exports.render_rsvp_print_view = async (req, res) => {
     isAdmin? res.render('print-view', dataObject) : res.send('unauthorized');
 }
 
+// render waiting list 
+exports.render_waiting_list = async (req, res) => {
+    const show = await Show.find({ _id: req.params.id });
+    const dataObject = {    
+        show: show[0]
+    };
+    
+    res.render('waitlist', dataObject);
+}

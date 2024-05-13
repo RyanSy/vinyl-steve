@@ -40,21 +40,28 @@ exports.list_show = async (req, res) => {
 
     const show = await Show.find({ _id: req.params.id });
     const showObject = helper_functions.createShowObject(show[0]);
+    const numberOfTablesForRent = showObject.number_of_tables_for_rent;
+    const maxTablesPerDealer = showObject.max_tables_per_dealer;
+    let maxTablesAvailable;
+    if (numberOfTablesForRent < maxTablesPerDealer) {
+        maxTablesAvailable = numberOfTablesForRent;
+    } else {
+        maxTablesAvailable = maxTablesPerDealer;
+    }
+
+    let tablesAvailable = true;
+    if (maxTablesAvailable == 0) {
+        tablesAvailable = false;
+    }
+
     const dataObject = {
         user: user,
         userImage: userImage,
         userEmail: userEmail,
         show: showObject,
-        paypalClientId: paypalClientId
+        paypalClientId: paypalClientId,
+        maxTablesAvailable: maxTablesAvailable,
+        tablesAvailable: tablesAvailable
     };
     res.render('show', dataObject);
 };
-
-exports.test1 = (req, res, next) => {
-    next();
-}
-
-exports.test2 = (req, res) => {
-    console.log(req.body)
-    res.send(req.body)
-}

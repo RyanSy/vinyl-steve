@@ -17,6 +17,7 @@
             {{show.city}}, {{show.state}} {{show.zip}}
         </p>
 
+        {{#if tablesAvailable}}
         <form id="rsvpForm" action="/rsvp-confirmation" method="post">
             <input id="showId" type="hidden" name="id" value="{{show.id}}">
             <input id="showName" type="hidden" name="name" value="{{show.name}}">
@@ -34,8 +35,8 @@
             {{!-- num of tables --}}
             <label for="number of tables">Number Of Tables: </label>
             <div class="form-group col-4 col-md-2 mb-3">
-                <input class="form-control" type="number" min="0" name="number_of_tables" max="{{show.max_tables_per_dealer}}" required>
-                <div class="form-text text-white">Max: {{show.max_tables_per_dealer}}</div>
+                <input class="form-control" type="number" min="0" name="number_of_tables" max="{{maxTablesAvailable}}" required>
+                <div class="form-text text-white">Max: {{maxTablesAvailable}}</div>
             </div>
 
             <div class="form-group col-lg-6 mb-3">
@@ -60,6 +61,19 @@
                 <p id="result-message"></p>
             </div> --}}
         </form>
+        {{else}}
+        <p>
+            Sorry, there are no more tables available for this event. Please click below to be placed on the waiting list.
+        </p>
+
+        <p>
+            <form action="/waitlist" method="post">
+                <input type="hidden" name="email" value="{{userEmail}}">
+                <input type="hidden" name="id" value="{{show.id}}">
+                <button type="submit" class="btn btn-success">Get On Waiting List</button>
+            </form>
+        </p>
+        {{/if}}
 
         <br>
 
