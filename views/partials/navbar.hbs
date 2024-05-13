@@ -11,7 +11,17 @@
                     <img src="{{userImage}}" alt="Me" width="32" height="32" class="rounded-circle">
                 </a>
                 <ul class="dropdown-menu text-small shadow">
-                    <li><a class="dropdown-item icon-link icon-link-hover" href="/my-rsvps">My RSVPs</a></li>
+                    {{#if isAdmin}}
+                    <li>
+                        <span class="dropdown-item">Admin</span>
+                    </li>
+                    {{else}}
+                    <li>
+                        <a class="dropdown-item icon-link icon-link-hover" href="/my-rsvps">My RSVPs</a>
+                    </li>
+                    {{/if}}
+                
+                    
                     <li>
                         <hr class="dropdown-divider">
                     </li>

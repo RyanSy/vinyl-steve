@@ -52,14 +52,14 @@
                 <button id="rsvpFormSubmitButton" type="submit" class="btn btn-primary">RSVP - Pay Later</button>
             </div>
 
-            {{!-- <div class="form-group mb-3">
+            <div class="form-group mb-3">
                 Or Choose A Payment Method Below:
-            </div> --}}
+            </div>
 
-            {{!-- <div class="form-group mb-3">
+            <div class="form-group text-center mb-3">
                 <div id="paypal-button-container"></div>
                 <p id="result-message"></p>
-            </div> --}}
+            </div>
         </form>
         {{else}}
         <p>
@@ -91,14 +91,8 @@
     </div>
 </div>
 
+<script src="https://www.paypal.com/sdk/js?client-id={{paypalClientId}}&components=buttons&enable-funding=venmo,card&disable-funding=paylater" data-sdk-integration-source="integrationbuilder_sc"></script>
 
-
-{{!--
-<script
-    src="https://www.paypal.com/sdk/js?client-id={{paypalClientId}}&components=buttons&enable-funding=venmo,card&disable-funding=paylater"
-    data-sdk-integration-source="integrationbuilder_sc"></script> --}}
-
-{{!--
 <script>
     let cart = {
         showId: document.getElementById('showId').value,
@@ -112,24 +106,22 @@
         showUser: document.getElementById('showUser').value,
         showEmail: document.getElementById('showEmail').value,
         showNumberOfTablesForRent: document.getElementById('showNumberOfTablesForRent').value,
-        paid: document.getElementById('paidInput').value
+        paid: true
     };
-    const paidInput = document.getElementById("paidInput");
+
+    // after successful payment, set paid to true and submit rsvp form
+    let paidInput = document.getElementById("paidInput");
     const rsvpForm = document.getElementById("rsvpForm");
     const rsvpFormSubmitButton = document.getElementById("rsvpFormSubmitButton");
 
     function setPaidInput() {
-        console.log('setpaidinput called')
-        cart.paid = true;
+        paidInput.value = true;
     }
 
     async function submitRsvpForm() {
-        console.log('submitrsvp called')
         await setPaidInput();
         rsvpForm.requestSubmit(rsvpFormSubmitButton);
     }
-
-    console.log("paid input:", paidInput.value)
 
     window.paypal
         .Buttons({
@@ -198,7 +190,7 @@
                     } else {
                         // (3) Successful transaction -> Show confirmation or thank you message
                         // Or go to another URL:  actions.redirect('thank_you.html');
-                        submitRsvpForm()
+                        submitRsvpForm();
                         const transaction =
                             orderData?.purchase_units?.[0]?.payments?.captures?.[0] ||
                             orderData?.purchase_units?.[0]?.payments?.authorizations?.[0];
@@ -230,4 +222,3 @@
         container.innerHTML = message;
     }
 </script>
---}}

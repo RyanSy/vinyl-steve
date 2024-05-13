@@ -52,6 +52,7 @@ const showSchema = new Schema(
                 email: { type: String, max: 50 },
                 number_of_tables: { type: Number },
                 notes: { type: String, max: 200 },
+                paid: {type: Boolean}
             },
         ],
         number_of_tables_for_rent: { type: Number },

@@ -59,6 +59,7 @@ exports.render_rsvp_list = async (req, res) => {
                 const waitingList = showObject.waiting_list;
                 const numberOfTablesForRent = showObject.number_of_tables_for_rent;
                 const maxTablesPerDealer = showObject.max_tables_per_dealer;
+                const paid = showObject.paid;
                 const dataObject = {
                     user: user,
                     userImage: userImage,
@@ -69,7 +70,8 @@ exports.render_rsvp_list = async (req, res) => {
                     dealerRsvpList: dealerRsvpList,
                     waitingList: waitingList,
                     numberOfTablesForRent: numberOfTablesForRent,
-                    maxTablesPerDealer: maxTablesPerDealer
+                    maxTablesPerDealer: maxTablesPerDealer,
+                    paid: paid
                 };
                 isAdmin ? res.render('rsvp-list', dataObject) : res.send('Unauthorized');
             }
