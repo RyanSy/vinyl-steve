@@ -45,7 +45,7 @@ exports.show_dealer_rsvps = async (req, res) => {
     let message;
     let shows;
 
-    await Dealer.find({ name: user, email: userEmail })
+    await Dealer.find({ email: userEmail })
         .then((result) => {
             if (!result[0]) {
                 message = 'You have no shows listed.';

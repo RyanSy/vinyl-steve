@@ -17,6 +17,12 @@
             {{show.city}}, {{show.state}} {{show.zip}}
         </p>
 
+        <p>
+            {{show.more_information}}
+        </p>
+
+        <hr>
+        
         {{#if tablesAvailable}}
         <form id="rsvpForm" action="/rsvp-confirmation" method="post">
             <input id="showId" type="hidden" name="id" value="{{show.id}}">
@@ -33,10 +39,10 @@
                 value="{{show.number_of_tables_for_rent}}">
 
             {{!-- num of tables --}}
-            <label for="number of tables">Number Of Tables: </label>
+            <label for="number of tables">* Number Of Tables: </label>
             <div class="form-group col-4 col-md-2 mb-3">
                 <input class="form-control" type="number" min="0" name="number_of_tables" max="{{maxTablesAvailable}}" required>
-                <div class="form-text text-white">Max: {{maxTablesAvailable}}</div>
+                <div class="form-text text-white">* Required - Max: {{maxTablesAvailable}}</div>
             </div>
 
             <div class="form-group col-lg-6 mb-3">
@@ -49,16 +55,7 @@
             <input id="paidInput" type="hidden" name="paid" value="false">
 
             <div class="form-group mb-3">
-                <button id="rsvpFormSubmitButton" type="submit" class="btn btn-primary">RSVP - Pay Later</button>
-            </div>
-
-            <div class="form-group mb-3">
-                Or Choose A Payment Method Below:
-            </div>
-
-            <div class="form-group text-center mb-3">
-                <div id="paypal-button-container"></div>
-                <p id="result-message"></p>
+                <button id="rsvpFormSubmitButton" type="submit" class="btn btn-primary">RSVP</button>
             </div>
         </form>
         {{else}}
@@ -90,135 +87,3 @@
         </div>
     </div>
 </div>
-
-<script src="https://www.paypal.com/sdk/js?client-id={{paypalClientId}}&components=buttons&enable-funding=venmo,card&disable-funding=paylater" data-sdk-integration-source="integrationbuilder_sc"></script>
-
-<script>
-    let cart = {
-        showId: document.getElementById('showId').value,
-        showName: document.getElementById('showName').value,
-        showCity: document.getElementById('showCity').value,
-        showState: document.getElementById('showState').value,
-        showDate: document.getElementById('showDate').value,
-        showMonth: document.getElementById('showMonth').value,
-        showDay: document.getElementById('showDay').value,
-        showYear: document.getElementById('showYear').value,
-        showUser: document.getElementById('showUser').value,
-        showEmail: document.getElementById('showEmail').value,
-        showNumberOfTablesForRent: document.getElementById('showNumberOfTablesForRent').value,
-        paid: true
-    };
-
-    // after successful payment, set paid to true and submit rsvp form
-    let paidInput = document.getElementById("paidInput");
-    const rsvpForm = document.getElementById("rsvpForm");
-    const rsvpFormSubmitButton = document.getElementById("rsvpFormSubmitButton");
-
-    function setPaidInput() {
-        paidInput.value = true;
-    }
-
-    async function submitRsvpForm() {
-        await setPaidInput();
-        rsvpForm.requestSubmit(rsvpFormSubmitButton);
-    }
-
-    window.paypal
-        .Buttons({
-            style: {
-                shape: "rect",
-                layout: "vertical",
-            },
-            async createOrder() {
-                try {
-                    const response = await fetch("/api/orders", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        // use the "body" param to optionally pass additional order information
-                        // like product ids and quantities
-                        body: JSON.stringify({
-                            cart: [cart]
-                        }),
-                    });
-
-                    const orderData = await response.json();
-
-                    if (orderData.id) {
-                        return orderData.id;
-                    } else {
-                        const errorDetail = orderData?.details?.[0];
-                        const errorMessage = errorDetail
-                            ? `${errorDetail.issue} ${errorDetail.description} (${orderData.debug_id})`
-                            : JSON.stringify(orderData);
-
-                        throw new Error(errorMessage);
-                    }
-                } catch (error) {
-                    console.error(error);
-                    resultMessage(`Could not initiate PayPal Checkout...<br><br>${error}`);
-                }
-            },
-            async onApprove(data, actions) {
-                console.log(data.orderID);
-                try {
-                    const response = await fetch(`/api/orders/${data.orderID}/capture`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    });
-
-                    const orderData = await response.json();
-                    // Three cases to handle:
-                    //   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
-                    //   (2) Other non-recoverable errors -> Show a failure message
-                    //   (3) Successful transaction -> Show confirmation or thank you message
-
-                    const errorDetail = orderData?.details?.[0];
-
-                    if (errorDetail?.issue === "INSTRUMENT_DECLINED") {
-                        // (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
-                        // recoverable state, per https://developer.paypal.com/docs/checkout/standard/customize/handle-funding-failures/
-                        return actions.restart();
-                    } else if (errorDetail) {
-                        // (2) Other non-recoverable errors -> Show a failure message
-                        throw new Error(`${errorDetail.description} (${orderData.debug_id})`);
-                    } else if (!orderData.purchase_units) {
-                        throw new Error(JSON.stringify(orderData));
-                    } else {
-                        // (3) Successful transaction -> Show confirmation or thank you message
-                        // Or go to another URL:  actions.redirect('thank_you.html');
-                        submitRsvpForm();
-                        const transaction =
-                            orderData?.purchase_units?.[0]?.payments?.captures?.[0] ||
-                            orderData?.purchase_units?.[0]?.payments?.authorizations?.[0];
-                        resultMessage(
-                            `Transaction ${transaction.status}: ${transaction.id}<br><br>See console for all available details`,
-                        );
-                        console.log(
-                            "Capture result",
-                            orderData,
-                            JSON.stringify(orderData, null, 2),
-                        );
-                    }
-                } catch (error) {
-                    console.error(error);
-
-                    // fetch transaction error page?
-
-                    resultMessage(
-                        `Sorry, your transaction could not be processed...<br><br>${error}`,
-                    );
-                }
-            },
-        })
-        .render("#paypal-button-container");
-
-    // Example function to show a result to the user. Your site's UI library can be used instead.
-    function resultMessage(message) {
-        const container = document.querySelector("#result-message");
-        container.innerHTML = message;
-    }
-</script>

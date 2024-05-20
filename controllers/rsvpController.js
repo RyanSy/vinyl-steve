@@ -46,7 +46,6 @@ exports.save_rsvp = async (req, res) => {
 
     // save rsvp to dealers db
     const filter = { 
-        name: user,
         email: userEmail 
     };
 
@@ -66,13 +65,11 @@ exports.save_rsvp = async (req, res) => {
         }
     } };
 
-    const options = { 
-        upsert: true, 
-        new: true, 
-        setDefaultsOnInsert: true 
-    };
+    // const options = { 
+    //     new: true
+    // };
 
-    Dealer.findOneAndUpdate(filter, update, options)
+    Dealer.findOneAndUpdate(filter, update)
         .catch((err) =>{
             console.log(err);
             res.render('error');
@@ -82,12 +79,49 @@ exports.save_rsvp = async (req, res) => {
     const dataObject = {
         user: user,
         userImage: userImage,
+        email: userEmail,
+        id: showId,
         name: showName,
-        date: showDate
-    }
+        date: showDate,
+        paypalClientId: process.env.PAYPAL_CLIENT_ID
+    };
 
     res.render('rsvp-confirmation', dataObject);
 };
+
+exports.save_payment = async (req, res) => {
+    console.log(req.body)
+    const id = req.body.id;
+    const email = req.body.email;
+
+    // const dealer = Dealer.find({ email: email });
+    // const filter = { 'shows.id': id };
+    // const update = { 'paid': true };
+    // await dealer[0].update(filter, update);
+
+
+    // patients.findOneAndUpdate(
+    //     {_id: "5cb939a3ba1d7d693846136c"},
+    //     {$set: {"myArray.$[el].value": 424214 } },
+    //     { 
+    //       arrayFilters: [{ "el.treatment": "beauty" }],
+    //       new: true
+    //     }
+    //   )
+    await Show.findOneAndUpdate(
+        { _id: id} ,
+        { $set: {'dealer_rsvp_list.$[el].paid': true} },
+        { arrayFilters: [ { 'el.email': email }] }
+    );
+
+    await Dealer.findOneAndUpdate(
+        { email: email },
+        { $set: {'shows.$[el].paid': true } },
+        { arrayFilters: [{ 'el.id': id }] }
+    );
+
+    res.redirect('/payment-confirmation');
+}
 
 exports.delete_rsvp = async (req, res, next) => {
     const user = JSON.stringify(req.oidc.user.name).replace(/"/g, '');

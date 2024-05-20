@@ -2,6 +2,7 @@ const Show = require('../models/show');
 const moment = require('moment');
 const todaysDate = moment().format('YYYY-MM-DD');
 const helper_functions = require('../util/helperFunctions');
+const Dealer = require('../models/dealer')
 
 // render home page with list of record riots
 exports.list_shows = async (req, res) => {
@@ -10,7 +11,7 @@ exports.list_shows = async (req, res) => {
     // *** TODO *** find fallbak image
     const userImage = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
     const userEmail = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
-
+    
     const shows = await Show.find({
         $and: [
             { date: { $gte: todaysDate } },
@@ -27,6 +28,8 @@ exports.list_shows = async (req, res) => {
         shows: showsArraySorted,
         isLoggedIn: true
     };
+
+    const dealer = await Dealer.find({ email: userEmail });
     res.render('shows', dataObject);
 };
 
@@ -61,7 +64,7 @@ exports.list_show = async (req, res) => {
         show: showObject,
         paypalClientId: paypalClientId,
         maxTablesAvailable: maxTablesAvailable,
-        tablesAvailable: tablesAvailable
+        tablesAvailable: tablesAvailable,
     };
     res.render('show', dataObject);
 };

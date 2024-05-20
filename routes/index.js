@@ -48,6 +48,14 @@ router.get('/already-registered', requiresAuth(), (req, res) =>
 // save dealer rsvp - user
 router.post('/rsvp-confirmation', requiresAuth(), rsvp_controller.save_rsvp);
 
+// save payment
+router.post('/save-payment', requiresAuth(), rsvp_controller.save_payment);
+
+//payment confirmation
+router.get('/payment-confirmation', requiresAuth(), (req, res) => 
+    { res.render('payment-confirmation');
+});
+
 // save dealer to waitlist
 router.post('/waitlist', requiresAuth(), dealer_controller.save_dealer_to_waitlist);
 
