@@ -1,10 +1,18 @@
 {{>navbar}}
 
+<br>
+
 <div class="container-fluid d-flex w-auto vh-100 p-3 flex-column">
+    <div class="d-flex flex-column align-items-center">
+        <h3>My RSVPs</h3>
+    </div>
+    
+    <hr>
+
     {{#if message}}
     <div class="align-items-center d-flex w-auto vh-100 flex-column">
         <p>
-            <h4>{{message}}</h4>
+        <h4>{{message}}</h4>
         </p>
 
         <p>
@@ -14,21 +22,50 @@
     {{/if}}
 
     {{#each shows}}
-    <div class="row px-3 pt-3 pb-2">
-        <div class="col-4">
+    <div class="row px-2 pt-3 pb-2">
+        <div class="col-3">
+            Date
+        </div>
+        <div class="col-3">
+            Show
+        </div>
+        <div class="col-2">
+            # of Tables
+        </div>
+        <div class="col-2">
+            Paid
+        </div>
+    </div>
+    <div class="row px-2 pt-3 pb-2">
+        <div class="col-3">
             {{this.month}} {{this.day}}, {{this.year}}
         </div>
-        <div class="col-4">
-            <a href="/show/{{this.id}}">{{this.name}}<br>{{this.city}}, {{this.state}}</a>
+        <div class="col-3">
+            {{this.name}}<br>{{this.city}}, {{this.state}}
         </div>
-        <div class="col-4">
-            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+        <div class="col-2">
+            {{this.number_of_tables}}
+        </div>
+        <div class="col-2">
+            {{#if this.paid}}
+                Yes
+            {{else}}
+                No
+            {{/if}}
+        </div>
+        <div class="col-2">
+            <form action="/edit-rsvp" method="post">
+                <input type="hidden" name="email" value="{{../email}}">
+                <input type="hidden" name="id" value="{{this.id}}">
+                <button type="submit" class="btn btn-warning mx-2 mb-2"><i class="bi bi-pencil"></i></button>
+                <button type="button" class="btn btn-danger mx-2 mb-2" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="bi bi-x-lg"></i></button>
+            </form>
+
         </div>
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content text-secondary">
                 <div class="modal-header">

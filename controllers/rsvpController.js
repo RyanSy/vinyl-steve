@@ -1,5 +1,6 @@
 const Show = require('../models/show');
 const Dealer = require('../models/dealer');
+const helperFunctions = require('../util/helperFunctions');
 const paypalFunctions = require('../util/paypalFunctions');
 
 // save rsvp
@@ -90,24 +91,9 @@ exports.save_rsvp = async (req, res) => {
 };
 
 exports.save_payment = async (req, res) => {
-    console.log(req.body)
     const id = req.body.id;
     const email = req.body.email;
 
-    // const dealer = Dealer.find({ email: email });
-    // const filter = { 'shows.id': id };
-    // const update = { 'paid': true };
-    // await dealer[0].update(filter, update);
-
-
-    // patients.findOneAndUpdate(
-    //     {_id: "5cb939a3ba1d7d693846136c"},
-    //     {$set: {"myArray.$[el].value": 424214 } },
-    //     { 
-    //       arrayFilters: [{ "el.treatment": "beauty" }],
-    //       new: true
-    //     }
-    //   )
     await Show.findOneAndUpdate(
         { _id: id} ,
         { $set: {'dealer_rsvp_list.$[el].paid': true} },
@@ -121,6 +107,74 @@ exports.save_payment = async (req, res) => {
     );
 
     res.redirect('/payment-confirmation');
+}
+
+exports.show_edit_rsvp_page = async (req, res) => {
+    const id = req.body.id;
+    const email = req.body.email;
+    // show info from dealer db
+    const dealer = await Dealer.findOne({ email: email});
+    const dealerShows = dealer.shows;
+    const dealerShow = await dealerShows.find(dealerShow => dealerShow.id === id);
+
+    // show info from show db
+    const show = await Show.findOne({ _id: id });
+    const showObject = helperFunctions.createShowObject(show);
+    const numberOfTablesForRent = show.number_of_tables_for_rent;
+    const maxTablesPerDealer = show.max_tables_per_dealer;
+    let maxTablesAvailable;
+    if (numberOfTablesForRent < maxTablesPerDealer) {
+        maxTablesAvailable = numberOfTablesForRent;
+    } else {
+        maxTablesAvailable = maxTablesPerDealer;
+    }
+    let tablesAvailable = true;
+    if (maxTablesAvailable == 0) {
+        tablesAvailable = false;
+    }
+
+    res.render('edit-rsvp', {
+        email: email,
+        dealerShow: dealerShow,
+        show: showObject,
+        maxTablesAvailable: maxTablesAvailable,
+        tablesAvailable: tablesAvailable
+    });
+}
+
+exports.update_rsvp = async (req, res) => {
+    const id = req.body.id;
+    const email = req.body.email;
+    const oldNumberOfTables = req.body.old_number_of_tables;
+    const numberOfTables = req.body.number_of_tables;
+    const change = oldNumberOfTables - numberOfTables;
+    const notes = req.body.notes;
+    
+    await Show.findOneAndUpdate(
+        { _id: id } ,
+        { 
+            $set: {
+                'dealer_rsvp_list.$[el].number_of_tables': numberOfTables,
+                'dealer_rsvp_list.$[el].notes': notes
+            },
+            $inc: {
+                'number_of_tables_for_rent': change
+            }
+        },
+        { arrayFilters: [ { 'el.email': email }] }
+    );
+
+    await Dealer.findOneAndUpdate(
+        { email: email },
+        { $set: {
+            'shows.$[el].number_of_tables': numberOfTables,
+            'shows.$[el].notes': notes
+            }
+        },
+        { arrayFilters: [{ 'el.id': id }] }
+    );
+
+    res.render('update-confirmation');
 }
 
 exports.delete_rsvp = async (req, res, next) => {

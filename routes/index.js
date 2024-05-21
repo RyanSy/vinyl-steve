@@ -48,6 +48,12 @@ router.get('/already-registered', requiresAuth(), (req, res) =>
 // save dealer rsvp - user
 router.post('/rsvp-confirmation', requiresAuth(), rsvp_controller.save_rsvp);
 
+// render edit rsvp page - user
+router.post('/edit-rsvp/', requiresAuth(), rsvp_controller.show_edit_rsvp_page);
+
+// update rsvp - user
+router.post('/update-rsvp/', requiresAuth(), rsvp_controller.update_rsvp);
+
 // save payment
 router.post('/save-payment', requiresAuth(), rsvp_controller.save_payment);
 

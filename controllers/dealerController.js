@@ -40,12 +40,12 @@ exports.show_dealer_rsvps = async (req, res) => {
     const user = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
     // *** TODO *** find fallbak image
     const userImage = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
-    const userEmail = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
+    const email = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
 
     let message;
     let shows;
 
-    await Dealer.find({ email: userEmail })
+    await Dealer.find({ email: email })
         .then((result) => {
             if (!result[0]) {
                 message = 'You have no shows listed.';
@@ -61,10 +61,11 @@ exports.show_dealer_rsvps = async (req, res) => {
             console.log(err);
             res.render('error');
         });
+    
     const dataObject = {
         user: user,
         userImage: userImage,
-        userEmail: userEmail,
+        email: email,
         shows: shows,
         message: message
     }

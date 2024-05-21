@@ -1,0 +1,79 @@
+{{> navbar}}
+
+<br>
+
+<div class="container-fluid h-auto">
+    <br>
+
+    <div class="d-flex flex-column align-items-center">
+        <h3>Edit RSVP</h3>
+    </div>
+
+    <hr>
+
+    <div class="px-3 pt-3 pb-3">
+        <p>
+            <h4>{{show.name}}</h4>
+        </p>
+
+        <p>
+            {{show.date}} <br>
+            {{show.start}} to {{show.end}}
+        </p>
+
+        <p>
+            {{show.venue}} <br>
+            {{show.address}} <br>
+            {{show.city}}, {{show.state}} {{show.zip}}
+        </p>
+
+        <br>
+
+        <p>
+            {{show.more_information}}
+        </p>
+        
+        <br>
+        <form id="rsvpForm" action="/update-rsvp" method="post">
+            <input type="hidden" name="id" value="{{show.id}}">
+            <input type="hidden" name="email" value="{{email}}">
+            <input type="hidden" name="old_number_of_tables" value="{{dealerShow.number_of_tables}}">
+
+            <label for="number of tables">* Number Of Tables: </label>
+            <div class="form-group col-4 col-md-2 mb-3">
+            {{#if tablesAvailable}}
+                <input class="form-control" type="number" min="0" name="number_of_tables" max="{{maxTablesAvailable}}" value="{{dealerShow.number_of_tables}}" required>
+            {{else}}
+                <input class="form-control" type="number" min="0" name="number_of_tables" max="{{maxTablesAvailable}}" value="{{dealerShow.number_of_tables}}" disabled>
+            {{/if}}
+                <div class="form-text text-white">* Required - Max: {{maxTablesAvailable}}</div>
+            </div>
+
+            <div class="form-group col-lg-6 mb-3">
+                <label for="notes">Notes (Special requests, etc.)</label>
+                <textarea class="form-control mb-3" name="notes" rows="3" cols="30" placeholder="I need a table, etc.">{{dealerShow.notes}}</textarea>
+                <div class="form-text text-white">Please note, special requests cannot be guaranteed.</div>
+            </div>
+
+            <input id="paidInput" type="hidden" name="paid" value="false">
+
+            <div class="form-group mb-3">
+                <button id="rsvpFormSubmitButton" type="submit" class="btn btn-primary">Save RSVP</button>
+            </div>
+        </form>
+
+        <br>
+
+        <div class="container my-3">
+            <p>
+                * Please note - rent will be collected around 2 PM at the show.
+            </p>
+
+            <p>
+                Additionally, all reservations are subject to approval by Record Riots. If you don't hear from us within
+                48 hours of making your reservation, you are CONFIRMED. At that point there's NO NEED to reach out to
+                confirm verbally with Steve or anyone else. Thanks for supporting Record Riots!
+            </p>
+        </div>
+    </div>
+</div>

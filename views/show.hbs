@@ -1,15 +1,21 @@
 {{> navbar}}
 
+<hr>
+
 <div class="container-fluid h-auto">
     <div class="px-3 pt-3 pb-3">
         <p>
         <h3>{{show.name}}</h3>
         </p>
 
+        <br>
+
         <p>
             {{show.date}}<br>
             {{show.start}} to {{show.end}}
         </p>
+
+        <br>
 
         <p>
             {{show.venue}} <br>
@@ -17,12 +23,18 @@
             {{show.city}}, {{show.state}} {{show.zip}}
         </p>
 
+        <br>
+
         <p>
             {{show.more_information}}
         </p>
+        
+        <br>
 
         <hr>
-        
+
+        <br>
+
         {{#if tablesAvailable}}
         <form id="rsvpForm" action="/rsvp-confirmation" method="post">
             <input id="showId" type="hidden" name="id" value="{{show.id}}">
