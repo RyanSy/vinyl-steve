@@ -31,6 +31,10 @@
         
         <br>
 
+        <p>
+            Table Rent: ${{show.table_rent}}
+        </p>
+
         <hr>
 
         <br>
@@ -45,6 +49,7 @@
             <input id="showMonth" type="hidden" name="month" value="{{show.month}}">
             <input id="showDay" type="hidden" name="day" value="{{show.day}}">
             <input id="showYear" type="hidden" name="year" value="{{show.year}}">
+            <input type="hidden" name="table_rent" value="{{show.table_rent}}">
             <input id="showUser" type="hidden" name="user" value="{{user}}">
             <input id="showEmail" type="hidden" name="email" value="{{userEmail}}">
             <input id="showNumberOfTablesForRent" type="hidden" name="number_of_tables_for_rent"
@@ -79,7 +84,7 @@
             <form action="/waitlist" method="post">
                 <input type="hidden" name="email" value="{{userEmail}}">
                 <input type="hidden" name="id" value="{{show.id}}">
-                <button type="submit" class="btn btn-success">Get On Waiting List</button>
+                <button type="submit" class="btn btn-primary">Get On Waiting List</button>
             </form>
         </p>
         {{/if}}
@@ -88,7 +93,7 @@
 
         <div class="container my-3">
             <p>
-                * Please note - rent will be collected around 2 PM at the show.
+                * Please note - outstanding table rent will be collected around 2 PM at the show.
             </p>
 
             <p>

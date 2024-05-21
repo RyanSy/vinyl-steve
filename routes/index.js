@@ -4,7 +4,7 @@ const { requiresAuth } = require('express-openid-connect');
 const show_controller = require('../controllers/showController');
 const dealer_controller = require('../controllers/dealerController');
 const rsvp_controller = require('../controllers/rsvpController');
-const admin_controller = require('../controllers/adminController');
+const payment_controller = require('../controllers/paymentController');
 
 // render index, redirect to home page if logged in
 router.get('/', (req, res) => {
@@ -54,23 +54,26 @@ router.post('/edit-rsvp/', requiresAuth(), rsvp_controller.show_edit_rsvp_page);
 // update rsvp - user
 router.post('/update-rsvp/', requiresAuth(), rsvp_controller.update_rsvp);
 
-// save payment
-router.post('/save-payment', requiresAuth(), rsvp_controller.save_payment);
+// save dealer to waitlist
+router.post('/waitlist', requiresAuth(), dealer_controller.save_dealer_to_waitlist);
 
-//payment confirmation
+// save payment
+router.post('/save-payment', requiresAuth(), payment_controller.save_payment);
+
+// payment confirmation
 router.get('/payment-confirmation', requiresAuth(), (req, res) => 
     { res.render('payment-confirmation');
 });
 
-// save dealer to waitlist
-router.post('/waitlist', requiresAuth(), dealer_controller.save_dealer_to_waitlist);
+// payment error
+router.get('/payment-error', requiresAuth(), (req, res) => {
+    res.render('payment-unsuccessful');
+});
 
 // paypal payment routes
-router.post('/api/orders', requiresAuth(), rsvp_controller.create_order);
-router.post('/api/orders/:orderID/capture', requiresAuth(), rsvp_controller.on_approve);
-router.get('/payment-error', requiresAuth(), (req, res) => {
-    res.send('payment error');
-});
+router.post('/api/orders', requiresAuth(), payment_controller.create_order);
+router.post('/api/orders/:orderID/capture', requiresAuth(), payment_controller.on_approve);
+
 
 // get user profile info
 router.get('/profile', requiresAuth(), (req, res) => {

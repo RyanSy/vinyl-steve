@@ -7,20 +7,21 @@
         </p>
 
         <p>
-            <a class="btn btn-success" href="/my-rsvps">Go to your RSVPs</a><br>
+            <a class="btn btn-primary" href="/my-rsvps">Go to your RSVPs</a><br>
         </p>
 
         <p>
-            <a class="btn btn-success" href="/home">Return to list of shows</a>
+            <a class="btn btn-primary" href="/home">Return to list of shows</a>
         </p>
 
         <div class="form-group mb-3">
-            Choose a payment method below to pre-pay your table fees:
+            Choose a payment method below to pre-pay your table fees ($5 convenience fee will be applied):
         </div>
 
         <form id="savePaymentForm" action="/save-payment" method="post">
             <input type="hidden" name="email" value="{{email}}">
             <input type="hidden" name="id" value="{{id}}">
+            <input type="hidden" name="rent_due" value="{{rentDue}}">
         </form>
 
         <div class="form-group text-center mb-3">
@@ -35,7 +36,8 @@
 <script>
     let cart = {
         id: '{{id}}',
-        paid: true
+        paid: true,
+        rentDue: {{rentDue}}
     };
 
     // after successful payment, submit save payment form

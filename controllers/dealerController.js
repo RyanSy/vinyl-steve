@@ -67,7 +67,8 @@ exports.show_dealer_rsvps = async (req, res) => {
         userImage: userImage,
         email: email,
         shows: shows,
-        message: message
+        message: message,
+        paypalClientId: process.env.PAYPAL_CLIENT_ID
     }
     res.render('my-rsvps', dataObject);
 }

@@ -48,7 +48,7 @@ exports.createOrder = async (cart) => {
             {
                 amount: {
                     currency_code: 'USD',
-                    value: '100.00',
+                    value: cart[0].rentDue,
                 },
             },
         ],

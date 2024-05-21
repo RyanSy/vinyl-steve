@@ -1,7 +1,6 @@
 const Show = require('../models/show');
 const Dealer = require('../models/dealer');
 const helperFunctions = require('../util/helperFunctions');
-const paypalFunctions = require('../util/paypalFunctions');
 
 // save rsvp
 exports.save_rsvp = async (req, res) => {
@@ -18,12 +17,16 @@ exports.save_rsvp = async (req, res) => {
     const showMonth = req.body.month;
     const showDay = req.body.day;
     const showYear = req.body.year;
+    const tableRent = req.body.table_rent;
     const numberOfTablesForRent = req.body.number_of_tables_for_rent;
     const dealerName = req.body.user;
     const numberOfTables = req.body.number_of_tables;
     const dealerNotes = req.body.notes;
     const paid = req.body.paid;
     const newNumberOfTablesForRent = numberOfTablesForRent - numberOfTables;
+
+    const rentDue = numberOfTables * tableRent;
+
     const show = await Show.find({ _id: showId });
 
     // if dealer rsvp list contains user, dont save and inform user
@@ -39,7 +42,8 @@ exports.save_rsvp = async (req, res) => {
         email: userEmail,
         number_of_tables: numberOfTables,
         notes: dealerNotes,
-        paid: paid
+        paid: paid,
+        rent_due: rentDue
     };
     show[0].number_of_tables_for_rent = newNumberOfTablesForRent;
     show[0].dealer_rsvp_list.addToSet(dealerRsvp);
@@ -62,7 +66,8 @@ exports.save_rsvp = async (req, res) => {
             year: showYear,
             number_of_tables: numberOfTables,
             notes: dealerNotes,
-            paid: paid
+            paid: paid,
+            rent_due: rentDue
         }
     } };
 
@@ -84,30 +89,12 @@ exports.save_rsvp = async (req, res) => {
         id: showId,
         name: showName,
         date: showDate,
-        paypalClientId: process.env.PAYPAL_CLIENT_ID
+        paypalClientId: process.env.PAYPAL_CLIENT_ID,
+        rentDue: rentDue
     };
 
     res.render('rsvp-confirmation', dataObject);
 };
-
-exports.save_payment = async (req, res) => {
-    const id = req.body.id;
-    const email = req.body.email;
-
-    await Show.findOneAndUpdate(
-        { _id: id} ,
-        { $set: {'dealer_rsvp_list.$[el].paid': true} },
-        { arrayFilters: [ { 'el.email': email }] }
-    );
-
-    await Dealer.findOneAndUpdate(
-        { email: email },
-        { $set: {'shows.$[el].paid': true } },
-        { arrayFilters: [{ 'el.id': id }] }
-    );
-
-    res.redirect('/payment-confirmation');
-}
 
 exports.show_edit_rsvp_page = async (req, res) => {
     const id = req.body.id;
@@ -144,18 +131,21 @@ exports.show_edit_rsvp_page = async (req, res) => {
 
 exports.update_rsvp = async (req, res) => {
     const id = req.body.id;
+    const tableRent = req.body.table_rent
     const email = req.body.email;
     const oldNumberOfTables = req.body.old_number_of_tables;
     const numberOfTables = req.body.number_of_tables;
     const change = oldNumberOfTables - numberOfTables;
     const notes = req.body.notes;
+    const rentDue = tableRent * numberOfTables;
     
     await Show.findOneAndUpdate(
         { _id: id } ,
         { 
             $set: {
                 'dealer_rsvp_list.$[el].number_of_tables': numberOfTables,
-                'dealer_rsvp_list.$[el].notes': notes
+                'dealer_rsvp_list.$[el].notes': notes,
+                'dealer_rsvp_list.$[el].rent_due': rentDue
             },
             $inc: {
                 'number_of_tables_for_rent': change
@@ -168,7 +158,8 @@ exports.update_rsvp = async (req, res) => {
         { email: email },
         { $set: {
             'shows.$[el].number_of_tables': numberOfTables,
-            'shows.$[el].notes': notes
+            'shows.$[el].notes': notes,
+            'shows.$[el].rent_due': rentDue
             }
         },
         { arrayFilters: [{ 'el.id': id }] }
@@ -217,27 +208,3 @@ exports.delete_rsvp = async (req, res, next) => {
 
     next();
 }
-
-// paypal routes
-exports.create_order = async (req, res) => {
-    try {
-        // use the cart information passed from the front-end to calculate the order amount detals
-        const { cart } = req.body;
-        const { jsonResponse, httpStatusCode } = await paypalFunctions.createOrder(cart);
-        res.status(httpStatusCode).json(jsonResponse);
-    } catch (error) {
-        console.error('Failed to create order:', error);
-        res.status(500).json({ error: 'Failed to create order.' });
-    }
-};
-
-exports.on_approve = async (req, res) => {
-    try {
-        const { orderID } = req.params;
-        const { jsonResponse, httpStatusCode } = await paypalFunctions.captureOrder(orderID);
-        res.status(httpStatusCode).json(jsonResponse);
-    } catch (error) {
-        console.error('Failed to create order:', error);
-        res.status(500).json({ error: 'Failed to capture order.' });
-    }
-};

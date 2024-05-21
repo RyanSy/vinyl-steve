@@ -36,6 +36,7 @@
         <br>
         <form id="rsvpForm" action="/update-rsvp" method="post">
             <input type="hidden" name="id" value="{{show.id}}">
+            <input type="hidden" name="table_rent" value="{{show.table_rent}}">
             <input type="hidden" name="email" value="{{email}}">
             <input type="hidden" name="old_number_of_tables" value="{{dealerShow.number_of_tables}}">
 
@@ -66,7 +67,7 @@
 
         <div class="container my-3">
             <p>
-                * Please note - rent will be collected around 2 PM at the show.
+                * Please note - outstanding table rent will be collected around 2 PM at the show.
             </p>
 
             <p>
