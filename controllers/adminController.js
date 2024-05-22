@@ -21,6 +21,10 @@ exports.render_admin_dashboard = async (req, res) => {
             { date: { $gte: todaysDate } },
             { $or: [{ name: /record riot/i }, { name: /ryan record show/i }] },
         ],
+    })
+    .catch((err) => { 
+        console.log(err);
+        res.render('error');
     });
     const showsArray = helper_functions.createShowsArray(shows);
     const showsArraySorted = helper_functions.sortByDateStart(showsArray);
@@ -77,8 +81,8 @@ exports.render_rsvp_list = async (req, res) => {
             }
         })
         .catch((err) => {
-            console.log('error:', err)
-            res.send('error')
+            console.log(err);
+            res.render('error');
         });
 }
 
@@ -91,7 +95,11 @@ exports.add_dealer_rsvp = async (req, res) => {
     const newNumberOfTablesForRent = numberOfTablesForRent - numberOfTables;
 
     // save rsvp to shows db
-    const show = await Show.find({ _id: id });
+    const show = await Show.find({ _id: id })
+        .catch((err) => { 
+            console.log(err);
+            res.render('error');
+        });
     const dealerRsvp = {
         name: name,
         number_of_tables: numberOfTables
@@ -143,6 +151,7 @@ exports.delete_dealer_rsvp = async (req, res) => {
     } };
     await Dealer.updateOne(dealerFilter, dealerUpdate)
         .catch((err) => {
+            console.log(err);
             res.render('error');    
         });
     
@@ -151,7 +160,10 @@ exports.delete_dealer_rsvp = async (req, res) => {
 
 // render print view
 exports.render_rsvp_print_view = async (req, res) => {
-    const show = await Show.find({ _id: req.params.id });
+    const show = await Show.find({ _id: req.params.id })
+        .catch(() => { 
+            res.render('error');
+        });
     const showObject = helper_functions.createShowObject(show[0]);
     const showId = req.params.id;
     const showName = showObject.name;
@@ -176,7 +188,11 @@ exports.render_rsvp_print_view = async (req, res) => {
 
 // render waiting list 
 exports.render_waiting_list = async (req, res) => {
-    const show = await Show.find({ _id: req.params.id });
+    const show = await Show.find({ _id: req.params.id })
+        .catch((err) => { 
+            console.log(err);
+            res.render('error');
+        });
     const dataObject = {    
         show: show[0]
     };

@@ -18,6 +18,10 @@ exports.list_shows = async (req, res) => {
             { $or: [{ name: /record riot/i }, { name: /ryan record show/i }] },
             { rsvp: true }
         ],
+    })
+    .catch((err) => {
+        console.log(err);
+        res.render('error');
     });
     const showsArray = helper_functions.createShowsArray(shows);
     const showsArraySorted = helper_functions.sortByDateStart(showsArray);
@@ -29,7 +33,6 @@ exports.list_shows = async (req, res) => {
         isLoggedIn: true
     };
 
-    const dealer = await Dealer.find({ email: userEmail });
     res.render('shows', dataObject);
 };
 
@@ -41,7 +44,11 @@ exports.list_show = async (req, res) => {
     const userEmail = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
     const paypalClientId = process.env.PAYPAL_CLIENT_ID;
 
-    const show = await Show.find({ _id: req.params.id });
+    const show = await Show.find({ _id: req.params.id })
+        .catch((err) => {
+            console.log(err);
+            res.render('error');
+        });
     const showObject = helper_functions.createShowObject(show[0]);
     const numberOfTablesForRent = showObject.number_of_tables_for_rent;
     const maxTablesPerDealer = showObject.max_tables_per_dealer;

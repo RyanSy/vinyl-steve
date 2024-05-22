@@ -1,5 +1,6 @@
 require('dotenv').config();
 
+const compression = require('compression');
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
@@ -28,15 +29,14 @@ const config = {
 // db setup
 mongoose
     .connect(process.env.MONGODB_URI)
-    .then(() => console.log('MongoDB Connected!'))
-    .catch((err) => console.log('error'));
-
+    .catch((err) => console.log('error connecting to MongoDB', err));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 hbs.registerPartials(__dirname + '/views/partials/');
 
+app.use(compression());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -66,5 +66,4 @@ app.use(function (err, req, res, next) {
     res.render('error');
 });
 
-console.log(auth)
 module.exports = app;

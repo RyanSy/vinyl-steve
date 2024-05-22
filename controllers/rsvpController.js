@@ -27,7 +27,11 @@ exports.save_rsvp = async (req, res) => {
 
     const rentDue = numberOfTables * tableRent;
 
-    const show = await Show.find({ _id: showId });
+    const show = await Show.find({ _id: showId })
+        .catch((err) => {
+            console.log(err);
+            res.render('error');
+        });
 
     // if dealer rsvp list contains user, dont save and inform user
     const containsDealer = show[0].dealer_rsvp_list.some((user) => user.name === dealerName);
@@ -100,12 +104,24 @@ exports.show_edit_rsvp_page = async (req, res) => {
     const id = req.body.id;
     const email = req.body.email;
     // show info from dealer db
-    const dealer = await Dealer.findOne({ email: email});
+    const dealer = await Dealer.findOne({ email: email})
+        .catch((err) => {
+            console.log(err);
+            res.render('error');
+        });
     const dealerShows = dealer.shows;
-    const dealerShow = await dealerShows.find(dealerShow => dealerShow.id === id);
+    const dealerShow = await dealerShows.find(dealerShow => dealerShow.id === id)
+        .catch((err) => {
+            console.log(err);
+            res.render('error');
+        });
 
     // show info from show db
-    const show = await Show.findOne({ _id: id });
+    const show = await Show.findOne({ _id: id })
+        .catch((err) => {
+            console.log(err);
+            res.render('error');
+        });
     const showObject = helperFunctions.createShowObject(show);
     const numberOfTablesForRent = show.number_of_tables_for_rent;
     const maxTablesPerDealer = show.max_tables_per_dealer;
@@ -152,7 +168,11 @@ exports.update_rsvp = async (req, res) => {
             }
         },
         { arrayFilters: [ { 'el.email': email }] }
-    );
+    )
+    .catch((err) => {
+        console.log(err);
+        res.render('error');
+    });
 
     await Dealer.findOneAndUpdate(
         { email: email },
@@ -163,7 +183,11 @@ exports.update_rsvp = async (req, res) => {
             }
         },
         { arrayFilters: [{ 'el.id': id }] }
-    );
+    )
+    .catch((err) => {
+        console.log(err);
+        res.render('error');
+    });
 
     res.render('update-confirmation');
 }
@@ -188,6 +212,7 @@ exports.delete_rsvp = async (req, res, next) => {
     } }
     await Show.updateOne(showFilter, showUpdate)
         .catch((err) => {
+            console.log(err);
             res.render('error');    
         });
 
@@ -203,6 +228,7 @@ exports.delete_rsvp = async (req, res, next) => {
     } };
     await Dealer.updateOne(dealerFilter, dealerUpdate)
         .catch((err) => {
+            console.log(err);
             res.render('error');    
         });
 

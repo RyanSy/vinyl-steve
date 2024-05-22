@@ -10,13 +10,21 @@ exports.save_payment = async (req, res) => {
         { _id: id} ,
         { $set: {'dealer_rsvp_list.$[el].paid': true} },
         { arrayFilters: [ { 'el.email': email }] }
-    );
+    )
+    .catch((err) => {
+        console.log(err);
+        res.render('error');
+    });
 
     await Dealer.findOneAndUpdate(
         { email: email },
         { $set: {'shows.$[el].paid': true } },
         { arrayFilters: [{ 'el.id': id }] }
-    );
+    )
+    .catch((err) => {
+        console.log(err);
+        res.render('error');
+    });
 
     res.redirect('/payment-confirmation');
 }

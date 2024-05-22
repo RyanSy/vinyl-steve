@@ -31,7 +31,11 @@ exports.check_if_dealer_exists = async (req, res, next) => {
 exports.save_dealer_info = async (req, res, next) => {
     const dealerInfo = req.body;
     const newDealer = new Dealer(dealerInfo);
-    await newDealer.save();
+    await newDealer.save()
+        .catch((err) => {
+            console.log(err);
+            res.render('error');
+        });
     res.redirect('/home');
 }
 
@@ -126,7 +130,11 @@ exports.delete_rsvp = async (req, res, next) => {
 
 // save dealer to waitlist
 exports.save_dealer_to_waitlist = async (req, res) => {
-    const show = await Show.find({ _id: req.body.id });
+    const show = await Show.find({ _id: req.body.id })
+        .catch((err) => {
+            console.log(err);
+            res.render('error');
+        });
     show[0].waiting_list.addToSet({ email: req.body.email });
     show[0].save();
     res.render('waitlist-confirmation');
