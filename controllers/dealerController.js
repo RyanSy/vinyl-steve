@@ -130,11 +130,7 @@ exports.delete_rsvp = async (req, res, next) => {
 
 // save dealer to waitlist
 exports.save_dealer_to_waitlist = async (req, res) => {
-    const show = await Show.find({ _id: req.body.id })
-        .catch((err) => {
-            console.log(err);
-            res.render('error');
-        });
+    const show = await Show.find({ _id: req.body.id });
     show[0].waiting_list.addToSet({ email: req.body.email });
     show[0].save();
     res.render('waitlist-confirmation');
