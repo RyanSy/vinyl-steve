@@ -19,7 +19,7 @@ exports.save_rsvp = async (req, res) => {
     const showYear = req.body.year;
     const tableRent = req.body.table_rent;
     const numberOfTablesForRent = req.body.number_of_tables_for_rent;
-    const dealerName = req.body.user;
+    const dealerName = req.session.name;
     const numberOfTables = req.body.number_of_tables;
     const dealerNotes = req.body.notes;
     const paid = req.body.paid;

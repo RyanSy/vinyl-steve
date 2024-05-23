@@ -35,10 +35,10 @@ exports.render_admin_dashboard = async (req, res) => {
 
 // render rsvp list
 exports.render_rsvp_list = async (req, res) => {
-    const name = req.session.name;
+    const name = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
     // *** TODO *** find fallbak image
-    const userImage = req.session.image;
-    const userEmail = req.session.email;
+    const image = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
+    const email  = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
 
     let isAdmin = false;
 
@@ -62,8 +62,7 @@ exports.render_rsvp_list = async (req, res) => {
                 const paid = showObject.paid;
                 const dataObject = {
                     name: name,
-                    userImage: userImage,
-                    userEmail: userEmail,
+                    image: image,
                     showId: showId,
                     showName: showName,
                     showDate: showDate,
@@ -110,6 +109,7 @@ exports.add_dealer_rsvp = async (req, res) => {
 exports.delete_dealer_rsvp = async (req, res) => {
     const id = req.body.id;
     const name = req.body.name;
+    const email = req.body.email;
     const numberOfTablesForRent = req.body.number_of_tables_for_rent;
     const numberOfTables = req.body.number_of_tables;
     const newNumberOfTablesForRent = Number(numberOfTablesForRent ) + Number(numberOfTables);
@@ -121,8 +121,7 @@ exports.delete_dealer_rsvp = async (req, res) => {
     const showUpdate = { 
         $pull: {
             dealer_rsvp_list: {
-                name: name
-            // email: userEmail
+                email: email
             }
         },
         number_of_tables_for_rent: newNumberOfTablesForRent
@@ -135,7 +134,7 @@ exports.delete_dealer_rsvp = async (req, res) => {
 
     // update dealer db
     const dealerFilter = { 
-        name: name
+        email: email
     };
     const dealerUpdate = { $pull: {
         shows: {
@@ -178,8 +177,16 @@ exports.render_rsvp_print_view = async (req, res) => {
 
 // render waiting list 
 exports.render_waiting_list = async (req, res) => {
+    const name = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
+    // *** TODO *** find fallbak image
+    const image = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
+    const email  = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
+
     const show = await Show.find({ _id: req.params.id });
-    const dataObject = {    
+    const dataObject = {
+        name: name,
+        image: image,
+        email: email,    
         show: show[0]
     };
     

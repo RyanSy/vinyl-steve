@@ -98,6 +98,7 @@
                             <form action="/admin/delete-rsvp" method="post">
                                 <input type="hidden" name="id" value="{{../showId}}">
                                 <input type="hidden" name="name" value="{{this.name}}">
+                                <input type="hidden" name="email" value="{{this.email}}">
                                 <input type="hidden" name="number_of_tables_for_rent" value="{{../numberOfTablesForRent}}">
                                 <input type="hidden" name="number_of_tables" value="{{this.number_of_tables}}">
                                 <button type="submit" class="btn btn-danger">Delete</button>
