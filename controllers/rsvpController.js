@@ -30,7 +30,7 @@ exports.save_rsvp = async (req, res) => {
     const show = await Show.find({ _id: showId });
 
     // if dealer rsvp list contains user, dont save and inform user
-    const containsDealer = show[0].dealer_rsvp_list.some((user) => user.name === dealerName);
+    const containsDealer = show[0].dealer_rsvp_list.some((user) => user.email === req.session.email);
     if (containsDealer) {
         res.redirect('/already-registered');
         return;
