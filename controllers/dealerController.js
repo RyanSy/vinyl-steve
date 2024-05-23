@@ -3,21 +3,28 @@ const Dealer = require('../models/dealer');
 
 // check if dealer exists, if so, list shows, if not prompt for info
 exports.check_if_dealer_exists = async (req, res, next) => {
-    const user = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
+    const name = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
     // *** TODO *** find fallbak image
-    const userImage = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
-    const userEmail = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
+    const image = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
+    const email = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
 
     const filter = { 
-        email: userEmail 
+        email: email 
     };
 
-    await Dealer.find(filter)
+    await Dealer.findOne(filter)
         .then((result) => {
-            if (result.length > 0) {
+            if (result) {
+                req.session.name = result.name;
+                req.session.email = result.email;
+                req.session.image = result.image;
                 next();
             } else {
-                const userInfo = filter;
+                const userInfo = {
+                    name: name,
+                    image: image,
+                    email: email
+                };
                 res.render('signup-form', userInfo);
             }
         })
@@ -30,6 +37,9 @@ exports.check_if_dealer_exists = async (req, res, next) => {
 // save dealer info
 exports.save_dealer_info = async (req, res, next) => {
     const dealerInfo = req.body;
+    req.session.name = req.body.name;
+    req.session.email = req.body.email;
+    req.session.image = req.body.image;
     const newDealer = new Dealer(dealerInfo);
     await newDealer.save()
         .catch((err) => {
@@ -41,10 +51,10 @@ exports.save_dealer_info = async (req, res, next) => {
 
 // show dealer rsvps - dealer view
 exports.show_dealer_rsvps = async (req, res) => {
-    const user = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
+    const name = req.session.name;
     // *** TODO *** find fallbak image
-    const userImage = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
-    const email = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
+    const image = req.session.image;
+    const email = req.session.email;
 
     let message;
     let shows;
@@ -67,8 +77,8 @@ exports.show_dealer_rsvps = async (req, res) => {
         });
     
     const dataObject = {
-        user: user,
-        userImage: userImage,
+        name: name,
+        image: image,
         email: email,
         shows: shows,
         message: message,
@@ -77,13 +87,11 @@ exports.show_dealer_rsvps = async (req, res) => {
     res.render('my-rsvps', dataObject);
 }
 
+// delete rsvp - dealer
 exports.delete_rsvp = async (req, res, next) => {
-    const user = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
-    // *** TODO *** find fallbak image
-    const userImage = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
-    const userEmail = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
+    const name = req.session.name;
+    const email = req.session.email;
     const showId = req.body.show_id;
-    const name = req.body.name;
     const numberOfTables = Number(req.body.number_of_tables);
 
     // update show collection
@@ -93,8 +101,7 @@ exports.delete_rsvp = async (req, res, next) => {
     const showUpdate = { 
         $pull: {
             dealer_rsvp_list: {
-                name: name
-                // email: userEmail
+                email: email
             }
         },
         $inc: {
@@ -110,8 +117,7 @@ exports.delete_rsvp = async (req, res, next) => {
 
     // update dealer collection
     const dealerFilter = { 
-        name: name
-        // email: userEmail 
+        email: email 
     };
     const dealerUpdate = { $pull: {
         shows: {

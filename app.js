@@ -8,6 +8,8 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 const hbs = require('hbs');
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
 // const favicon = require('serve-favicon');
 
 const indexRouter = require('./routes/index');
@@ -30,6 +32,12 @@ const config = {
 mongoose
     .connect(process.env.MONGODB_URI)
     .catch((err) => console.log('error connecting to MongoDB', err));
+
+// session setup
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI })
+}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

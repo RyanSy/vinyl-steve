@@ -6,14 +6,14 @@ const helper_functions = require('../util/helperFunctions');
 
 // render admin dashboard
 exports.render_admin_dashboard = async (req, res) => {
-    const user = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
+    const name = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
     // *** TODO *** find fallbak image
-    const userImage = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
-    const userEmail = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
+    const image = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
+    const email  = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
 
     let isAdmin = false;
 
-    if (req.oidc.user.email == 'clubmekon@gmail.com' || req.oidc.user.email == 'recordriots@gmail.com' || req.oidc.user.email == 'recordshowmania@gmail.com') {
+    if (email == 'clubmekon@gmail.com' || email == 'recordriots@gmail.com' || email == 'recordshowmania@gmail.com') {
         isAdmin = true;
     }
     const shows = await Show.find({
@@ -25,8 +25,8 @@ exports.render_admin_dashboard = async (req, res) => {
     const showsArray = helper_functions.createShowsArray(shows);
     const showsArraySorted = helper_functions.sortByDateStart(showsArray);
     const dataObject = {
-        user: user,
-        userImage: userImage,
+        name: name,
+        image: image,
         shows: showsArraySorted,
         isAdmin: isAdmin,
     };
@@ -35,10 +35,10 @@ exports.render_admin_dashboard = async (req, res) => {
 
 // render rsvp list
 exports.render_rsvp_list = async (req, res) => {
-    const user = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
+    const name = req.session.name;
     // *** TODO *** find fallbak image
-    const userImage = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
-    const userEmail = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
+    const userImage = req.session.image;
+    const userEmail = req.session.email;
 
     let isAdmin = false;
 
@@ -61,7 +61,7 @@ exports.render_rsvp_list = async (req, res) => {
                 const maxTablesPerDealer = showObject.max_tables_per_dealer;
                 const paid = showObject.paid;
                 const dataObject = {
-                    user: user,
+                    name: name,
                     userImage: userImage,
                     userEmail: userEmail,
                     showId: showId,

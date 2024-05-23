@@ -77,7 +77,7 @@ router.post('/api/orders/:orderID/capture', requiresAuth(), payment_controller.o
 
 // get user profile info
 router.get('/profile', requiresAuth(), (req, res) => {
-    res.send(JSON.stringify(req.oidc.user));
+    res.send(gify(req.oidc.user));
 });
 
 // get user privacy policy page

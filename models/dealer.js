@@ -6,6 +6,7 @@ const dealerSchema = new Schema(
   {
     name: {type: String, required: true, max: 50},
     email: {type: String},
+    image: {type: String},
     address: {type: String},
     city: {type: String},
     state: {type: String},

@@ -8,24 +8,34 @@
             <div class="flex-shrink-0 dropdown">
                 <a href="#" class="d-block link-body-emphasis text-decoration-none" data-bs-toggle="dropdown"
                     aria-expanded="false">
-                    <img src="{{userImage}}" alt="Me" width="32" height="32" class="rounded-circle">
+                    <img src="{{image}}" alt="Me" width="32" height="32" class="rounded-circle">
                 </a>
                 <ul class="dropdown-menu text-small shadow">
                     {{#if isAdmin}}
                     <li>
-                        <span class="dropdown-item">Admin</span>
+                        <span class="dropdown-item">{{name}} - Admin</span>
                     </li>
                     {{else}}
+                    <li>
+                        <span class="dropdown-item">Logged in as: {{name}}</span>
+                    </li>
+
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+
                     <li>
                         <a class="dropdown-item icon-link icon-link-hover" href="/my-rsvps">My RSVPs</a>
                     </li>
                     {{/if}}
-                
-                    
+
                     <li>
                         <hr class="dropdown-divider">
                     </li>
-                    <li><a class="dropdown-item" href="/logout">Log Out</a></li>
+
+                    <li>
+                        <a class="dropdown-item" href="/logout">Log Out</a>
+                    </li>
                 </ul>
             </div>
         </div>

@@ -4,10 +4,10 @@ const helperFunctions = require('../util/helperFunctions');
 
 // save rsvp
 exports.save_rsvp = async (req, res) => {
-    const user = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
+    const user = req.session.name;
     // *** TODO *** find fallbak image
-    const userImage = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
-    const userEmail = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
+    const userImage = req.session.image;
+    const userEmail = req.session.email;
 
     const showId = req.body.id;
     const showName = req.body.name;
@@ -83,8 +83,8 @@ exports.save_rsvp = async (req, res) => {
 
     // data for confirmation message
     const dataObject = {
-        user: user,
-        userImage: userImage,
+        name: user,
+        image: userImage,
         email: userEmail,
         id: showId,
         name: showName,
@@ -121,6 +121,8 @@ exports.show_edit_rsvp_page = async (req, res) => {
     }
 
     res.render('edit-rsvp', {
+        name: req.session.name,
+        image: req.session.image,
         email: email,
         dealerShow: dealerShow,
         show: showObject,
@@ -173,48 +175,8 @@ exports.update_rsvp = async (req, res) => {
         res.render('error');
     });
 
-    res.render('update-confirmation');
-}
-
-exports.delete_rsvp = async (req, res, next) => {
-    const user = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
-    // *** TODO *** find fallbak image
-    const userImage = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
-    const userEmail = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
-    const showId = req.body.show_id;
-    const userName = req.body.name;
-
-    // update show collection
-    const showFilter = {
-        _id: showId
-    };
-    const showUpdate = { $pull: {
-        dealer_rsvp_list: {
-            name: userName
-            // email: userEmail
-        }
-    } }
-    await Show.updateOne(showFilter, showUpdate)
-        .catch((err) => {
-            console.log(err);
-            res.render('error');    
-        });
-
-    // update dealer collection
-    const dealerFilter = { 
-        name: userName,
-        email: userEmail 
-    };
-    const dealerUpdate = { $pull: {
-        shows: {
-            id: showId
-        }
-    } };
-    await Dealer.updateOne(dealerFilter, dealerUpdate)
-        .catch((err) => {
-            console.log(err);
-            res.render('error');    
-        });
-
-    next();
+    res.render('update-confirmation', {
+        name: req.session.name,
+        image: req.session.image
+    });
 }

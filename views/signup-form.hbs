@@ -4,51 +4,55 @@
     <hr>
 
     <form class="mb-3" action="/save-dealer-info" method="post">
-         <input type="hidden" name="email" value="{{email}}">
+        <input type="hidden" name="image" value="{{image}}">
+        <label for="name">Email</label>
+        <div class="form-group mb-3">
+            <input type="text" name="email" value="{{email}}" readonly>
+        </div>
 
         <label for="name">Name</label>
         <div class="form-group mb-3">
-            <input type="text" name="name" id="">
+            <input type="text" name="name" value="{{name}}">
         </div>
 
         <label for="name">Address</label>
         <div class="form-group mb-3">
-            <input type="text" name="address" id="">
+            <input type="text" name="address">
         </div>
 
         <label for="name">City</label>
         <div class="form-group mb-3">
-            <input type="text" name="city" id="">
+            <input type="text" name="city">
         </div>
 
         <label for="name">State</label>
         <div class="form-group mb-3">
-            <input type="text" name="state" id="">
+            <input type="text" name="state">
         </div>
 
         <label for="name">Zip</label>
         <div class="form-group mb-3">
-            <input type="text" name="zip" id="">
+            <input type="text" name="zip">
         </div>
 
         <label for="name">Phone</label>
         <div class="form-group mb-3">
-            <input type="text" name="phone" id="">
+            <input type="text" name="phone">
         </div>
 
         <label for="name">Social Media Accounts</label>
         <div class="form-group mb-3">
-            <textarea name="socialmedia" id="" cols="30" rows="10"></textarea> 
+            <textarea name="socialmedia" cols="30" rows="10"></textarea> 
         </div>
         
         <label for="name">Website</label>
         <div class="form-group mb-3">
-            <input type="text" name="website" id="">
+            <input type="text" name="website">
         </div>
         
         <label for="name">Can you help us promote Record Riots? Please explain.</label>
         <div class="form-group mb-3">
-            <textarea name="help" id="" cols="30" rows="10"></textarea> 
+            <textarea name="help" cols="30" rows="10"></textarea> 
         </div>
 
         <div class="form-group mb-3">
