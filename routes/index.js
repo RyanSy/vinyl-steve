@@ -76,13 +76,16 @@ router.post('/api/orders/:orderID/capture', requiresAuth(), payment_controller.o
 
 
 // get user profile info
-router.get('/profile', requiresAuth(), (req, res) => {
-    res.send(gify(req.oidc.user));
-});
+// router.get('/profile', requiresAuth(), (req, res) => {
+//     res.send(gify(req.oidc.user));
+// });
 
 // get user privacy policy page
 router.get('/privacy-policy', (req, res) => {
-    res.render('privacy-policy');
+    res.render('privacy-policy', {
+        name: req.session.name,
+        image: req.session.image
+    });
 });
 
 module.exports = router;

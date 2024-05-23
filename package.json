@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "DEBUG=vinyl-steve:* nodemon -e hbs,js,json",
+    "dev": "DEBUG=vinyl-steve:* nodemon bin/www -e hbs,js,json",
     "start": "pm2-runtime start ecosystem.config.js --env production"
   },
   "dependencies": {
