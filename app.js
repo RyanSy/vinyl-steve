@@ -36,7 +36,9 @@ mongoose
 // session setup
 app.use(session({
     secret: process.env.SESSION_SECRET,
-    store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI })
+    store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
+    resave: false,
+    saveUninitialized: false
 }));
 
 // view engine setup
