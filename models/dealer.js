@@ -15,7 +15,7 @@ const dealerSchema = new Schema(
     socialmedia: {type: String},
     website: {type: String},
     help: {type: String},
-    shows: [{id: String, name: String, city: String, state: String, date: String, month: String, day: String, year: String, number_of_tables: Number, rent_due: Number, notes: String, paid: Boolean}]
+    shows: [{id: String, name: String, city: String, state: String, date: String, month: String, day: String, year: String, number_of_tables: Number, discount_code: String, discount_percentage: Number, discount_applied: Boolean, rent_due: Number, notes: String, paid: Boolean}]
   }
 );
 

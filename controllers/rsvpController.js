@@ -3,7 +3,7 @@ const Dealer = require('../models/dealer');
 const helperFunctions = require('../util/helperFunctions');
 
 // save rsvp
-exports.save_rsvp = async (req, res) => {
+exports.save_rsvp = async (req, res, next) => {
     const user = req.session.name;
     // *** TODO *** find fallbak image
     const userImage = req.session.image;
@@ -93,7 +93,9 @@ exports.save_rsvp = async (req, res) => {
         rentDue: rentDue
     };
 
-    res.render('rsvp-confirmation', dataObject);
+    // res.render('my-rsvps', dataObject);
+
+    next()
 };
 
 exports.show_edit_rsvp_page = async (req, res) => {

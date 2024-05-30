@@ -60,6 +60,8 @@ exports.render_rsvp_list = async (req, res) => {
                 const numberOfTablesForRent = showObject.number_of_tables_for_rent;
                 const maxTablesPerDealer = showObject.max_tables_per_dealer;
                 const paid = showObject.paid;
+                const discountCodes = showObject.discount_codes;
+
                 const dataObject = {
                     name: name,
                     image: image,
@@ -70,14 +72,16 @@ exports.render_rsvp_list = async (req, res) => {
                     waitingList: waitingList,
                     numberOfTablesForRent: numberOfTablesForRent,
                     maxTablesPerDealer: maxTablesPerDealer,
-                    paid: paid
+                    paid: paid,
+                    discountCodes: discountCodes
                 };
                 isAdmin ? res.render('rsvp-list', dataObject) : res.send('Unauthorized');
             }
         })
         .catch((err) => {
-            console.log(err);
-            res.render('error');
+            console.log('error:', err);
+            res.send('err')
+            // res.render('error');
         });
 }
 
@@ -141,7 +145,7 @@ exports.delete_dealer_rsvp = async (req, res) => {
             id: id
         }
     } };
-    Dealer.updateOne(dealerFilter, dealerUpdate)
+    await Dealer.updateOne(dealerFilter, dealerUpdate)
         .catch((err) => {
             console.log(err);
             res.render('error');    
@@ -192,3 +196,96 @@ exports.render_waiting_list = async (req, res) => {
     
     res.render('waitlist', dataObject);
 }
+
+exports.save_discount = async (req, res) => {
+    const id = req.body.id;
+    const email = req.body.email;
+    const percentage = req.body.discount_percentage;
+    const code = generateRandomString(8);
+    const show = await Show.find({ _id: id });
+    const discount = {
+        code: code,
+        percentage: percentage
+    };
+
+    function generateRandomString(length) {
+        let result = '';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const charactersLength = characters.length;
+        for ( let i = 0; i < length; i++ ) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    }
+
+    show[0].discount_codes.addToSet(discount);
+    show[0].save();
+
+    // await Show.findOneAndUpdate(
+    //     { _id: id }, 
+    //     { $set: {
+    //             'dealer_rsvp_list.$[el].discount_code': discountCode,
+    //             'dealer_rsvp_list.$[el].discount_percentage': discountPercentage
+    //         }
+    //     },
+    //     { arrayFilters: [ { 'el.email': email }] }
+    // )
+    // .catch((err) => {
+    //     console.log(err);
+    //     res.render('error');
+    // });
+
+    // await Dealer.findOneAndUpdate(
+    //     { email: email },
+    //     { $set: {
+    //             'shows.$[el].discount_code': discountCode,
+    //             'shows.$[el].discount_percentage': discountPercentage
+    //         }
+    //     },
+    //     { arrayFilters: [{ 'el.id': id }] }
+    // )
+    // .catch((err) => {
+    //     console.log(err);
+    //     res.render('error');
+    // });
+
+    res.redirect(`/admin/rsvp-list/${id}`);
+}
+
+
+/**
+ *     await Show.findOneAndUpdate(
+        { _id: id } ,
+        { 
+            $set: {
+                'dealer_rsvp_list.$[el].number_of_tables': numberOfTables,
+                'dealer_rsvp_list.$[el].notes': notes,
+                'dealer_rsvp_list.$[el].rent_due': rentDue
+            },
+            $inc: {
+                'number_of_tables_for_rent': change
+            }
+        },
+        { arrayFilters: [ { 'el.email': email }] }
+    )
+    .catch((err) => {
+        console.log(err);
+        res.render('error');
+    });
+
+    await Dealer.findOneAndUpdate(
+        { email: email },
+        { $set: {
+            'shows.$[el].number_of_tables': numberOfTables,
+            'shows.$[el].notes': notes,
+            'shows.$[el].rent_due': rentDue
+            }
+        },
+        { arrayFilters: [{ 'el.id': id }] }
+    )
+    .catch((err) => {
+        console.log(err);
+        res.render('error');
+    });
+
+ */

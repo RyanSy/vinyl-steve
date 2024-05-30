@@ -11,12 +11,42 @@
 
     <br>
 
-    <div class="container vh-100 mt-3">
+    <div class="container mt-3">
         <p>Number of tables available: {{numberOfTablesForRent}}</p>
         <p>
             <a href="/admin/waitlist/{{showId}}" class="btn btn-warning">Waiting List</a>
         </p>
-        <br>
+        <hr>
+        <p>
+        <h4>Create Discount Code:</h4>
+        <form action="/admin/save-discount" method="post">
+            <input type="hidden" name="id" value="{{showId}}">
+            <label for="discount_percentage">Amount:</label>
+            <div class="form-group mb-3">
+                <input type="number" name="discount_percentage" max="100" required>%
+            </div>
+            <div class="mb-3">
+                <small>* New amount due will be shown when dealer applies discount code</small>
+            </div>
+            <div class="form-group mb-3">
+                <button type="submit" class="btn btn-primary">Save Discount</button>
+            </div>
+        </form>
+        </p>
+        <hr>
+        <p>
+        <h4>Available Discount Codes:</h4>
+        <ul>
+            {{#each discountCodes}}
+            <li>
+                Code: {{this.code}} <br>
+                Amount: {{this.percentage}}%    
+            </li>
+            <br>
+            {{/each}}
+        </ul>
+        </p>
+        <hr>
         {{!-- add dealer --}}
         <form action="/admin/add-dealer-rsvp" method="post">
             <h4>Add a dealer:</h4>
@@ -33,7 +63,8 @@
             <div class="row">
                 <label for="number of tables">Number Of Tables: </label>
                 <div class="form-group col-4 col-md-2 mb-3">
-                    <input class="form-control" type="number" min="0" name="number_of_tables" max="{{maxTablesPerDealer}}" required>
+                    <input class="form-control" type="number" min="0" name="number_of_tables"
+                        max="{{maxTablesPerDealer}}" required>
                     <div class="form-text text-white">Max: {{maxTablesPerDealer}}</div>
                 </div>
             </div>
@@ -51,10 +82,10 @@
             <div class="col-2">
                 # Tables
             </div>
-            <div class="col-4">
+            <div class="col-3">
                 Notes
             </div>
-            <div class="col-2">
+            <div class="col-3">
                 Paid?
             </div>
         </div>
@@ -67,22 +98,55 @@
             <div class="col-2">
                 {{this.number_of_tables}}
             </div>
-            <div class="col-4">
+            <div class="col-3">
                 {{this.notes}}
             </div>
-            <div class="col-2">
+            <div class="col-3">
                 {{#if this.paid}}
                 Yes
                 {{else}}
-                No
+                No <br>
+                (${{this.rent_due}} due)
                 {{/if}}
             </div>
             <div class="col-2">
-                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+                <button type="button" class="btn btn-danger mx-2 mb-2" data-bs-toggle="modal"
+                    data-bs-target="#deleteModal">X</button>
             </div>
 
-            <!-- Modal -->
-            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+            {{!-- Discount Modal --}}
+            <div class="modal fade" id="discountModal" tabindex="-1" aria-labelledby="discountModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content text-secondary">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="discountModalLabel">Add Discount</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/admin/save-discount" method="post">
+                                <input type="hidden" name="email" value="{{this.email}}">
+                                <input type="hidden" name="id" value="{{../showId}}">
+                                <label for="discount_percentage">Discount:</label>
+                                <div class="form-group mb-3">
+                                    <input type="number" name="discount_percentage" max="100" required>%
+                                </div>
+                                <div class="mb-3">
+                                    <small>* New amount due will be shown when dealer applies discount code</small>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <button type="button" class="btn btn-secondary text-white"
+                                        data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete Modal -->
+            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
                 aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content text-secondary">
@@ -94,12 +158,14 @@
                             Delete this dealer?
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary text-white" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary text-white"
+                                data-bs-dismiss="modal">Close</button>
                             <form action="/admin/delete-rsvp" method="post">
                                 <input type="hidden" name="id" value="{{../showId}}">
                                 <input type="hidden" name="name" value="{{this.name}}">
                                 <input type="hidden" name="email" value="{{this.email}}">
-                                <input type="hidden" name="number_of_tables_for_rent" value="{{../numberOfTablesForRent}}">
+                                <input type="hidden" name="number_of_tables_for_rent"
+                                    value="{{../numberOfTablesForRent}}">
                                 <input type="hidden" name="number_of_tables" value="{{this.number_of_tables}}">
                                 <button type="submit" class="btn btn-danger">Delete</button>
                             </form>
@@ -107,15 +173,6 @@
                     </div>
                 </div>
             </div>
-
-
-            {{!-- <div class="col-1">
-                {{#if this.paid}}
-                Yes
-                {{else}}
-                No
-                {{/if}}
-            </div> --}}
         </div>
         {{/each}}
     </div>
@@ -123,3 +180,5 @@
     <br>
 
 </div>
+
+{{> footer}}

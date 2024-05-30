@@ -141,3 +141,31 @@ exports.save_dealer_to_waitlist = async (req, res) => {
     show[0].save();
     res.render('waitlist-confirmation');
 }
+
+// render discount page
+exports.render_discount_page = (req, res) => {
+    const id = req.params.id;
+    res.render('discount', { id: id });
+}
+
+exports.save_discount = async (req, res, next) => {
+    const id = req.body.id;
+    const code = req.body.code;
+    let percentage;
+
+    await Show.findOne({ _id: id})
+            .then((show) => {
+                for (let i = 0; i <= show.discount_codes.length; i++) {
+                    if (code == show.discount_codes[i].code) {
+                        percentage = show.discount_codes[i].percentage;
+                    }
+                }
+                console.log(show.discount_codes)
+            })
+            .catch((err) => {
+                console.log(err)
+                res.render(err);
+            })
+
+    next()
+}

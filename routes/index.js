@@ -46,7 +46,7 @@ router.get('/already-registered', requiresAuth(), (req, res) =>
 });
 
 // save dealer rsvp - user
-router.post('/rsvp-confirmation', requiresAuth(), rsvp_controller.save_rsvp);
+router.post('/rsvp-confirmation', requiresAuth(), rsvp_controller.save_rsvp, dealer_controller.show_dealer_rsvps);
 
 // render edit rsvp page - user
 router.post('/edit-rsvp/', requiresAuth(), rsvp_controller.show_edit_rsvp_page);
@@ -56,6 +56,12 @@ router.post('/update-rsvp/', requiresAuth(), rsvp_controller.update_rsvp);
 
 // save dealer to waitlist
 router.post('/waitlist', requiresAuth(), dealer_controller.save_dealer_to_waitlist);
+
+// get discount page
+router.get('/discount/:id', requiresAuth(), dealer_controller.render_discount_page);
+
+// save user discount
+router.post('/save-discount', requiresAuth(), dealer_controller.save_discount, dealer_controller.show_dealer_rsvps);
 
 // save payment
 router.post('/save-payment', requiresAuth(), payment_controller.save_payment);

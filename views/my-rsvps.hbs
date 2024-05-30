@@ -51,7 +51,8 @@
             Yes
             {{else}}
             No <br>
-            (${{this.rent_due}} due)
+            (${{this.rent_due}} due) <br>
+            <a href="/discount/{{this.id}}">Discount</a>
             {{/if}}
         </div>
         <div class="col-2">
@@ -253,3 +254,5 @@
         </p>
     </div>
 </div>
+
+{{> footer}}

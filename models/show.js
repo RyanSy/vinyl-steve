@@ -52,13 +52,17 @@ const showSchema = new Schema(
                 email: { type: String, max: 50 },
                 number_of_tables: { type: Number },
                 notes: { type: String, max: 200 },
-                paid: {type: Boolean},
+                paid: { type: Boolean },
+                discount_code: { type: String },
+                discount_percentage: { type: Number },
+                discount_applied: { type: Boolean},
                 rent_due: { type: Number }
             },
         ],
         number_of_tables_for_rent: { type: Number },
         max_tables_per_dealer: { type: Number },
-        waiting_list: [{email: String}]
+        waiting_list: [{ email: String }],
+        discount_codes: [{ code: String, percentage: Number }]
     },
     { strict: false }
 );
