@@ -10,7 +10,7 @@ const mongoose = require('mongoose');
 const hbs = require('hbs');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-// const favicon = require('serve-favicon');
+const flash = require('connect-flash');
 
 const indexRouter = require('./routes/index');
 const adminRouter = require('./routes/admin');
@@ -52,10 +52,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-// app.use(favicon(path.join(__dirname, 'public', 'favicon.png')))
-
 // auth router attaches /login, /logout and /callback routes to the baseURL
 app.use(auth(config));
+app.use(flash());
 
 app.use('/', indexRouter);
 app.use('/admin', adminRouter);

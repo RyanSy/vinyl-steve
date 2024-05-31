@@ -61,7 +61,7 @@ router.post('/waitlist', requiresAuth(), dealer_controller.save_dealer_to_waitli
 router.get('/discount/:id', requiresAuth(), dealer_controller.render_discount_page);
 
 // save user discount
-router.post('/save-discount', requiresAuth(), dealer_controller.save_discount, dealer_controller.show_dealer_rsvps);
+router.post('/save-discount', requiresAuth(), dealer_controller.save_discount);
 
 // save payment
 router.post('/save-payment', requiresAuth(), payment_controller.save_payment);

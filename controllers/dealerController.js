@@ -58,6 +58,7 @@ exports.show_dealer_rsvps = async (req, res) => {
 
     let message;
     let shows;
+    const discountCodeMessage = res.locals.message;
 
     await Dealer.find({ email: email })
         .then((result) => {
@@ -82,6 +83,8 @@ exports.show_dealer_rsvps = async (req, res) => {
         email: email,
         shows: shows,
         message: message,
+        discountFailure: req.flash('discountFailure'),
+        discountSuccess: req.flash('discountSuccess'),
         paypalClientId: process.env.PAYPAL_CLIENT_ID
     }
     res.render('my-rsvps', dataObject);
@@ -148,24 +151,58 @@ exports.render_discount_page = (req, res) => {
     res.render('discount', { id: id });
 }
 
+// apply discount
 exports.save_discount = async (req, res, next) => {
+    console.log(req.body)
     const id = req.body.id;
-    const code = req.body.code;
+    const email = req.body.email;
+    const rent = req.body.rent;
+    const discount_code = req.body.code;
     let percentage;
 
+    // verify discount code and calculate percentage
     await Show.findOne({ _id: id})
             .then((show) => {
-                for (let i = 0; i <= show.discount_codes.length; i++) {
-                    if (code == show.discount_codes[i].code) {
-                        percentage = show.discount_codes[i].percentage;
-                    }
+                const discountCode = show.discount_codes.find(({ code }) => code === discount_code);
+                if (discountCode) {
+                    req.flash('discountSuccess', 'Discount code has been applied');
+                    percentage = discountCode.percentage * .01;
+                }  else {
+                    req.flash('discountFailure', 'Discount code not found.');
                 }
-                console.log(show.discount_codes)
             })
             .catch((err) => {
                 console.log(err)
                 res.render(err);
-            })
+            });
 
-    next()
+    // update shows db
+    await Show.findOneAndUpdate(
+        { _id: id } ,
+        { 
+            $set: {
+                'dealer_rsvp_list.$[el].rent_due': rent * percentage
+            }
+        },
+        { arrayFilters: [ { 'el.email': email }] }
+    )
+    .catch((err) => {
+        console.log(err);
+        res.render('error');
+    });
+
+    await Dealer.findOneAndUpdate(
+        { email: email },
+        { $set: {
+            'shows.$[el].rent_due': rent * percentage
+            }
+        },
+        { arrayFilters: [{ 'el.id': id }] }
+    )
+    .catch((err) => {
+        console.log(err);
+        res.render('error');
+    });
+
+    res.redirect('/my-rsvps')
 }
