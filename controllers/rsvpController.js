@@ -134,7 +134,6 @@ exports.show_edit_rsvp_page = async (req, res) => {
 }
 
 exports.update_rsvp = async (req, res) => {
-    console.log('req.body', req.body)
     const id = req.body.id;
     const tableRent = req.body.table_rent
     const email = req.body.email;
