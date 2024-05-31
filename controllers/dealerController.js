@@ -153,7 +153,6 @@ exports.render_discount_page = (req, res) => {
 
 // apply discount
 exports.save_discount = async (req, res, next) => {
-    console.log(req.body)
     const id = req.body.id;
     const email = req.body.email;
     const rent = req.body.rent;
