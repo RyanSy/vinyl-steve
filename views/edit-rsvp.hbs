@@ -45,7 +45,7 @@
             {{#if tablesAvailable}}
                 <input class="form-control" type="number" min="0" name="number_of_tables" max="{{maxTablesAvailable}}" value="{{dealerShow.number_of_tables}}" required>
             {{else}}
-                <input class="form-control" type="number" min="0" name="number_of_tables" max="{{maxTablesAvailable}}" value="{{dealerShow.number_of_tables}}" disabled>
+                <input class="form-control" type="number" min="0" name="number_of_tables" max="{{maxTablesAvailable}}" value="{{dealerShow.number_of_tables}}" readonly>
             {{/if}}
                 <div class="form-text text-white">* Required - Max: {{maxTablesAvailable}}</div>
             </div>
