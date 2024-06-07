@@ -27,5 +27,7 @@ router.post('/save-discount', requiresAuth(), admin_controller.save_discount);
 // delete discount
 router.post('/delete-discount', requiresAuth(), admin_controller.delete_discount, admin_controller.render_rsvp_list);
 
+router.get('/dealers-list', requiresAuth(), admin_controller.render_dealers_list);
+
 
 module.exports = router;

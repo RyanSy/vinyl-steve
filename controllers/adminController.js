@@ -266,3 +266,20 @@ exports.delete_discount = async (req, res) => {
 
     res.redirect(`/admin/rsvp-list/${id}`);
 };
+
+exports.render_dealers_list =  async (req, res) => {
+    let dealersList;
+    await Dealer.find({})
+        .then((dealers) => {
+            console.log(dealers);
+            dealersList = dealers;
+        })
+        .catch((err) => {
+            console.log(err);
+            res.render('error');
+        });
+
+    res.render('dealers-list', {
+        dealersList: dealersList
+    });
+}
