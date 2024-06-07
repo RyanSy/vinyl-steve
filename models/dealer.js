@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 const dealerSchema = new Schema(
   {
     name: {type: String, required: true, max: 50},
+    company_name: {type: String, max: 50},
     email: {type: String},
     image: {type: String},
     address: {type: String},

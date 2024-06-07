@@ -3,8 +3,6 @@ const Dealer = require('../models/dealer');
 
 // check if dealer exists, if so, list shows, if not prompt for info
 exports.check_if_dealer_exists = async (req, res, next) => {
-    const name = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
-    // *** TODO *** find fallbak image
     const image = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
     const email = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
 
@@ -21,7 +19,6 @@ exports.check_if_dealer_exists = async (req, res, next) => {
                 next();
             } else {
                 const userInfo = {
-                    name: name,
                     image: image,
                     email: email
                 };
@@ -58,7 +55,6 @@ exports.show_dealer_rsvps = async (req, res) => {
 
     let message;
     let shows;
-    const discountCodeMessage = res.locals.message;
 
     await Dealer.find({ email: email })
         .then((result) => {
@@ -92,7 +88,6 @@ exports.show_dealer_rsvps = async (req, res) => {
 
 // delete rsvp - dealer
 exports.delete_rsvp = async (req, res, next) => {
-    const name = req.session.name;
     const email = req.session.email;
     const showId = req.body.show_id;
     const numberOfTables = Number(req.body.number_of_tables);
