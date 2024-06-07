@@ -30,16 +30,16 @@
 
         {{#each dealerRsvpList}}
         <div class="row">
-            <div class="col-2">
+            <div class="col-2 text-break">
                 {{this.name}}
             </div>
-            <div class="col-2">
+            <div class="col-2 text-break">
                 {{this.number_of_tables}}
             </div>
-            <div class="col-6">
+            <div class="col-6 text-break">
                 {{this.notes}}
             </div>
-            <div class="col-2">
+            <div class="col-2 text-break">
                 {{#if this.paid}}
                 Yes
                 {{else}}
