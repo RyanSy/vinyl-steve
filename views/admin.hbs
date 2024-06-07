@@ -13,7 +13,16 @@
             {{this.month}} {{this.day}}, {{this.year}}
         </div>
         <div class="col-8">
-            <a href="/admin/rsvp-list/{{this.id}}">{{this.name}}<br>{{this.city}}, {{this.state}}</a>
+            <a href="/admin/rsvp-list/{{this.id}}">{{this.name}}<br>{{this.city}}, {{this.state}}</a> <br>
+            Tables available: {{#if this.number_of_tables_for_rent}} {{this.number_of_tables_for_rent}} {{else}} n/a {{/if}} <br>
+            Tables rented: {{this.tables_rented}}
+        </div>
+    </div>
+
+    <div class="row px-3 pt-3 pb-2 mx-3">
+        <div class="col-4"></div>
+        <div class="col-8">
+            
         </div>
     </div>
     {{/each}}

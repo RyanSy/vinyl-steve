@@ -61,7 +61,8 @@ exports.createShowsArray = (shows) => {
             dealer_rsvp_list: shows[i].dealer_rsvp_list,
             number_of_tables_for_rent: shows[i].number_of_tables_for_rent,
             max_tables_per_dealer: shows[i].max_tables_per_dealer,
-            discount_codes: discount_codes
+            discount_codes: discount_codes,
+            tables_rented: shows[i].dealer_rsvp_list.reduce((n, {number_of_tables}) => n + number_of_tables, 0)
         };
         showsArray.push(showObject);
     }
