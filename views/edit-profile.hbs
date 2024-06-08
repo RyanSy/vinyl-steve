@@ -1,67 +1,67 @@
 <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-    <h3>Sign Up Form</h3>
+    <h3>Edit Profile</h3>
     <p>
-        <div class="form-text text-white">Fields with * are required</div>
+        <div class="form-text text-white">Fields with * are required; email cannot be changed.</div>
     </p>
 
     <hr>
 
-    <form class="mb-3" action="/save-dealer-info" method="post">
-        <input type="hidden" name="image" value="{{image}}">
+    <form class="mb-3" action="/save-profile" method="post">
+        <input type="hidden" name="image" value="{{dealerInfo.image}}">
         <label for="name">Email *</label>
         <div class="form-group mb-3">
-            <input type="text" name="email" value="{{email}}" readonly>
+            <input type="text" name="email" value="{{dealerInfo.email}}" readonly>
         </div>
 
         <label for="name">Name *</label>
         <div class="form-group mb-3">
-            <input type="text" name="name" required>
+            <input type="text" name="name" value="{{dealerInfo.name}}" required>
         </div>
         
 
         <label for="name">Company Name</label>
         <div class="form-group mb-3">
-            <input type="text" name="company_name">
+            <input type="text" name="company_name" value="{{dealerInfo.company_name}}">
         </div>
 
         <label for="name">Address *</label>
         <div class="form-group mb-3">
-            <input type="text" name="address" required>
+            <input type="text" name="address" value="{{dealerInfo.address}}" required>
         </div>
 
         <label for="name">City *</label>
         <div class="form-group mb-3">
-            <input type="text" name="city" required>
+            <input type="text" name="city" value="{{dealerInfo.city}}" required>
         </div>
 
         <label for="name">State *</label>
         <div class="form-group mb-3">
-            <input type="text" name="state" required> 
+            <input type="text" name="state" value="{{dealerInfo.state}}" required> 
         </div>
 
         <label for="name">Zip *</label>
         <div class="form-group mb-3">
-            <input type="text" name="zip" required>
+            <input type="text" name="zip" value="{{dealerInfo.zip}}" required>
         </div>
 
         <label for="name">Phone *</label>
         <div class="form-group mb-3">
-            <input type="text" name="phone" required>
+            <input type="text" name="phone" value="{{dealerInfo.phone}}" required>
         </div>
 
         <label for="name">Social Media Accounts</label>
         <div class="form-group mb-3">
-            <textarea name="socialmedia" cols="30" rows="10"></textarea> 
+            <textarea name="socialmedia" cols="30" rows="10"value="{{dealerInfo.socialmedia}}"></textarea> 
         </div>
         
         <label for="name">Website</label>
         <div class="form-group mb-3">
-            <input type="text" name="website">
+            <input type="text" name="website" value="{{dealerInfo.website}}">
         </div>
         
         <label for="name">Can you help us promote Record Riots? Please explain.</label>
         <div class="form-group mb-3">
-            <textarea name="help" cols="30" rows="10"></textarea> 
+            <textarea name="help" cols="30" rows="10" value="{{dealerInfo.help}}"></textarea> 
         </div>
 
         <div class="form-group mb-3">

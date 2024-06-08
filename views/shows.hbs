@@ -9,6 +9,13 @@
     
     <hr>
     
+    {{#if profileUpdated}}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{profileUpdated}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {{/if}}
+
     {{#each shows}}
     <div class="row px-3 pt-3 pb-2">
         <div class="col-4">

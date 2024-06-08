@@ -200,3 +200,36 @@ exports.save_discount = async (req, res, next) => {
 
     res.redirect('/my-rsvps')
 }
+
+// render edit profile page
+exports.render_edit_profile = async (req, res) => {
+    let dealerInfo;
+    await Dealer.findOne({ email: req.session.email })
+        .then((result) => {
+            dealerInfo = result;
+        })
+        .catch((err) => {
+            console.log(err);
+            res.render('error');
+        });
+    res.render('edit-profile', {
+        dealerInfo: dealerInfo
+    });
+}
+
+// save profile
+exports.save_profile = async (req, res) => {
+    const filter = { email: req.session.email };
+
+    const update = req.body;
+
+    await Dealer.findOneAndUpdate(filter, update)
+        .catch((err) => {
+            console.log(err);
+            res.render('error');
+        });
+    
+    req.flash('profileUpdated', 'Profile has been successfully updated.');
+
+    res.redirect('/home');
+}

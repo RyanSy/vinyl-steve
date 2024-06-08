@@ -28,6 +28,12 @@ router.get("/signup", (req, res) => {
 // save info from sign up page
 router.post('/save-dealer-info', requiresAuth(), dealer_controller.save_dealer_info);
 
+// render edit profile page
+router.get('/edit-profile', requiresAuth(), dealer_controller.render_edit_profile);
+
+// save profile
+router.post('/save-profile', requiresAuth(), dealer_controller.save_profile);
+
 // render home page with list of record riots
 router.get('/home', requiresAuth(), dealer_controller.check_if_dealer_exists, show_controller.list_shows);
 

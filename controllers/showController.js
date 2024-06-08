@@ -20,7 +20,8 @@ exports.list_shows = async (req, res) => {
         image: req.session.image,
         email: req.session.email,
         shows: showsArraySorted,
-        isLoggedIn: true
+        isLoggedIn: true,
+        profileUpdated: req.flash('profileUpdated')
     };
 
     res.render('shows', dataObject);
@@ -53,7 +54,7 @@ exports.list_show = async (req, res) => {
         show: showObject,
         paypalClientId: paypalClientId,
         maxTablesAvailable: maxTablesAvailable,
-        tablesAvailable: tablesAvailable,
+        tablesAvailable: tablesAvailable
     };
     res.render('show', dataObject);
 };
