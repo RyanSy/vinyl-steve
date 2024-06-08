@@ -1,4 +1,4 @@
-<div class="bg-white text-black vw-100 h-100">
+<div class="bg-white text-black vw-100 h-100 px-3">
     <br>
 
     <div class="text-center">
@@ -15,13 +15,13 @@
             <div class="col-2">
                 Name
             </div>
-            <div class="col-2">
+            <div class="col-2 text-center">
                 # Tables
             </div>
             <div class="col-6">
                 Notes
             </div>
-            <div class="col-2">
+            <div class="col-2 text-center">
                 Paid?
             </div>
         </div>
@@ -33,13 +33,13 @@
             <div class="col-2 text-break">
                 {{this.name}}
             </div>
-            <div class="col-2 text-break">
+            <div class="col-2 text-break text-center">
                 {{this.number_of_tables}}
             </div>
             <div class="col-6 text-break">
                 {{this.notes}}
             </div>
-            <div class="col-2 text-break">
+            <div class="col-2 text-break text-center">
                 {{#if this.paid}}
                 Yes
                 {{else}}
@@ -48,6 +48,7 @@
                 {{/if}}
             </div>
         </div>
+        <hr>
         {{/each}}
     </div>
 
