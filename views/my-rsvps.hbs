@@ -35,7 +35,8 @@
     </div>
     {{/if}}
 
-        <div class="row px-2 pt-3 pb-2">
+    {{#if shows}}
+    <div class="row px-2 pt-3 pb-2">
         <div class="col-3">
             Date
         </div>
@@ -49,7 +50,8 @@
             Paid
         </div>
     </div>
-
+    {{/if}}
+    
     {{#each shows}}
     <div class="row px-2 pt-3 pb-2">
         <div class="col-3">

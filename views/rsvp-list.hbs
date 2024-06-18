@@ -106,6 +106,10 @@
         </form>
         <br>
         <hr>
+        <p>
+            <a class="btn btn-primary" href="mailto:?bcc={{#each dealerRsvpList}}{{this.email}}, {{/each}}" target="_blank">Email All Dealers</a>
+        </p>
+        <hr>
         <div class="row">
             <div class="col-2">
                 Name
@@ -124,7 +128,7 @@
         {{#each dealerRsvpList}}
         <div class="row mb-3">
             <div class="col-2 text-break">
-                {{this.name}}
+                <a href="mailto:{{this.email}}" target="_blank">{{this.name}}</a>
             </div>
             <div class="col-2 text-break text-center">
                 {{this.number_of_tables}}

@@ -3,8 +3,9 @@
 <div class="container-fluid p-3">
     <div class="text-center">
         <h1>Dealers List</h1>
+        <p><a class="btn btn-primary" target="_blank" href="mailto:?bcc={{#each dealersList}}{{this.email}}, {{/each}}">Email All Dealers</a></p>
     </div>
-
+    <br>
     {{#each dealersList}}
         Name: {{this.name}} <br>
         Company Name: {{this.company_name}} <br>
@@ -14,7 +15,7 @@
         {{else}}
         {{/if}}
         Phone: {{this.phone}} <br>
-        Email: {{this.email}} <br>
+        Email: <a target="_blank" href="mailto:{{this.email}}">{{this.email}}</a><br>
         Social Media: {{this.socialmedia}} <br>
         Website: {{this.website}} <br>
         Record Riots Help: {{this.help}} <br>
