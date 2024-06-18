@@ -93,9 +93,7 @@ exports.save_rsvp = async (req, res, next) => {
         rentDue: rentDue
     };
 
-    // res.render('my-rsvps', dataObject);
-
-    next()
+    res.render('rsvp-confirmation', dataObject);
 };
 
 exports.show_edit_rsvp_page = async (req, res) => {

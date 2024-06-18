@@ -52,7 +52,7 @@ router.get('/already-registered', requiresAuth(), (req, res) =>
 });
 
 // save dealer rsvp - user
-router.post('/rsvp-confirmation', requiresAuth(), rsvp_controller.save_rsvp, dealer_controller.show_dealer_rsvps);
+router.post('/rsvp-confirmation', requiresAuth(), rsvp_controller.save_rsvp);
 
 // render edit rsvp page - user
 router.post('/edit-rsvp/', requiresAuth(), rsvp_controller.show_edit_rsvp_page);
