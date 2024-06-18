@@ -63,7 +63,8 @@ const showSchema = new Schema(
         number_of_tables_for_rent: { type: Number },
         max_tables_per_dealer: { type: Number },
         waiting_list: [{ email: String }],
-        discount_codes: [{ code: String, percentage: Number }]
+        discount_codes: [{ code: String, percentage: Number }],
+        dealer_information: {type: String, max: 200}
     },
     { strict: false }
 );

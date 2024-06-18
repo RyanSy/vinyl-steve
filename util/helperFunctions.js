@@ -62,6 +62,7 @@ exports.createShowsArray = (shows) => {
             number_of_tables_for_rent: shows[i].number_of_tables_for_rent,
             max_tables_per_dealer: shows[i].max_tables_per_dealer,
             discount_codes: discount_codes,
+            dealer_information: shows[i].dealer_information,
             tables_rented: shows[i].dealer_rsvp_list.reduce((n, {number_of_tables}) => n + number_of_tables, 0)
         };
         showsArray.push(showObject);
@@ -129,7 +130,8 @@ exports.createShowObject = (show) => {
         dealer_rsvp_list: show.dealer_rsvp_list,
         number_of_tables_for_rent: show.number_of_tables_for_rent,
         max_tables_per_dealer: show.max_tables_per_dealer,
-        discount_codes: discount_codes
+        discount_codes: discount_codes,
+        dealer_information: show.dealer_information
     };
 
     return showObject;
