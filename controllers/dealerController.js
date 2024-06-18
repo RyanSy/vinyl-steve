@@ -1,5 +1,6 @@
 const Show = require('../models/show');
 const Dealer = require('../models/dealer');
+const moment = require('moment');
 
 // check if dealer exists, if so, list shows, if not prompt for info
 exports.check_if_dealer_exists = async (req, res, next) => {
@@ -64,7 +65,13 @@ exports.show_dealer_rsvps = async (req, res) => {
                 if (result[0].shows.length == 0) {
                     message = 'You have no shows listed.';
                 }
-                shows = result[0].shows;
+                
+                let sortByDate = (array) => {
+                    return array.sort(function (a, b) {
+                        return new Date(moment(a.date, 'dddd, MMMM Do YYYY')) - new Date(moment(b.date, 'dddd, MMMM Do YYYY'));
+                    });
+                };
+                shows = sortByDate(result[0].shows);
             } 
 
         })
