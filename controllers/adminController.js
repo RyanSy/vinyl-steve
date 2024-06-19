@@ -69,8 +69,10 @@ exports.render_rsvp_list = async (req, res) => {
                 const numberOfTablesForRent =
                     showObject.number_of_tables_for_rent;
                 const maxTablesPerDealer = showObject.max_tables_per_dealer;
+                const tableRent = showObject.table_rent;
                 const paid = showObject.paid;
                 const discountCodes = showObject.discount_codes;
+                const dealerInformation = showObject.dealer_information;
 
                 const dataObject = {
                     name: name,
@@ -82,8 +84,13 @@ exports.render_rsvp_list = async (req, res) => {
                     waitingList: waitingList,
                     numberOfTablesForRent: numberOfTablesForRent,
                     maxTablesPerDealer: maxTablesPerDealer,
+                    tableRent: tableRent,
                     paid: paid,
                     discountCodes: discountCodes,
+                    dealerInformation: dealerInformation,
+                    dealerInfoUpdated: req.flash('dealerInfoUpdated'),
+                    dealerAdded: req.flash('dealerAdded'),
+                    dealerDeleted: req.flash('dealerDeleted')
                 };
                 isAdmin
                     ? res.render('rsvp-list', dataObject)
@@ -101,6 +108,7 @@ exports.render_rsvp_list = async (req, res) => {
 exports.add_dealer_rsvp = async (req, res) => {
     const id = req.body.id;
     const name = req.body.name;
+    const tableRent = req.body.table_rent;
     const numberOfTablesForRent = Number(req.body.number_of_tables_for_rent);
     const numberOfTables = Number(req.body.number_of_tables);
     const newNumberOfTablesForRent = numberOfTablesForRent - numberOfTables;
@@ -110,6 +118,7 @@ exports.add_dealer_rsvp = async (req, res) => {
     const dealerRsvp = {
         name: name,
         number_of_tables: numberOfTables,
+        rent_due: numberOfTables * tableRent
     };
     show[0].number_of_tables_for_rent = newNumberOfTablesForRent;
     show[0].dealer_rsvp_list.addToSet(dealerRsvp);
@@ -118,13 +127,16 @@ exports.add_dealer_rsvp = async (req, res) => {
         res.send('error');
     });
 
+    req.flash('dealerAdded', 'Dealer has been added.');
+
     res.redirect(`/admin/rsvp-list/${id}`);
 };
 
+// delete dealer
 exports.delete_dealer_rsvp = async (req, res) => {
+    console.log('delete', req.body)
     const id = req.body.id;
     const name = req.body.name;
-    const email = req.body.email;
     const numberOfTablesForRent = req.body.number_of_tables_for_rent;
     const numberOfTables = req.body.number_of_tables;
     const newNumberOfTablesForRent =
@@ -137,7 +149,7 @@ exports.delete_dealer_rsvp = async (req, res) => {
     const showUpdate = {
         $pull: {
             dealer_rsvp_list: {
-                email: email,
+                name: name,
             },
         },
         number_of_tables_for_rent: newNumberOfTablesForRent,
@@ -149,7 +161,7 @@ exports.delete_dealer_rsvp = async (req, res) => {
 
     // update dealer db
     const dealerFilter = {
-        email: email,
+        name: name,
     };
     const dealerUpdate = {
         $pull: {
@@ -162,6 +174,8 @@ exports.delete_dealer_rsvp = async (req, res) => {
         console.log(err);
         res.render('error');
     });
+
+    req.flash('dealerDeleted', 'Dealer has been deleted.');
 
     res.redirect(`/admin/rsvp-list/${id}`);
 };
@@ -213,6 +227,7 @@ exports.render_waiting_list = async (req, res) => {
     res.render('waitlist', dataObject);
 };
 
+// save discount
 exports.save_discount = async (req, res) => {
     const id = req.body.id;
     const email = req.body.email;
@@ -243,6 +258,7 @@ exports.save_discount = async (req, res) => {
     res.redirect(`/admin/rsvp-list/${id}`);
 };
 
+// delete discount
 exports.delete_discount = async (req, res) => {
     const id = req.body.id;
     const code = req.body.code;
@@ -267,6 +283,7 @@ exports.delete_discount = async (req, res) => {
     res.redirect(`/admin/rsvp-list/${id}`);
 };
 
+// render dealers list
 exports.render_dealers_list =  async (req, res) => {
     let dealersList;
     await Dealer.find({})
@@ -283,3 +300,23 @@ exports.render_dealers_list =  async (req, res) => {
         dealersList: dealersList
     });
 }
+
+// edit dealer information
+exports.edit_dealer_information = async (req, res, next) => {
+    const id = req.params.id;
+    const dealerInformation = req.body.dealer_information;
+
+    // save rsvp to shows db
+    const show = await Show.findOne({ _id: id });
+ 
+    show.dealer_information = dealerInformation;
+    show.save().catch((err) => {
+        console.log(err);
+        res.send('error');
+    });
+
+    req.flash('dealerInfoUpdated', 'Dealer information has been updated.')
+
+    next();
+    // res.redirect(`/admin/rsvp-list/${id}`);
+};

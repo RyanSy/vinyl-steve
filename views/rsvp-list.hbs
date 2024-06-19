@@ -3,6 +3,27 @@
 <div class="container-fluid">
     <br>
 
+    {{#if dealerInfoUpdated}}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{dealerInfoUpdated}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {{/if}}
+
+    {{#if dealerAdded}}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{dealerAdded}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {{/if}}
+
+    {{#if dealerDeleted}}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{dealerDeleted}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {{/if}}
+
     <div class="text-center">
         <h4>RSVP List for {{showName}}</h4>
         <h5>{{showDate}}</h5>
@@ -16,7 +37,7 @@
         <p>
             <a href="/admin/waitlist/{{showId}}" class="btn btn-warning">Waiting List</a>
         </p>
-        <br>    
+        <br>
         <hr>
         <p>
         <h4>Create Discount Code:</h4>
@@ -36,7 +57,6 @@
         </form>
         </p>
         <br>
-        <hr>
         <p>
         <h4>Available Discount Codes:</h4>
         <br>
@@ -47,12 +67,12 @@
                 Amount: {{this.percentage}}%
             </div>
             <div class="col-2">
-                <button class="btn btn-danger" data-bs-toggle="modal"
-                    data-bs-target="#deleteDiscountModal">X</button>
+                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteDiscountModal">X</button>
             </div>
         </div>
         <br>
-        <div class="modal fade" id="deleteDiscountModal" tabindex="-1" aria-labelledby="deleteDiscountModalLabel" aria-hidden="true">
+        <div class="modal fade" id="deleteDiscountModal" tabindex="-1" aria-labelledby="deleteDiscountModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content text-secondary">
                     <div class="modal-header">
@@ -83,6 +103,7 @@
             <br>
             <input type="hidden" name="id" value="{{showId}}">
             <input type="hidden" name="number_of_tables_for_rent" value="{{numberOfTablesForRent}}">
+            <input type="hidden" name="table_rent" value="{{tableRent}}">
 
             <div class="row">
                 <label for="dealerName">Name:</label>
@@ -106,8 +127,24 @@
         </form>
         <br>
         <hr>
+        <h4>Dealer Information:</h4>
+        <form action="/admin/edit-dealer-information/{{showId}}" method="post">
+            <div class="row">
+                <div class="form-group mb-3">
+                    <textarea class="form-control col-8" id="inputDealerInformation" name="dealer_information" rows="8"
+                        cols="40">{{dealerInformation}}</textarea>
+
+                </div>
+            </div>
+            <div class="col-3">
+                <button class="btn btn-primary" type="submit">Save Dealer Information</button>
+            </div>
+        </form>
+        <br>
+        <hr>
         <p>
-            <a class="btn btn-primary" href="mailto:?bcc={{#each dealerRsvpList}}{{this.email}}, {{/each}}" target="_blank">Email All Dealers</a>
+            <a class="btn btn-primary" href="mailto:?bcc={{#each dealerRsvpList}}{{this.email}}, {{/each}}"
+                target="_blank">Email All Dealers</a>
         </p>
         <hr>
         <div class="row">
