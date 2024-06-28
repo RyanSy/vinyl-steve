@@ -26,7 +26,6 @@ exports.render_admin_dashboard = async (req, res) => {
             { $or: [{ name: /record riot/i }, { name: /ryan record show/i }] },
         ],
     });
-    const numberOfShows = shows.length;
     const showsArray = helper_functions.createShowsArray(shows);
     const showsArraySorted = helper_functions.sortByDateStart(showsArray);
     const dataObject = {

@@ -13,7 +13,13 @@ exports.check_if_dealer_exists = async (req, res, next) => {
 
     await Dealer.findOne(filter)
         .then((result) => {
-            if (result) {
+            if (result.first_name) {
+                req.session.name = `${result.first_name} ${result.last_name}`;
+                req.session.email = result.email;
+                req.session.image = result.image;
+                next();
+            // next clause included because dealer model included only one property for name
+            } else if (result.name) {
                 req.session.name = result.name;
                 req.session.email = result.email;
                 req.session.image = result.image;
@@ -35,7 +41,8 @@ exports.check_if_dealer_exists = async (req, res, next) => {
 // save dealer info
 exports.save_dealer_info = async (req, res, next) => {
     const dealerInfo = req.body;
-    req.session.name = req.body.name;
+    console.log(dealerInfo)
+    req.session.name = `${req.body.first_name} ${req.body.last_name}`;
     req.session.email = req.body.email;
     req.session.image = req.body.image;
     const newDealer = new Dealer(dealerInfo);
@@ -220,7 +227,8 @@ exports.render_edit_profile = async (req, res) => {
             res.render('error');
         });
     res.render('edit-profile', {
-        dealerInfo: dealerInfo
+        dealerInfo: dealerInfo,
+        image: dealerInfo.image
     });
 }
 
