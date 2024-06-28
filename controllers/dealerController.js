@@ -166,15 +166,15 @@ exports.save_discount = async (req, res, next) => {
     const email = req.body.email;
     const rent = req.body.rent;
     const discount_code = req.body.code;
-    let percentage;
+    let amount;
 
-    // verify discount code and calculate percentage
+    // verify discount code and amount
     await Show.findOne({ _id: id})
             .then((show) => {
                 const discountCode = show.discount_codes.find(({ code }) => code === discount_code);
                 if (discountCode) {
-                    req.flash('discountSuccess', 'Discount code has been applied');
-                    percentage = discountCode.percentage * .01;
+                    req.flash('discountSuccess', 'Discount code has been applied.');
+                    amount = discountCode.amount;
                 }  else {
                     req.flash('discountFailure', 'Discount code not found.');
                 }
@@ -189,7 +189,7 @@ exports.save_discount = async (req, res, next) => {
         { _id: id } ,
         { 
             $set: {
-                'dealer_rsvp_list.$[el].rent_due': rent * percentage
+                'dealer_rsvp_list.$[el].rent_due': rent - amount
             }
         },
         { arrayFilters: [ { 'el.email': email }] }
@@ -202,7 +202,7 @@ exports.save_discount = async (req, res, next) => {
     await Dealer.findOneAndUpdate(
         { email: email },
         { $set: {
-            'shows.$[el].rent_due': rent * percentage
+            'shows.$[el].rent_due': rent - amount
             }
         },
         { arrayFilters: [{ 'el.id': id }] }

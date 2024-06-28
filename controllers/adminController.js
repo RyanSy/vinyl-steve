@@ -230,12 +230,12 @@ exports.render_waiting_list = async (req, res) => {
 exports.save_discount = async (req, res) => {
     const id = req.body.id;
     const email = req.body.email;
-    const percentage = req.body.discount_percentage;
+    const amount = req.body.discount_amount;
     const code = generateRandomString(8);
     const show = await Show.find({ _id: id });
     const discount = {
         code: code,
-        percentage: percentage,
+        amount: amount,
     };
 
     function generateRandomString(length) {
