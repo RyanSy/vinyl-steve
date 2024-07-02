@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const dealerSchema = new Schema(
   {
-    name: {type: String, required: true, max: 50},
+    name: {type: String, max: 50},
     first_name: {type: String, required: true, max: 50},
     last_name: {type: String, required: true, max: 50},
     company_name: {type: String, max: 50},
