@@ -24,7 +24,7 @@ exports.check_if_dealer_exists = async (req, res, next) => {
                 req.session.email = result.email;
                 req.session.image = result.image;
                 next();
-            } else {
+            } else if (!result) {
                 const userInfo = {
                     image: image,
                     email: email
