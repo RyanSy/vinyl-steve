@@ -13,23 +13,25 @@ exports.check_if_dealer_exists = async (req, res, next) => {
 
     await Dealer.findOne(filter)
         .then((result) => {
-            if (result.first_name) {
-                req.session.name = `${result.first_name} ${result.last_name}`;
-                req.session.email = result.email;
-                req.session.image = result.image;
-                next();
-            // next clause included because dealer model included only one property for name
-            } else if (result.name) {
-                req.session.name = result.name;
-                req.session.email = result.email;
-                req.session.image = result.image;
-                next();
-            } else if (result == null) {
+            if (result == null) {
                 const userInfo = {
                     image: image,
                     email: email
                 };
                 res.render('signup-form', userInfo);
+            }
+            else if (result.first_name) {
+                req.session.name = `${result.first_name} ${result.last_name}`;
+                req.session.email = result.email;
+                req.session.image = result.image;
+                next();
+            }
+            // next clause included because dealer model included only one property for name
+            else if (result.name) {
+                req.session.name = result.name;
+                req.session.email = result.email;
+                req.session.image = result.image;
+                next();
             }
         })
         .catch((err) =>{
