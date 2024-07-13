@@ -69,15 +69,15 @@
             {{else}}
             No <br>
             (${{this.rent_due}} due) <br>
-            <a href="#" data-bs-toggle="modal" data-bs-target="#discountModal">Discount</a>
+            <a href="#" data-bs-toggle="modal" data-bs-target="#discountModal-{{this.id}}">Discount</a>
             {{/if}}
 
-            <div class="modal fade" id="discountModal" tabindex="-1" aria-labelledby="discountModalLabel"
+            <div class="modal fade" id="discountModal-{{this.id}}" tabindex="-1" aria-labelledby="discountModalLabel"
                 aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content text-secondary">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Enter Discount Code:</h1>
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Enter Discount Code for {{this.name}} on {{this.date}}:</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -107,18 +107,18 @@
                 {{#if this.paid}}
                 {{else}}
                 <button type="button" class="btn btn-success mx-2 mb-2" data-bs-toggle="modal"
-                    data-bs-target="#paymentModal"><i class="bi bi-currency-dollar"></i></button>
+                    data-bs-target="#paymentModal-{{this.id}}"><i class="bi bi-currency-dollar"></i></button>
                 <button type="submit" class="btn btn-warning mx-2 mb-2"><i class="bi bi-pencil"></i></button>
                 {{/if}}
                 <button type="button" class="btn btn-danger mx-2 mb-2" data-bs-toggle="modal"
-                    data-bs-target="#deleteModal"><i class="bi bi-x-lg"></i></button>
+                    data-bs-target="#deleteModal-{{this.id}}"><i class="bi bi-x-lg"></i></button>
             </form>
 
         </div>
     </div>
 
     <!-- Delete Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal fade" id="deleteModal-{{this.id}}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content text-secondary">
                 <div class="modal-header">
@@ -126,11 +126,11 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Delete this RSVP?
+                    Delete this RSVP for {{this.name}} on {{this.date}}? 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary text-white" data-bs-dismiss="modal">Close</button>
-                    <form action="/delete-rsvp/{{this.id}}" method="post">
+                    <form action="/delete-rsvp" method="post">
                         <input type="hidden" name="show_id" value="{{this.id}}">
                         <input type="hidden" name="number_of_tables" value="{{this.number_of_tables}}">
                         <input type="hidden" name="name" value="{{../name}}">
@@ -143,7 +143,7 @@
     </div>
 
     {{!-- payment modal --}}
-    <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+    <div class="modal fade" id="paymentModal-{{this.id}}" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content text-secondary">
                 <div class="modal-header">

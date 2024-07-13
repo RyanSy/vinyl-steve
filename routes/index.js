@@ -44,7 +44,7 @@ router.get('/show/:id', requiresAuth(), show_controller.list_show);
 router.get('/my-rsvps', requiresAuth(), dealer_controller.show_dealer_rsvps);
 
 // delete dealer rsvp - by user 
-router.post('/delete-rsvp/:id', requiresAuth(), dealer_controller.delete_rsvp, (req, res) => { res.redirect('/my-rsvps') });
+router.post('/delete-rsvp', requiresAuth(), dealer_controller.delete_rsvp, (req, res) => { res.redirect('/my-rsvps') });
 
 // inform user of registration
 router.get('/already-registered', requiresAuth(), (req, res) => 
