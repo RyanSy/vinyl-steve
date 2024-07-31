@@ -24,6 +24,13 @@
     </div>
     {{/if}}
 
+    {{#if archiveNotesUpdated}}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{archiveNotesUpdated}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {{/if}}
+
     <div class="text-center">
         <h4>RSVP List for {{showName}}</h4>
         <h5>{{showDate}}</h5>
@@ -34,6 +41,7 @@
 
     <div class="container mt-3">
         <p>Number of tables available: {{numberOfTablesForRent}}</p>
+        <p>Tables Rented: {{tablesRented}}</p>
         <p>
             <a href="/admin/waitlist/{{showId}}" class="btn btn-warning">Waiting List</a>
         </p>
@@ -138,6 +146,21 @@
             </div>
             <div class="col-3">
                 <button class="btn btn-primary" type="submit">Save Dealer Information</button>
+            </div>
+        </form>
+        <br>
+        <hr>
+        <h4>Archive Notes:</h4>
+        <form action="/admin/edit-archive-notes/{{showId}}" method="post">
+            <div class="row">
+                <div class="form-group mb-3">
+                    <textarea class="form-control col-8" id="inputArchiveNotes" name="archive_notes" rows="8"
+                        cols="40">{{archiveNotes}}</textarea>
+
+                </div>
+            </div>
+            <div class="col-3">
+                <button class="btn btn-primary" type="submit">Save Archive Notes</button>
             </div>
         </form>
         <br>

@@ -28,10 +28,21 @@ exports.render_admin_dashboard = async (req, res) => {
     });
     const showsArray = helper_functions.createShowsArray(shows);
     const showsArraySorted = helper_functions.sortByDateStart(showsArray);
+
+    const pastShows = await Show.find({
+        $and: [
+            { date: { $gte: '2024-06-01', $lte: todaysDate } },
+            { $or: [{ name: /record riot/i }, { name: /ryan record show/i }] },
+        ],
+    });
+    const pastShowsArray = helper_functions.createShowsArray(pastShows);
+    const pastShowsArraySorted = helper_functions.sortByDateStart(pastShowsArray);
+
     const dataObject = {
         name: name,
         image: image,
         shows: showsArraySorted,
+        pastShows: pastShowsArraySorted,
         isAdmin: isAdmin,
     };
     isAdmin ? res.render('admin', dataObject) : res.send('Unauthorized');
@@ -72,6 +83,8 @@ exports.render_rsvp_list = async (req, res) => {
                 const paid = showObject.paid;
                 const discountCodes = showObject.discount_codes;
                 const dealerInformation = showObject.dealer_information;
+                const tablesRented = showObject.tables_rented;
+                const archiveNotes = showObject.archive_notes;
 
                 const dataObject = {
                     name: name,
@@ -87,9 +100,12 @@ exports.render_rsvp_list = async (req, res) => {
                     paid: paid,
                     discountCodes: discountCodes,
                     dealerInformation: dealerInformation,
+                    tablesRented: tablesRented,
+                    archiveNotes: archiveNotes,
                     dealerInfoUpdated: req.flash('dealerInfoUpdated'),
                     dealerAdded: req.flash('dealerAdded'),
-                    dealerDeleted: req.flash('dealerDeleted')
+                    dealerDeleted: req.flash('dealerDeleted'),
+                    archiveNotesUpdated: req.flash('archiveNotesUpdated')
                 };
                 isAdmin
                     ? res.render('rsvp-list', dataObject)
@@ -317,5 +333,23 @@ exports.edit_dealer_information = async (req, res, next) => {
     req.flash('dealerInfoUpdated', 'Dealer information has been updated.')
 
     next();
-    // res.redirect(`/admin/rsvp-list/${id}`);
+};
+
+// edit_archive_notes
+exports.edit_archive_notes = async (req, res, next) => {
+    const id = req.params.id;
+    const archiveNotes = req.body.archive_notes;
+
+    // save rsvp to shows db
+    const show = await Show.findOne({ _id: id });
+ 
+    show.archive_notes = archiveNotes;
+    show.save().catch((err) => {
+        console.log(err);
+        res.send('error');
+    });
+
+    req.flash('archiveNotesUpdated', 'Archive notes have been updated.')
+
+    next();
 };

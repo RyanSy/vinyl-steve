@@ -64,7 +64,8 @@ const showSchema = new Schema(
         max_tables_per_dealer: { type: Number },
         waiting_list: [{ email: String }],
         discount_codes: [{ code: String, amount: Number }],
-        dealer_information: {type: String, max: 200}
+        dealer_information: {type: String, max: 200},
+        archive_notes: {type: String, max: 200}
     },
     { strict: false }
 );

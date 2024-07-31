@@ -63,7 +63,8 @@ exports.createShowsArray = (shows) => {
             max_tables_per_dealer: shows[i].max_tables_per_dealer,
             discount_codes: discount_codes,
             dealer_information: shows[i].dealer_information,
-            tables_rented: shows[i].dealer_rsvp_list.reduce((n, {number_of_tables}) => n + number_of_tables, 0)
+            tables_rented: shows[i].dealer_rsvp_list.reduce((n, {number_of_tables}) => n + number_of_tables, 0),
+            archive_notes: shows[i].archive_notes,
         };
         showsArray.push(showObject);
     }
@@ -131,7 +132,9 @@ exports.createShowObject = (show) => {
         number_of_tables_for_rent: show.number_of_tables_for_rent,
         max_tables_per_dealer: show.max_tables_per_dealer,
         discount_codes: discount_codes,
-        dealer_information: show.dealer_information
+        dealer_information: show.dealer_information,
+        tables_rented: show.dealer_rsvp_list.reduce((n, {number_of_tables}) => n + number_of_tables, 0),
+        archive_notes: show.archive_notes
     };
 
     return showObject;

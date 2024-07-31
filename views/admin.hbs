@@ -8,27 +8,56 @@
         </p>
     </div>
 
-    <hr>
+    <br>
 
-    {{#each shows}}
-    <div class="row px-3 pt-3 pb-2 mx-3">
-        <div class="col-4">
-            {{this.month}} {{this.day}}, {{this.year}}
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="current-tab" data-bs-toggle="tab" data-bs-target="#current-tab-pane"
+                type="button" role="tab" aria-controls="current-tab-pane" aria-selected="true">Current Shows</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="past-tab" data-bs-toggle="tab" data-bs-target="#past-tab-pane" type="button"
+                role="tab" aria-controls="past-tab-pane" aria-selected="false">Past Shows</button>
+        </li>
+    </ul>
+
+    <br>
+    
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="current-tab-pane" role="tabpanel" aria-labelledby="current-tab" tabindex="0">
+            {{#each shows}}
+                <div class="row px-3 pt-3 pb-2 mx-3">
+                    <div class="col-4">
+                        {{this.month}} {{this.day}}, {{this.year}}
+                    </div>
+                    <div class="col-8">
+                        <a href="/admin/rsvp-list/{{this.id}}">{{this.name}}<br>{{this.city}}, {{this.state}}</a> <br>
+                        Tables available: {{#if this.number_of_tables_for_rent}} {{this.number_of_tables_for_rent}} {{else}} Sold
+                        out{{/if}} <br>
+                        Tables rented: {{this.tables_rented}}
+                    </div>
+                </div>
+            {{/each}}
         </div>
-        <div class="col-8">
-            <a href="/admin/rsvp-list/{{this.id}}">{{this.name}}<br>{{this.city}}, {{this.state}}</a> <br>
-            Tables available: {{#if this.number_of_tables_for_rent}} {{this.number_of_tables_for_rent}} {{else}} Sold out{{/if}} <br>
-            Tables rented: {{this.tables_rented}}
+
+        <div class="tab-pane fade" id="past-tab-pane" role="tabpanel" aria-labelledby="past-tab" tabindex="0">
+            {{#each pastShows}}
+                <div class="row px-3 pt-3 pb-2 mx-3">
+                    <div class="col-4">
+                        {{this.month}} {{this.day}}, {{this.year}}
+                    </div>
+                    <div class="col-8">
+                        <a href="/admin/rsvp-list/{{this.id}}">{{this.name}}<br>{{this.city}}, {{this.state}}</a> <br>
+                        Tables available: {{#if this.number_of_tables_for_rent}} {{this.number_of_tables_for_rent}} {{else}} Sold
+                        out{{/if}} <br>
+                        Tables rented: {{this.tables_rented}} <br>
+                        Archive notes: {{this.archive_notes}}
+                    </div>
+                </div>
+            {{/each}}
         </div>
     </div>
 
-    <div class="row px-3 pt-3 pb-2 mx-3">
-        <div class="col-4"></div>
-        <div class="col-8">
-            
-        </div>
-    </div>
-    {{/each}}
 </div>
 
 {{> footer}}

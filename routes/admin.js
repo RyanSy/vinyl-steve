@@ -33,5 +33,8 @@ router.get('/dealers-list', requiresAuth(), admin_controller.render_dealers_list
 // edit dealer information
 router.post('/edit-dealer-information/:id', requiresAuth(), admin_controller.edit_dealer_information, admin_controller.render_rsvp_list);
 
+// edit archive notes
+router.post('/edit-archive-notes/:id', requiresAuth(), admin_controller.edit_archive_notes, admin_controller.render_rsvp_list);
+
 
 module.exports = router;
