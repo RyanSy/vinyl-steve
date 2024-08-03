@@ -7,7 +7,12 @@
     </div>
     <br>
     {{#each dealersList}}
-        Name: {{this.name}} <br>
+        {{#if this.name}}
+        Name: {{this.name}}<br>
+        {{else}}
+        First Name: {{this.first_name}} <br>
+        Last Name: {{this.last_name}} <br>
+        {{/if}}
         Company Name: {{this.company_name}} <br>
         Address: {{this.address}} <br>
         {{#if this.city}}
