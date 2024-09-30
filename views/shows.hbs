@@ -4,6 +4,10 @@
 
 <div class="container-fluid d-flex w-auto p-3 flex-column">
     <div class="d-flex flex-column align-items-center">
+        {{#if isAdmin}}
+            <h4>Dealer View || <a href="/admin">Administrator View</a></h4>
+        {{/if}}
+        <br>
         <h3>Available Shows:</h3>
     </div>
     

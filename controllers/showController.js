@@ -2,14 +2,24 @@ const Show = require('../models/show');
 const moment = require('moment');
 const todaysDate = moment().format('YYYY-MM-DD');
 const helper_functions = require('../util/helperFunctions');
-const Dealer = require('../models/dealer')
 
 // render home page with list of record riots
 exports.list_shows = async (req, res) => {
+    let isAdmin = false;
+
+    if (
+        req.oidc.user.email == 'clubmekon@gmail.com' ||
+        req.oidc.user.email == 'recordriots@gmail.com' ||
+        req.oidc.user.email == 'recordshowmania@gmail.com' ||
+        req.oidc.user.email == 'johnbastone@optonline.net'
+    ) {
+        isAdmin = true;
+    }
+    
     const shows = await Show.find({
         $and: [
             { date: { $gte: todaysDate } },
-            { $or: [{ name: /record riot/i }, { name: /ryan record show/i }] },
+            { name: /record riot/i },
             { rsvp: true }
         ],
     });
@@ -21,7 +31,8 @@ exports.list_shows = async (req, res) => {
         email: req.session.email,
         shows: showsArraySorted,
         isLoggedIn: true,
-        profileUpdated: req.flash('profileUpdated')
+        profileUpdated: req.flash('profileUpdated'),
+        isAdmin: isAdmin
     };
 
     res.render('shows', dataObject);

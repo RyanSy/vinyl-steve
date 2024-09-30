@@ -16,35 +16,72 @@ exports.render_admin_dashboard = async (req, res) => {
     if (
         email == 'clubmekon@gmail.com' ||
         email == 'recordriots@gmail.com' ||
-        email == 'recordshowmania@gmail.com'
+        email == 'recordshowmania@gmail.com' ||
+        email == 'johnbastone@optonline.net'
     ) {
         isAdmin = true;
     }
-    const shows = await Show.find({
-        $and: [
-            { date: { $gte: todaysDate } },
-            { $or: [{ name: /record riot/i }, { name: /ryan record show/i }] },
-        ],
-    });
-    const showsArray = helper_functions.createShowsArray(shows);
-    const showsArraySorted = helper_functions.sortByDateStart(showsArray);
 
-    const pastShows = await Show.find({
-        $and: [
-            { date: { $gte: '2024-06-01', $lte: todaysDate } },
-            { $or: [{ name: /record riot/i }, { name: /ryan record show/i }] },
-        ],
-    });
-    const pastShowsArray = helper_functions.createShowsArray(pastShows);
-    const pastShowsArraySorted = helper_functions.sortByDateStart(pastShowsArray);
+    let shows;
+    
+    if (email == 'clubmekon@gmail.com' || email == 'recordriots@gmail.com') {
+        shows = await Show.find({
+            $and: [
+                { date: { $gte: todaysDate } },
+                { name: /record riot/i },
+                { posted_by: 'mayfieldmouse'}
+            ]
+        });
+    }
 
-    const dataObject = {
-        name: name,
-        image: image,
-        shows: showsArraySorted,
-        pastShows: pastShowsArraySorted,
-        isAdmin: isAdmin,
-    };
+    if (email == 'johnbastone@optonline.net' || email == 'recordshowmania@gmail.com') {
+        shows = await Show.find({
+            $and: [
+                { date: { $gte: todaysDate } },
+                { name: /record riot/i },
+                { posted_by: 'john bastone'}
+            ]
+        });
+    }
+
+    let dataObject;
+
+    if (isAdmin) {
+        const showsArray = helper_functions.createShowsArray(shows);
+        const showsArraySorted = helper_functions.sortByDateStart(showsArray);
+        let pastShows;
+
+        if (email == 'clubmekon@gmail.com' || email == 'recordriots@gmail.com') {
+            pastShows = await Show.find({
+                $and: [
+                    { date: { $gte: '2024-06-01', $lte: todaysDate } },
+                    { name: /record riot/i },
+                    { posted_by: 'mayfieldmouse'}
+                ],
+            });
+        }
+        if (email == 'johnbastone@optonline.net' || email == 'recordshowmania@gmail.com') {
+            pastShows = await Show.find({
+                $and: [
+                    { date: { $gte: '2024-06-01', $lte: todaysDate } },
+                    { name: /record riot/i },
+                    { posted_by: 'john bastone'}
+                ],
+            });
+        }
+
+        const pastShowsArray = helper_functions.createShowsArray(pastShows);
+        const pastShowsArraySorted = helper_functions.sortByDateStart(pastShowsArray);
+
+        dataObject = {
+            name: name,
+            image: image,
+            shows: showsArraySorted,
+            pastShows: pastShowsArraySorted,
+            isAdmin: isAdmin,
+        };
+    }
+
     isAdmin ? res.render('admin', dataObject) : res.send('Unauthorized');
 };
 
@@ -60,7 +97,9 @@ exports.render_rsvp_list = async (req, res) => {
     if (
         req.oidc.user.email == 'clubmekon@gmail.com' ||
         req.oidc.user.email == 'recordriots@gmail.com' ||
-        req.oidc.user.email == 'recordshowmania@gmail.com'
+        req.oidc.user.email == 'recordshowmania@gmail.com' ||
+        req.oidc.user.email == 'johnbastone@optonline.net' ||
+        req.oidc.user.email == 'ryanb.sy@gmail.com' 
     ) {
         isAdmin = true;
     }
@@ -303,7 +342,6 @@ exports.render_dealers_list =  async (req, res) => {
     let dealersList;
     await Dealer.find({})
         .then((dealers) => {
-            console.log(dealers);
             dealersList = dealers;
         })
         .catch((err) => {

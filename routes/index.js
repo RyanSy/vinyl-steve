@@ -10,7 +10,7 @@ const payment_controller = require('../controllers/paymentController');
 router.get('/', (req, res) => {
     if (!req.oidc.isAuthenticated()) {
         res.render('index', { title: 'Vinyl Steve', isLoggedIn: false });
-    } else if (req.oidc.user.email == 'clubmekon@gmail.com' || req.oidc.user.email == 'recordriots@gmail.com' || req.oidc.user.email == 'recordshowmania@gmail.com') {
+    } else if (req.oidc.user.email == 'clubmekon@gmail.com' || req.oidc.user.email == 'recordriots@gmail.com' || req.oidc.user.email == 'recordshowmania@gmail.com' ) {
         res.redirect('/admin');
     } else {
         res.redirect('/home');
