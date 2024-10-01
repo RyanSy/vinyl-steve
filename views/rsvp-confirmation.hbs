@@ -16,10 +16,10 @@
 
         <div class="form-group mb-3">
             Rent Due: ${{rentDue}} <br>
-            Optional - choose a payment method below to pre-pay your table fees ($5 convenience fee will be applied):
+            {{!-- Optional - choose a payment method below to pre-pay your table fees ($5 convenience fee will be applied): --}}
         </div>
 
-        <form id="savePaymentForm" action="/save-payment" method="post">
+        {{!-- <form id="savePaymentForm" action="/save-payment" method="post">
             <input type="hidden" name="email" value="{{email}}">
             <input type="hidden" name="id" value="{{id}}">
             <input type="hidden" name="rent_due" value="{{rentDue}}">
@@ -28,7 +28,7 @@
         <div class="form-group text-center mb-3">
             <div id="paypal-button-container"></div>
             <p id="result-message"></p>
-        </div>
+        </div> --}}
     </div>
 </main>
 
