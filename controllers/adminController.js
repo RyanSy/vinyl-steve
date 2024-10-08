@@ -17,19 +17,20 @@ exports.render_admin_dashboard = async (req, res) => {
         email == 'clubmekon@gmail.com' ||
         email == 'recordriots@gmail.com' ||
         email == 'recordshowmania@gmail.com' ||
-        email == 'johnbastone@optonline.net'
+        email == 'johnbastone@optonline.net' ||
+        email == 'ryanb.sy@gmail.com'
     ) {
         isAdmin = true;
     }
 
     let shows;
     
-    if (email == 'clubmekon@gmail.com' || email == 'recordriots@gmail.com') {
+    if (email == 'clubmekon@gmail.com' || email == 'recordriots@gmail.com' || email == 'ryanb.sy@gmail.com') {
         shows = await Show.find({
             $and: [
                 { date: { $gte: todaysDate } },
                 { name: /record riot/i },
-                { posted_by: 'mayfieldmouse'}
+                { $or: [{posted_by: 'mayfieldmouse'}, {posted_by: 'ryan sy'}] }
             ]
         });
     }
