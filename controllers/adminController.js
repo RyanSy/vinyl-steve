@@ -13,18 +13,20 @@ exports.render_admin_dashboard = async (req, res) => {
 
     let isAdmin = false;
 
+    // admin accounts
     if (
         email == 'clubmekon@gmail.com' ||
         email == 'recordriots@gmail.com' ||
         email == 'recordshowmania@gmail.com' ||
-        email == 'johnbastone@optonline.net' ||
+        email == 'exilecds@optonline.net' ||
         email == 'ryanb.sy@gmail.com'
     ) {
         isAdmin = true;
     }
 
     let shows;
-    
+
+    // find future shows from db depending on user
     if (email == 'clubmekon@gmail.com' || email == 'recordriots@gmail.com' || email == 'ryanb.sy@gmail.com') {
         shows = await Show.find({
             $and: [
@@ -35,7 +37,7 @@ exports.render_admin_dashboard = async (req, res) => {
         });
     }
 
-    if (email == 'johnbastone@optonline.net' || email == 'recordshowmania@gmail.com') {
+    if (email == 'exilecds@optonline.net' || email == 'recordshowmania@gmail.com') {
         shows = await Show.find({
             $and: [
                 { date: { $gte: todaysDate } },
@@ -50,6 +52,8 @@ exports.render_admin_dashboard = async (req, res) => {
     if (isAdmin) {
         const showsArray = helper_functions.createShowsArray(shows);
         const showsArraySorted = helper_functions.sortByDateStart(showsArray);
+
+        // find past shows from db depending on user
         let pastShows;
 
         if (email == 'clubmekon@gmail.com' || email == 'recordriots@gmail.com') {
@@ -61,7 +65,7 @@ exports.render_admin_dashboard = async (req, res) => {
                 ],
             });
         }
-        if (email == 'johnbastone@optonline.net' || email == 'recordshowmania@gmail.com') {
+        if (email == 'exilecds@optonline.net' || email == 'recordshowmania@gmail.com') {
             pastShows = await Show.find({
                 $and: [
                     { date: { $gte: '2024-06-01', $lte: todaysDate } },
