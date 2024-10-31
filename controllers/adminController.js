@@ -56,7 +56,7 @@ exports.render_admin_dashboard = async (req, res) => {
         // find past shows from db depending on user
         let pastShows;
 
-        if (email == 'clubmekon@gmail.com' || email == 'recordriots@gmail.com') {
+        if (email == 'clubmekon@gmail.com' || email == 'recordriots@gmail.com' || email == 'ryanb.sy@gmail.com') {
             pastShows = await Show.find({
                 $and: [
                     { date: { $gte: '2024-06-01', $lte: todaysDate } },
@@ -85,6 +85,8 @@ exports.render_admin_dashboard = async (req, res) => {
             pastShows: pastShowsArraySorted,
             isAdmin: isAdmin,
         };
+    } else {
+        res.send('Unauthorized');
     }
 
     isAdmin ? res.render('admin', dataObject) : res.send('Unauthorized');
