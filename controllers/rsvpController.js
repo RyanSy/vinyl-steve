@@ -1,6 +1,16 @@
 const Show = require('../models/show');
 const Dealer = require('../models/dealer');
 const helperFunctions = require('../util/helperFunctions');
+const nodemailer = require('nodemailer');
+const transporter = nodemailer.createTransport({
+    host: process.env.BREVO_SMTP_SERVER,
+    port: process.env.BREVO_SMTP_PORT,
+    secure: false, // true for port 465, false for other ports
+    auth: {
+        user: process.env.BREVO_LOGIN,
+        pass: process.env.BREVO_SMTP_KEY,
+    },
+});
 
 // save rsvp
 exports.save_rsvp = async (req, res, next) => {
@@ -92,6 +102,23 @@ exports.save_rsvp = async (req, res, next) => {
         paypalClientId: process.env.PAYPAL_CLIENT_ID,
         rentDue: rentDue
     };
+
+    // send confirmation email
+    // async..await is not allowed in global scope, must use a wrapper
+    async function main() {
+        // send mail with defined transport object
+        const info = await transporter.sendMail({
+            from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
+            to: userEmail, // list of receivers
+            subject: `RSVP Confirmation: ${showName} - ${showDate}`, // Subject line
+            text: `Dear ${user}, Your RSVP for the ${showName} on ${showDate} has been confirmed. Thank you, Vinyl Steve.`, // plain text body
+            html: `<p>Dear ${user},</p> 
+                <p>Your RSVP for the ${showName} on ${showDate} has been confirmed.</p> 
+                <p>Thank you, <br> Vinyl Steve.</p>` // html body
+        });
+    }
+
+    main().catch(console.error);
 
     res.render('rsvp-confirmation', dataObject);
 };
