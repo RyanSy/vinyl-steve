@@ -166,8 +166,42 @@
         <br>
         <hr>
         <p>
-            <a class="btn btn-primary" href="mailto:?bcc={{#each dealerRsvpList}}{{this.email}}, {{/each}}"
-                target="_blank">Email All Dealers</a>
+            {{!-- <a class="btn btn-primary" href="mailto:?bcc={{#each dealerRsvpList}}{{this.email}}, {{/each}}"
+                target="_blank">Email All Dealers</a> --}}
+            <!-- Email All Dealers Button trigger modal -->
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#emailAllDealersModal">Email All Dealers</button>
+
+        <!-- Email All Dealers Modal -->
+        <div class="modal bg-dark min-vh-100 fade" id="emailAllDealersModal" tabindex="-1" aria-labelledby="#emailAlldealersModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content">
+                    <div class="modal-header bg-dark" data-bs-theme="dark">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Email All Dealers</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <form action="/admin/email-all-dealers" method="post">
+                        <div class="modal-body bg-dark">
+                            <div class="mb-3">
+                                <label for="exampleFormControlInput1" class="form-label">To:</label>
+                                <ul class="list-group list-group-horizontal">
+                                    {{#each dealerRsvpList}}<li class="list-group-item me-3">{{this.email}}</li>{{/each}}
+                                </ul>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="exampleFormControlTextarea1" class="form-label">Message</label>
+                                <textarea class="form-control" id="exampleFormControlTextarea1" name="message" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer bg-dark">
+                            <button type="button" class="btn btn-secondary text-white" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Send</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         </p>
         <hr>
         <div class="row">

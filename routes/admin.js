@@ -36,5 +36,7 @@ router.post('/edit-dealer-information/:id', requiresAuth(), admin_controller.edi
 // edit archive notes
 router.post('/edit-archive-notes/:id', requiresAuth(), admin_controller.edit_archive_notes, admin_controller.render_rsvp_list);
 
+// email all dealers
+// router.post('/email-all-dealers', requiresAuth(), admin_controller.email_all_dealers, admin_controller.render_rsvp_list);
 
 module.exports = router;

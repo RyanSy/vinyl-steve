@@ -398,3 +398,22 @@ exports.edit_archive_notes = async (req, res, next) => {
 
     next();
 };
+
+// email all dealers
+exports.email_all_dealers = async (req, res, next) => {
+    const id = req.params.id;
+    const archiveNotes = req.body.archive_notes;
+
+    // save rsvp to shows db
+    const show = await Show.findOne({ _id: id });
+ 
+    show.archive_notes = archiveNotes;
+    show.save().catch((err) => {
+        console.log(err);
+        res.send('error');
+    });
+
+    req.flash('messageSent', 'Message sent successfully.')
+
+    next();
+};
