@@ -31,6 +31,13 @@
     </div>
     {{/if}}
 
+    {{#if messageSent}}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{messageSent}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {{/if}}
+
     <div class="text-center">
         <h4>RSVP List for {{showName}}</h4>
         <h5>{{showDate}}</h5>
@@ -121,6 +128,20 @@
             </div>
 
             <div class="row">
+                <label for="dealerEmail">Email:</label>
+                <div class="form-group col-md-4 mb-3">
+                    <input type="text" class="form-control" id="dealerEmail" name="email">
+                </div>
+            </div>
+
+            <div class="row">
+                <label for="dealerNotes">Dealer Notes:</label>
+                <div class="form-group col-md-4 mb-3">
+                    <input type="text" class="form-control" id="dealerNotes" name="notes">
+                </div>
+            </div>
+
+            <div class="row">
                 <label for="number of tables">Number Of Tables: </label>
                 <div class="form-group col-4 col-md-2 mb-3">
                     <input class="form-control" type="number" min="0" name="number_of_tables"
@@ -173,28 +194,36 @@
 
         <!-- Email All Dealers Modal -->
         <div class="modal bg-dark min-vh-100 fade" id="emailAllDealersModal" tabindex="-1" aria-labelledby="#emailAlldealersModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-fullscreen">
+            <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header bg-dark" data-bs-theme="dark">
+                    <div class="modal-header bg-secondary" data-bs-theme="dark">
                         <h1 class="modal-title fs-5" id="exampleModalLabel">Email All Dealers</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
-                    <form action="/admin/email-all-dealers" method="post">
-                        <div class="modal-body bg-dark">
+                    <form id="emailForm" action="/admin/email-all-dealers" method="post">
+                        <input type="hidden" name="id" value="{{showId}}">
+                        <div class="modal-body bg-secondary">
                             <div class="mb-3">
-                                <label for="exampleFormControlInput1" class="form-label">To:</label>
-                                <ul class="list-group list-group-horizontal">
-                                    {{#each dealerRsvpList}}<li class="list-group-item me-3">{{this.email}}</li>{{/each}}
-                                </ul>
+                                <label for="email" class="form-label">To:</label>
+                                {{#each dealerRsvpList}}
+                                    <fieldset>
+                                            <label><input type="checkbox" name="email" value="{{this.email}}" checked/> {{this.name}} / {{this.email}}</label>
+                                    </fieldset>
+                                {{/each}}  
                             </div>
 
                             <div class="mb-3">
-                                <label for="exampleFormControlTextarea1" class="form-label">Message</label>
-                                <textarea class="form-control" id="exampleFormControlTextarea1" name="message" rows="3"></textarea>
+                                <label for="subject" class="form-label">Subject</label>
+                                <input type="text" class="form-control" name="subject" aria-describedby="subject">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="message" class="form-label">Message</label>
+                                <textarea class="form-control" name="message" rows="3"></textarea>
                             </div>
                         </div>
-                        <div class="modal-footer bg-dark">
+                        <div class="modal-footer bg-dark-subtle">
                             <button type="button" class="btn btn-secondary text-white" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Send</button>
                         </div>

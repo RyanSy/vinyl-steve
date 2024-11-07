@@ -140,7 +140,7 @@ exports.delete_rsvp = async (req, res, next) => {
     } };
     await Dealer.updateOne(dealerFilter, dealerUpdate)
         .catch((err) => {
-            consolw.log(err)
+            console.log(err)
             res.render('error');
             return;    
         });

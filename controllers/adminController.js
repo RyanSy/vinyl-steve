@@ -3,6 +3,16 @@ const Dealer = require('../models/dealer');
 const moment = require('moment');
 const todaysDate = moment().format('YYYY-MM-DD');
 const helper_functions = require('../util/helperFunctions');
+const nodemailer = require('nodemailer');
+const transporter = nodemailer.createTransport({
+    host: process.env.BREVO_SMTP_SERVER,
+    port: process.env.BREVO_SMTP_PORT,
+    secure: false, // true for port 465, false for other ports
+    auth: {
+        user: process.env.BREVO_LOGIN,
+        pass: process.env.BREVO_SMTP_KEY,
+    },
+});
 
 // render admin dashboard
 exports.render_admin_dashboard = async (req, res) => {
@@ -151,7 +161,8 @@ exports.render_rsvp_list = async (req, res) => {
                     dealerInfoUpdated: req.flash('dealerInfoUpdated'),
                     dealerAdded: req.flash('dealerAdded'),
                     dealerDeleted: req.flash('dealerDeleted'),
-                    archiveNotesUpdated: req.flash('archiveNotesUpdated')
+                    archiveNotesUpdated: req.flash('archiveNotesUpdated'),
+                    messageSent: req.flash('messageSent')
                 };
                 isAdmin
                     ? res.render('rsvp-list', dataObject)
@@ -169,6 +180,8 @@ exports.render_rsvp_list = async (req, res) => {
 exports.add_dealer_rsvp = async (req, res) => {
     const id = req.body.id;
     const name = req.body.name;
+    const email = req.body.email;
+    const dealerNotes = req.body.notes;
     const tableRent = req.body.table_rent;
     const numberOfTablesForRent = Number(req.body.number_of_tables_for_rent);
     const numberOfTables = Number(req.body.number_of_tables);
@@ -178,6 +191,8 @@ exports.add_dealer_rsvp = async (req, res) => {
     const show = await Show.find({ _id: id });
     const dealerRsvp = {
         name: name,
+        email: email,
+        notes: dealerNotes,
         number_of_tables: numberOfTables,
         rent_due: numberOfTables * tableRent
     };
@@ -401,19 +416,30 @@ exports.edit_archive_notes = async (req, res, next) => {
 
 // email all dealers
 exports.email_all_dealers = async (req, res, next) => {
-    const id = req.params.id;
-    const archiveNotes = req.body.archive_notes;
+    const id = req.body.id;
+    const dealerEmails = req.body.email;
+    const subject = req.body.subject;
+    const message = req.body.message;
 
-    // save rsvp to shows db
-    const show = await Show.findOne({ _id: id });
- 
-    show.archive_notes = archiveNotes;
-    show.save().catch((err) => {
-        console.log(err);
-        res.send('error');
-    });
+    console.log(req.body)
+
+    // async..await is not allowed in global scope, must use a wrapper
+    async function main() {
+        // send mail with defined transport object
+        const info = await transporter.sendMail({
+            from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
+            to: dealerEmails, // list of receivers
+            subject: subject, // subject line
+            text: message, // plain text body
+            /**
+             * html:// html body
+             *  */ 
+        });
+    }
+
+    main().catch(console.error);
 
     req.flash('messageSent', 'Message sent successfully.')
 
-    next();
+    res.redirect(`/admin/rsvp-list/${id}`);
 };
