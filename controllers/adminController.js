@@ -86,7 +86,7 @@ exports.render_admin_dashboard = async (req, res) => {
         }
 
         const pastShowsArray = helper_functions.createShowsArray(pastShows);
-        const pastShowsArraySorted = helper_functions.sortByDateStart(pastShowsArray);
+        const pastShowsArraySorted = helper_functions.sortByDateEnd(pastShowsArray);
 
         dataObject = {
             name: name,

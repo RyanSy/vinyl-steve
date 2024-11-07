@@ -77,6 +77,12 @@ exports.sortByDateStart = (showsArray) => {
     });
 };
 
+exports.sortByDateEnd = (showsArray) => {
+    return showsArray.sort(function (a, b) {
+        return new Date(b.date_start) - new Date(a.date_start);
+    });
+};
+
 exports.createShowObject = (show) => {
     let discount_codes;
     show.discount_codes ? discount_codes = show.discount_codes : discount_codes = [];
