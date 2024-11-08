@@ -1,31 +1,58 @@
-const paypalClientId = process.env.PAYPAL_CLIENT_ID;
-const paypalClientSecret = process.env.PAYPAL_CLIENT_SECRET;
+const paypalClientIdSteve = process.env.PAYPAL_CLIENT_ID_STEVE;
+const paypalClientSecretSteve = process.env.PAYPAL_CLIENT_SECRET_STEVE;
+const paypalClientIdJohn = process.env.PAYPAL_CLIENT_ID_JOHN;
+const paypalClientSecretJohn = process.env.PAYPAL_CLIENT_SECRET_JOHN;
 const base = process.env.PAYPAL_BASE;
 
 /**
  * Generate an OAuth 2.0 access token for authenticating with PayPal REST APIs.
  * @see https://developer.paypal.com/api/rest/authentication/
  */
-const generateAccessToken = async () => {
-    try {
-        if (!paypalClientId || !paypalClientSecret) {
-            throw new Error('MISSING_API_CREDENTIALS');
+const generateAccessToken = async (posted_by) => {
+    if (posted_by == 'mayfieldmouse') {
+        try {
+            if (!paypalClientIdSteve || !paypalClientSecretSteve) {
+                throw new Error('MISSING_API_CREDENTIALS');
+            }
+            const auth = Buffer.from(
+                paypalClientIdSteve + ':' + paypalClientSecretJohn
+            ).toString('base64');
+            const response = await fetch(`${base}/v1/oauth2/token`, {
+                method: 'POST',
+                body: 'grant_type=client_credentials',
+                headers: {
+                    Authorization: `Basic ${auth}`,
+                },
+            });
+    
+            const data = await response.json();
+            return data.access_token;
+        } catch (error) {
+            console.error('Failed to generate Access Token:', error);
         }
-        const auth = Buffer.from(
-            paypalClientId + ':' + paypalClientSecret
-        ).toString('base64');
-        const response = await fetch(`${base}/v1/oauth2/token`, {
-            method: 'POST',
-            body: 'grant_type=client_credentials',
-            headers: {
-                Authorization: `Basic ${auth}`,
-            },
-        });
+    }
 
-        const data = await response.json();
-        return data.access_token;
-    } catch (error) {
-        console.error('Failed to generate Access Token:', error);
+    if (posted_by == 'john bastone') {
+        try {
+            if (!paypalClientIdJohn || !paypalClientSecretJohn) {
+                throw new Error('MISSING_API_CREDENTIALS');
+            }
+            const auth = Buffer.from(
+                paypalClientIdJohn + ':' + paypalClientSecretJohn
+            ).toString('base64');
+            const response = await fetch(`${base}/v1/oauth2/token`, {
+                method: 'POST',
+                body: 'grant_type=client_credentials',
+                headers: {
+                    Authorization: `Basic ${auth}`,
+                },
+            });
+    
+            const data = await response.json();
+            return data.access_token;
+        } catch (error) {
+            console.error('Failed to generate Access Token:', error);
+        }
     }
 };
 
@@ -40,7 +67,7 @@ exports.createOrder = async (cart) => {
         cart
     );
 
-    const accessToken = await generateAccessToken();
+    const accessToken = await generateAccessToken(cart[0].posted_by);
     const url = `${base}/v2/checkout/orders`;
     const payload = {
         intent: 'CAPTURE',

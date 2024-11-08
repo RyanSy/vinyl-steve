@@ -32,13 +32,30 @@
     </div>
 </main>
 
-<script src="https://www.paypal.com/sdk/js?client-id={{paypalClientId}}&components=buttons&enable-funding=venmo,card&disable-funding=paylater" data-sdk-integration-source="integrationbuilder_sc"></script>
+{{#if posted_by_steve}}
+<script src="https://www.paypal.com/sdk/js?client-id={{paypalClientIdSteve}}&components=buttons&enable-funding=venmo,card&disable-funding=paylater" data-sdk-integration-source="integrationbuilder_sc"></script>
+{{/if}}
+
+{{#if posted_by_john}}
+<script src="https://www.paypal.com/sdk/js?client-id={{paypalClientIdJohn}}&components=buttons&enable-funding=venmo,card&disable-funding=paylater" data-sdk-integration-source="integrationbuilder_sc"></script>
+{{/if}}
 
 <script>
+    let posted_by;
+
+    if ({{posted_by_steve}}) {
+        posted_by = 'mayfieldmouse';
+    }
+
+    if ({{posted_by_john}}) {
+        posted_by = 'john_bastone';
+    }
+
     let cart = {
         id: '{{id}}',
         paid: true,
-        rentDue: {{rentDue}} + 5
+        rentDue: {{rentDue}} + 5,
+        posted_by: posted_by
     };
 
     // after successful payment, submit save payment form

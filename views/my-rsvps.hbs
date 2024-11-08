@@ -172,15 +172,24 @@
         </div>
     </div>
 
+    {{#if this.posted_by_steve}}
     <script
-        src="https://www.paypal.com/sdk/js?client-id={{../paypalClientId}}&components=buttons&enable-funding=venmo,card&disable-funding=paylater"
+        src="https://www.paypal.com/sdk/js?client-id={{../paypalClientIdSteve}}&components=buttons&enable-funding=venmo,card&disable-funding=paylater"
         data-sdk-integration-source="integrationbuilder_sc"></script>
+    {{/if}}
+
+    {{!-- {{#if this.posted_by_john}}
+    <script
+        src="https://www.paypal.com/sdk/js?client-id={{../paypalClientIdJohn}}&components=buttons&enable-funding=venmo,card&disable-funding=paylater"
+        data-sdk-integration-source="integrationbuilder_sc"></script>
+    {{/if}} --}}
 
     <script>
         let cart = {
             id: {{ this.id }},
             paid: true,
-            rentDue: {{ this.rent_due }} + 5
+            rentDue: {{ this.rent_due }} + 5,
+            posted_by: {{this.posted_by}}
         };
 
         // after successful payment, submit save payment form

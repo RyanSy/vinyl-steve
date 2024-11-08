@@ -39,6 +39,21 @@ exports.save_rsvp = async (req, res, next) => {
 
     const show = await Show.find({ _id: showId });
 
+    // define paypal client id based on who posted show
+    let paypalClientIdSteve;
+    let paypalClientIdJohn;
+    let posted_by_steve;
+    let posted_by_john;
+
+    if (show[0].posted_by == 'mayfieldmouse') {
+        paypalClientIdSteve = process.env.PAYPAL_CLIENT_ID_STEVE;
+        posted_by_steve = true;
+    }
+    if (show[0].posted_by == 'john bastone') {
+        paypalClientIdJohn = process.env.PAYPAL_CLIENT_ID_JOHN;
+        posted_by_john = true;
+    }
+
     // if dealer rsvp list contains user, dont save and inform user
     const containsDealer = show[0].dealer_rsvp_list.some((user) => user.email === req.session.email);
     if (containsDealer) {
@@ -53,7 +68,11 @@ exports.save_rsvp = async (req, res, next) => {
         number_of_tables: numberOfTables,
         notes: dealerNotes,
         paid: paid,
-        rent_due: rentDue
+        rent_due: rentDue,
+        paypalClientIdSteve: paypalClientIdSteve,
+        paypalClientIdJohn: paypalClientIdJohn,
+        posted_by_steve: posted_by_steve,
+        posted_by_john: posted_by_john
     };
     show[0].number_of_tables_for_rent = newNumberOfTablesForRent;
     show[0].dealer_rsvp_list.addToSet(dealerRsvp);
@@ -77,7 +96,11 @@ exports.save_rsvp = async (req, res, next) => {
             number_of_tables: numberOfTables,
             notes: dealerNotes,
             paid: paid,
-            rent_due: rentDue
+            rent_due: rentDue,
+            paypalClientIdSteve: paypalClientIdSteve,
+            paypalClientIdJohn: paypalClientIdJohn,
+            posted_by_steve: posted_by_steve,
+            posted_by_john: posted_by_john
         }
     } };
 
@@ -99,8 +122,10 @@ exports.save_rsvp = async (req, res, next) => {
         id: showId,
         name: showName,
         date: showDate,
-        paypalClientId: process.env.PAYPAL_CLIENT_ID,
-        rentDue: rentDue
+        rentDue: rentDue,
+        paypalClientIdSteve: paypalClientIdSteve,
+        paypalClentIdJohn: paypalClientIdJohn,
+        posted_by: show[0].posted_by
     };
 
     // send confirmation email

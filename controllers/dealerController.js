@@ -63,11 +63,15 @@ exports.show_dealer_rsvps = async (req, res) => {
     const image = req.session.image;
     const email = req.session.email;
 
+    // define paypal client id based on who posted show
+    const paypalClientIdSteve = process.env.PAYPAL_CLIENT_ID_STEVE;
+    // const paypalClientIdJohn = process.env.PAYPAL_CLIENT_ID_JOHN;
+
     let message;
     let shows;
 
     await Dealer.find({ email: email })
-        .then((result) => {
+        .then(async (result) => {
             if (!result[0]) {
                 message = 'You have no shows listed.';
             } else if (result[0]) {
@@ -81,14 +85,30 @@ exports.show_dealer_rsvps = async (req, res) => {
                     });
                 };
                 shows = sortByDate(result[0].shows);
+                
+                for (let i = 0; i < shows.length; i++) {
+                    await Show.findOne({_id: shows[i].id})
+                        .then((show) => {
+                            shows[i].posted_by = show.posted_by;
+                            if (shows[i].posted_by == 'mayfieldmouse') {
+                                shows[i].posted_by_steve = true;
+                            }
+                            if (shows[i].posted_by == 'john bastone') {
+                                shows[i].posted_by_john = true;
+                            }
+                        })
+                        .catch((err) => {
+                            console.error(err);
+                            res.render('error');
+                        });
+                }       
             } 
-
         })
         .catch((err) =>{
             console.log(err);
             res.render('error');
         });
-    
+        
     const dataObject = {
         name: name,
         image: image,
@@ -97,8 +117,10 @@ exports.show_dealer_rsvps = async (req, res) => {
         message: message,
         discountFailure: req.flash('discountFailure'),
         discountSuccess: req.flash('discountSuccess'),
-        paypalClientId: process.env.PAYPAL_CLIENT_ID
+        paypalClientIdSteve: paypalClientIdSteve
+        // paypalClentIdJohn: paypalClientIdJohn
     }
+
     res.render('my-rsvps', dataObject);
 }
 

@@ -2,6 +2,7 @@ const Show = require('../models/show');
 const Dealer = require('../models/dealer');
 const paypalFunctions = require('../util/paypalFunctions');
 
+// update payment status in db
 exports.save_payment = async (req, res) => {
     const id = req.body.id;
     const email = req.body.email;
