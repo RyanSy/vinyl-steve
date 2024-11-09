@@ -15,7 +15,7 @@ const generateAccessToken = async (posted_by) => {
                 throw new Error('MISSING_API_CREDENTIALS');
             }
             const auth = Buffer.from(
-                paypalClientIdSteve + ':' + paypalClientSecretJohn
+                paypalClientIdSteve + ':' + paypalClientSecretSteve
             ).toString('base64');
             const response = await fetch(`${base}/v1/oauth2/token`, {
                 method: 'POST',

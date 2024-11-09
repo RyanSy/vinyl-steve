@@ -42,16 +42,18 @@ exports.save_rsvp = async (req, res, next) => {
     // define paypal client id based on who posted show
     let paypalClientIdSteve;
     let paypalClientIdJohn;
-    let posted_by_steve;
-    let posted_by_john;
+    let postedBySteve;
+    let postedByJohn;
 
     if (show[0].posted_by == 'mayfieldmouse') {
         paypalClientIdSteve = process.env.PAYPAL_CLIENT_ID_STEVE;
-        posted_by_steve = true;
+        postedBySteve = true;
+        postedByJohn = false;
     }
     if (show[0].posted_by == 'john bastone') {
         paypalClientIdJohn = process.env.PAYPAL_CLIENT_ID_JOHN;
-        posted_by_john = true;
+        postedByJohn = true;
+        postedBySteve = false;
     }
 
     // if dealer rsvp list contains user, dont save and inform user
@@ -71,8 +73,8 @@ exports.save_rsvp = async (req, res, next) => {
         rent_due: rentDue,
         paypalClientIdSteve: paypalClientIdSteve,
         paypalClientIdJohn: paypalClientIdJohn,
-        posted_by_steve: posted_by_steve,
-        posted_by_john: posted_by_john
+        posted_by_steve: postedBySteve,
+        posted_by_john: postedByJohn
     };
     show[0].number_of_tables_for_rent = newNumberOfTablesForRent;
     show[0].dealer_rsvp_list.addToSet(dealerRsvp);
@@ -99,8 +101,8 @@ exports.save_rsvp = async (req, res, next) => {
             rent_due: rentDue,
             paypalClientIdSteve: paypalClientIdSteve,
             paypalClientIdJohn: paypalClientIdJohn,
-            posted_by_steve: posted_by_steve,
-            posted_by_john: posted_by_john
+            posted_by_steve: postedBySteve,
+            posted_by_john: postedByJohn
         }
     } };
 
@@ -125,7 +127,8 @@ exports.save_rsvp = async (req, res, next) => {
         rentDue: rentDue,
         paypalClientIdSteve: paypalClientIdSteve,
         paypalClentIdJohn: paypalClientIdJohn,
-        posted_by: show[0].posted_by
+        posted_by_steve: postedBySteve,
+        posted_by_john: postedByJohn
     };
 
     // send confirmation email
