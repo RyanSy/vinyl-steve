@@ -3,8 +3,19 @@
 <div class="container-fluid p-3">
     <div class="text-center">
         <h1>Dealers List</h1>
-        <p><a class="btn btn-primary" target="_blank" href="mailto:?bcc={{#each dealersList}}{{this.email}}, {{/each}}">Email All Dealers</a></p>
+        <br>
+        <p>
+            <!-- Email All Dealers Button trigger modal -->
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#emailAllDealersModal">Email All Dealers</button>
+        </p>
     </div>
+    <br>
+    {{#if messageSent}}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{messageSent}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {{/if}}
     <br>
     {{#each dealersList}}
         Name:  {{#if this.name}} {{this.name}} <br>{{else}} {{this.first_name}} {{this.last_name}}<br>
@@ -16,10 +27,83 @@
         {{else}}
         {{/if}}
         Phone: {{this.phone}} <br>
-        Email: <a target="_blank" href="mailto:{{this.email}}">{{this.email}}</a><br>
+        Email: <a href="#" data-bs-toggle="modal" data-bs-target="#emailDealer{{this._id}}">{{this.email}}</a><br>
         Social Media: {{this.socialmedia}} <br>
         Website: {{this.website}} <br>
         Record Riots Help: {{this.help}} <br>
         <hr>
+
+        <!-- Email Individual Dealer Modal -->
+        <div class="modal bg-dark min-vh-100 fade" id="emailDealer{{this._id}}" tabindex="-1" aria-labelledby="#emailDealer{{this._id}}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-secondary" data-bs-theme="dark">
+                        <h1 class="modal-title fs-5" >Email to {{this.name}}</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <form action="/admin/email-individual-dealer-from-dealers-list" method="post">
+                        <div class="modal-body bg-secondary">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">To:</label>
+                                <input type="email" class="form-control" name="email" value="{{this.email}}" aria-describedby="email" readonly>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="subject" class="form-label">Subject</label>
+                                <input type="text" class="form-control" name="subject" aria-describedby="subject">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="message" class="form-label">Message</label>
+                                <textarea class="form-control" name="message" rows="8" cols="40"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer bg-dark-subtle">
+                            <button type="submit" class="btn btn-primary">Send</button>
+                            <button type="button" class="btn btn-secondary text-white" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     {{/each}}
+</div>
+
+<!-- Email All Dealers Modal -->
+<div class="modal bg-dark min-vh-100 fade" id="emailAllDealersModal" tabindex="-1" aria-labelledby="#emailAlldealersModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-secondary" data-bs-theme="dark">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Email All Dealers</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form action="/admin/email-all-dealers_from_dealers_list" method="post">
+                {{#each dealersList}}
+                <input type="text" name="emails[]" value="{{this.email}}">
+                {{/each}}
+                <div class="modal-body bg-secondary">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">To:</label>
+                        <span> All Dealers</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="subject" class="form-label">Subject</label>
+                        <input type="text" class="form-control" name="subject" aria-describedby="subject">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="message" class="form-label">Message</label>
+                        <textarea class="form-control" name="message" rows="8" cols="40"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer bg-dark-subtle">
+                    <button type="submit" class="btn btn-primary">Send</button>
+                    <button type="button" class="btn btn-secondary text-white" data-bs-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>

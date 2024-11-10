@@ -141,6 +141,7 @@ exports.render_rsvp_list = async (req, res) => {
                 const dealerInformation = showObject.dealer_information;
                 const tablesRented = showObject.tables_rented;
                 const archiveNotes = showObject.archive_notes;
+                console.log(dealerRsvpList)
 
                 const dataObject = {
                     name: name,
@@ -372,7 +373,8 @@ exports.render_dealers_list =  async (req, res) => {
         });
 
     res.render('dealers-list', {
-        dealersList: dealersList
+        dealersList: dealersList,
+        messageSent: req.flash('messageSent')
     });
 }
 
@@ -414,14 +416,12 @@ exports.edit_archive_notes = async (req, res, next) => {
     next();
 };
 
-// email all dealers
-exports.email_all_dealers = async (req, res, next) => {
+// email all dealers - from rsvp list view
+exports.email_all_dealers = async (req, res) => {
     const id = req.body.id;
     const dealerEmails = req.body.email;
     const subject = req.body.subject;
     const message = req.body.message;
-
-    console.log(req.body)
 
     // async..await is not allowed in global scope, must use a wrapper
     async function main() {
@@ -439,7 +439,89 @@ exports.email_all_dealers = async (req, res, next) => {
 
     main().catch(console.error);
 
-    req.flash('messageSent', 'Message sent successfully.')
+    req.flash('messageSent', 'Message sent successfully.');
 
     res.redirect(`/admin/rsvp-list/${id}`);
+};
+
+// email individual dealer from rsvp list view
+exports.email_individual_dealer = async (req, res) => {
+    const id = req.body.id;
+    const email = req.body.email;
+    const subject = req.body.subject;
+    const message = req.body.message;
+    
+    // async..await is not allowed in global scope, must use a wrapper
+    async function main() {
+        // send mail with defined transport object
+        const info = await transporter.sendMail({
+            from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
+            to: email, // recipient
+            subject: subject, // subject line
+            text: message, // plain text body
+            /**
+             * html:// html body
+             *  */ 
+        });
+    }
+
+    main().catch(console.error);
+
+    req.flash('messageSent', 'Message sent successfully.');
+
+    res.redirect(`/admin/rsvp-list/${id}`);
+};
+
+// email all dealers - from dealers list view
+exports.email_all_dealers_from_dealers_list = async (req, res) => {
+    const emails = req.body.emails;
+    const subject = req.body.subject;
+    const message = req.body.message;
+
+    // async..await is not allowed in global scope, must use a wrapper
+    async function main() {
+        // send mail with defined transport object
+        const info = await transporter.sendMail({
+            from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
+            to: emails, // list of receivers
+            subject: subject, // subject line
+            text: message, // plain text body
+            /**
+             * html:// html body
+             *  */ 
+        });
+    }
+
+    main().catch(console.error);
+
+    req.flash('messageSent', 'Message sent successfully.');
+
+    res.redirect('/admin/dealers-list');
+};
+
+// email individual dealer from dealer list view
+exports.email_individual_dealer_from_dealers_list = async (req, res) => {
+    const email = req.body.email;
+    const subject = req.body.subject;
+    const message = req.body.message;
+    
+    // async..await is not allowed in global scope, must use a wrapper
+    async function main() {
+        // send mail with defined transport object
+        const info = await transporter.sendMail({
+            from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
+            to: email, // recipient
+            subject: subject, // subject line
+            text: message, // plain text body
+            /**
+             * html:// html body
+             *  */ 
+        });
+    }
+
+    main().catch(console.error);
+
+    req.flash('messageSent', 'Message sent successfully.');
+
+    res.redirect('/admin/dealers-list');
 };

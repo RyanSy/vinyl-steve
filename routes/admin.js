@@ -36,7 +36,16 @@ router.post('/edit-dealer-information/:id', requiresAuth(), admin_controller.edi
 // edit archive notes
 router.post('/edit-archive-notes/:id', requiresAuth(), admin_controller.edit_archive_notes, admin_controller.render_rsvp_list);
 
-// email all dealers
+// email all dealers -from rsvp list view
 router.post('/email-all-dealers', requiresAuth(), admin_controller.email_all_dealers);
+
+// email individual dealers - from rsvp list view
+router.post('/email-individual-dealer', requiresAuth(), admin_controller.email_individual_dealer);
+
+// email all dealers -from rsvp list view
+router.post('/email-all-dealers_from_dealers_list', requiresAuth(), admin_controller.email_all_dealers_from_dealers_list);
+
+// email individual dealers - from dealers list view
+router.post('/email-individual-dealer-from-dealers-list', requiresAuth(), admin_controller.email_individual_dealer_from_dealers_list);
 
 module.exports = router;
