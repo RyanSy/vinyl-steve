@@ -13,6 +13,7 @@ const transporter = nodemailer.createTransport({
         pass: process.env.BREVO_SMTP_KEY,
     },
 });
+const cron = require('node-cron');
 
 // render admin dashboard
 exports.render_admin_dashboard = async (req, res) => {
@@ -525,3 +526,24 @@ exports.email_individual_dealer_from_dealers_list = async (req, res) => {
 
     res.redirect('/admin/dealers-list');
 };
+
+// send daily email at 9pm 
+cron.schedule('00 21 * * *', () => {
+    // look up daily sign ups - who, what, when
+    
+    // async..await is not allowed in global scope, must use a wrapper
+    async function main() {
+        // send mail with defined transport object
+        const info = await transporter.sendMail({
+            from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
+            to: 'clubmekon@gmail.com', // recipient
+            subject: 'Daily Report from Vinyl Steve', // subject line
+            text: message, // plain text body
+            /**
+             * html:// html body
+             *  */ 
+        });
+    }
+
+    main().catch(console.error);
+});

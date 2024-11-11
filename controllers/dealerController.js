@@ -43,7 +43,6 @@ exports.check_if_dealer_exists = async (req, res, next) => {
 // save dealer info
 exports.save_dealer_info = async (req, res, next) => {
     const dealerInfo = req.body;
-    console.log(dealerInfo)
     req.session.name = `${req.body.first_name} ${req.body.last_name}`;
     req.session.email = req.body.email;
     req.session.image = req.body.image;

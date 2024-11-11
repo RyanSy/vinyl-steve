@@ -1,5 +1,6 @@
 const Show = require('../models/show');
 const Dealer = require('../models/dealer');
+const Rsvp = require('../models/rsvp');
 const helperFunctions = require('../util/helperFunctions');
 const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
@@ -116,21 +117,23 @@ exports.save_rsvp = async (req, res, next) => {
             res.render('error');
         });
 
-    // data for confirmation message
-    const dataObject = {
+    // save to rsvp collection
+    const rsvp = new Rsvp({
         name: user,
-        image: userImage,
-        email: userEmail,
-        id: showId,
-        name: showName,
+        show: showName,
         date: showDate,
-        rentDue: rentDue,
-        paypalClientIdSteve: paypalClientIdSteve,
-        paypalClentIdJohn: paypalClientIdJohn,
-        posted_by_steve: postedBySteve,
-        posted_by_john: postedByJohn
-    };
+        tables_rented: numberOfTables,
+        rent_due: rentDue,
+        createdAt: new Date()
+    });
 
+    await rsvp.save()
+            .catch((err) => {
+                console.log(err);
+                res.render('error');
+            });
+
+    // send confirmation email
     const textMessage = "Thanks Ryan! Your RSVP for the Jersey City Record Riot on Saturday, April 5th, 2025 has been confirmed. We're happy that you'll be selling with us! \r\n You can pay for your tables with PAYPAL or CREDIT CARD through the Vinyl Steve payment portal OR pay for tables in CASH on the day of the show when we collect (around 2 PM). Either method is acceptable. \r\n If your circumstances change and you need to CANCEL your reservation, it is YOUR responsibility to go back into www.vinylsteve.com and cancel the reservation in your account---not by calling or texting me. If you are still listed on the Record Riot dealer list on the date of the show, then you are liable for the rent of those tables. So be thoughtful and keep my dealer lists clean and accurate! \r\n I greatly appreciate your support of Record Riots! -Steve \r\n PS: When is load-in time? All Record Riots start at 10 AM and load-in GENERALLY starts at 8 AM. Please check info for the Vinyl Steve website for specific details of load-in at each venue---but you'll NEVER be wrong arriving at 8 AM!";
 
     const htmlMessage = `<p>Thanks ${user}! Your RSVP for the ${showName} on ${showDate} has been confirmed. We're happy that you'll be selling with us!</p> 
@@ -143,7 +146,6 @@ exports.save_rsvp = async (req, res, next) => {
 
     <p>PS: When is load-in time? All Record Riots start at 10 AM and load-in GENERALLY starts at 8 AM. Please check info for the Vinyl Steve website for specific details of load-in at each venue---but you'll NEVER be wrong arriving at 8 AM!</p>`;
 
-    // send confirmation email
     // async..await is not allowed in global scope, must use a wrapper
     async function main() {
         // send mail with defined transport object
@@ -157,6 +159,21 @@ exports.save_rsvp = async (req, res, next) => {
     }
 
     main().catch(console.error);
+
+    // data for confirmation message
+    const dataObject = {
+        name: user,
+        image: userImage,
+        email: userEmail,
+        id: showId,
+        name: showName,
+        date: showDate,
+        rentDue: rentDue,
+        paypalClientIdSteve: paypalClientIdSteve,
+        paypalClentIdJohn: paypalClientIdJohn,
+        posted_by_steve: postedBySteve,
+        posted_by_john: postedByJohn
+    };    
 
     res.render('rsvp-confirmation', dataObject);
 };
