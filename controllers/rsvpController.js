@@ -131,6 +131,18 @@ exports.save_rsvp = async (req, res, next) => {
         posted_by_john: postedByJohn
     };
 
+    const textMessage = "Thanks Ryan! Your RSVP for the Jersey City Record Riot on Saturday, April 5th, 2025 has been confirmed. We're happy that you'll be selling with us! \r\n You can pay for your tables with PAYPAL or CREDIT CARD through the Vinyl Steve payment portal OR pay for tables in CASH on the day of the show when we collect (around 2 PM). Either method is acceptable. \r\n If your circumstances change and you need to CANCEL your reservation, it is YOUR responsibility to go back into www.vinylsteve.com and cancel the reservation in your account---not by calling or texting me. If you are still listed on the Record Riot dealer list on the date of the show, then you are liable for the rent of those tables. So be thoughtful and keep my dealer lists clean and accurate! \r\n I greatly appreciate your support of Record Riots! -Steve \r\n PS: When is load-in time? All Record Riots start at 10 AM and load-in GENERALLY starts at 8 AM. Please check info for the Vinyl Steve website for specific details of load-in at each venue---but you'll NEVER be wrong arriving at 8 AM!";
+
+    const htmlMessage = `<p>Thanks ${user}! Your RSVP for the ${showName} on ${showDate} has been confirmed. We're happy that you'll be selling with us!</p> 
+
+    <p>You can pay for your tables with PAYPAL or CREDIT CARD through the Vinyl Steve payment portal OR pay for tables in CASH on the day of the show when we collect (around 2 PM). Either method is acceptable.</p>
+
+    <p>If your circumstances change and you need to CANCEL your reservation, it is YOUR responsibility to go back into www.vinylsteve.com and cancel the reservation in your account---not by calling or texting me. If you are still listed on the Record Riot dealer list on the date of the show, then you are liable for the rent of those tables. So be thoughtful and keep my dealer lists clean and accurate!</p>
+
+    <p>I greatly appreciate your support of Record Riots!  -Steve</p>
+
+    <p>PS: When is load-in time? All Record Riots start at 10 AM and load-in GENERALLY starts at 8 AM. Please check info for the Vinyl Steve website for specific details of load-in at each venue---but you'll NEVER be wrong arriving at 8 AM!</p>`;
+
     // send confirmation email
     // async..await is not allowed in global scope, must use a wrapper
     async function main() {
@@ -139,10 +151,8 @@ exports.save_rsvp = async (req, res, next) => {
             from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
             to: userEmail, // list of receivers
             subject: `RSVP Confirmation: ${showName} - ${showDate}`, // Subject line
-            text: `Dear ${user}, Your RSVP for the ${showName} on ${showDate} has been confirmed. Thank you, Vinyl Steve.`, // plain text body
-            html: `<p>Dear ${user},</p> 
-                <p>Your RSVP for the ${showName} on ${showDate} has been confirmed.</p> 
-                <p>Thank you, <br> Vinyl Steve.</p>` // html body
+            text: textMessage, // plain text body
+            html: htmlMessage // html body
         });
     }
 
