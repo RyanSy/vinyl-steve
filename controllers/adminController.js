@@ -1,5 +1,6 @@
 const Show = require('../models/show');
 const Dealer = require('../models/dealer');
+const Rsvp = require('../models/rsvp');
 const moment = require('moment');
 const todaysDate = moment().format('YYYY-MM-DD');
 const helper_functions = require('../util/helperFunctions');
@@ -424,10 +425,8 @@ exports.email_all_dealers = async (req, res) => {
     const subject = req.body.subject;
     const message = req.body.message;
 
-    // async..await is not allowed in global scope, must use a wrapper
     async function main() {
-        // send mail with defined transport object
-        const info = await transporter.sendMail({
+        await transporter.sendMail({
             from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
             to: dealerEmails, // list of receivers
             subject: subject, // subject line
@@ -452,10 +451,8 @@ exports.email_individual_dealer = async (req, res) => {
     const subject = req.body.subject;
     const message = req.body.message;
     
-    // async..await is not allowed in global scope, must use a wrapper
     async function main() {
-        // send mail with defined transport object
-        const info = await transporter.sendMail({
+        await transporter.sendMail({
             from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
             to: email, // recipient
             subject: subject, // subject line
@@ -479,10 +476,8 @@ exports.email_all_dealers_from_dealers_list = async (req, res) => {
     const subject = req.body.subject;
     const message = req.body.message;
 
-    // async..await is not allowed in global scope, must use a wrapper
     async function main() {
-        // send mail with defined transport object
-        const info = await transporter.sendMail({
+        await transporter.sendMail({
             from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
             to: emails, // list of receivers
             subject: subject, // subject line
@@ -506,10 +501,8 @@ exports.email_individual_dealer_from_dealers_list = async (req, res) => {
     const subject = req.body.subject;
     const message = req.body.message;
     
-    // async..await is not allowed in global scope, must use a wrapper
     async function main() {
-        // send mail with defined transport object
-        const info = await transporter.sendMail({
+        await sendMail({
             from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
             to: email, // recipient
             subject: subject, // subject line
@@ -527,23 +520,40 @@ exports.email_individual_dealer_from_dealers_list = async (req, res) => {
     res.redirect('/admin/dealers-list');
 };
 
-// send daily email at 9pm 
+// send daily email summary at 9pm 
 cron.schedule('00 21 * * *', () => {
-    // look up daily sign ups - who, what, when
-    
-    // async..await is not allowed in global scope, must use a wrapper
-    async function main() {
-        // send mail with defined transport object
-        const info = await transporter.sendMail({
-            from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
-            to: 'clubmekon@gmail.com', // recipient
-            subject: 'Daily Report from Vinyl Steve', // subject line
-            text: message, // plain text body
-            /**
-             * html:// html body
-             *  */ 
+    const now = new Date();
+    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+    async function findRsvps() {
+        const results = await Rsvp.find({
+            createdAt: {
+                $gte: yesterday,
+                $lte: now
+            }
         });
+        return results;
     }
 
-    main().catch(console.error);
+    findRsvps()
+        .then((rsvps) => {
+            const rsvpList = rsvps.map((rsvp) => `<li>${rsvp.name} - ${rsvp.show} / ${rsvp.date}</li>`).join('');
+            console.log(rsvpList);
+            const today = new Date().toDateString();
+            async function main() {
+                await transporter.sendMail({
+                    from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
+                    to: 'clubmekon@gmail.com', // recipient
+                    subject: 'Daily Summary from Vinyl Steve', // subject line
+                    text: `Daily Summary for ${today} \n ${rsvpList}`, // plain text body
+                    html: `<h3>Daily Summary for ${today}:<h3>
+                            ${rsvpList}`
+                });
+            }
+
+            main().catch(console.error);
+        })
+        .catch((err) => {
+            console.error(err);
+        });
 });

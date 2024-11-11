@@ -146,13 +146,11 @@ exports.save_rsvp = async (req, res, next) => {
 
     <p>PS: When is load-in time? All Record Riots start at 10 AM and load-in GENERALLY starts at 8 AM. Please check info for the Vinyl Steve website for specific details of load-in at each venue---but you'll NEVER be wrong arriving at 8 AM!</p>`;
 
-    // async..await is not allowed in global scope, must use a wrapper
     async function main() {
-        // send mail with defined transport object
-        const info = await transporter.sendMail({
+        await transporter.sendMail({
             from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
-            to: userEmail, // list of receivers
-            subject: `RSVP Confirmation: ${showName} - ${showDate}`, // Subject line
+            to: userEmail, // recipient
+            subject: `RSVP Confirmation: ${showName} - ${showDate}`, // subject line
             text: textMessage, // plain text body
             html: htmlMessage // html body
         });
