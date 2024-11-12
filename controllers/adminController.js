@@ -521,7 +521,7 @@ exports.email_individual_dealer_from_dealers_list = async (req, res) => {
 };
 
 // send daily email summary at 9pm 
-cron.schedule('55 21 * * *', () => {
+cron.schedule('00 21 * * *', () => {
     console.log('sending email...')
     const now = new Date();
     const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
