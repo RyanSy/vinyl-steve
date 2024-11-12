@@ -557,4 +557,7 @@ cron.schedule('45 21 * * *', () => {
         .catch((err) => {
             console.error(err);
         });
+}, {
+    scheduled: true,
+    timezone: 'America/New_York'
 });
