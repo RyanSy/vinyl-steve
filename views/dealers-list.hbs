@@ -6,39 +6,52 @@
         <br>
         <p>
             <!-- Email All Dealers Button trigger modal -->
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#emailAllDealersModal">Email All Dealers</button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                data-bs-target="#emailAllDealersModal">Email All Dealers</button>
         </p>
+        <br>
+        <div class="d-flex justify-content-center">
+            <div class="col-auto">
+                <input type="search" id="searchInput" class="form-control" oninput="filterByName(event)"
+                    placeholder="Search dealers...">
+            </div>
+        </div>
     </div>
     <br>
     {{#if messageSent}}
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{messageSent}}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{messageSent}}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     {{/if}}
     <br>
+
+    <div id="dealerList" class="container">
     {{#each dealersList}}
-        Name:  {{#if this.name}} {{this.name}} <br>{{else}} {{this.first_name}} {{this.last_name}}<br>
-        {{/if}}
-        Company Name: {{this.company_name}} <br>
-        Address: {{this.address}} <br>
-        {{#if this.city}}
-        {{this.city}}, {{this.state}} {{this.zip}} <br>
-        {{else}}
-        {{/if}}
-        Phone: {{this.phone}} <br>
-        Email: <a href="#" data-bs-toggle="modal" data-bs-target="#emailDealer{{this._id}}">{{this.email}}</a><br>
-        Social Media: {{this.socialmedia}} <br>
-        Website: {{this.website}} <br>
-        Record Riots Help: {{this.help}} <br>
-        <hr>
+        <p class="border-bottom">
+            Name: {{#if this.name}} {{this.name}} <br>{{else}} {{this.first_name}} {{this.last_name}}<br>
+            {{/if}}
+            Company Name: {{this.company_name}} <br>
+            Address: {{this.address}} <br>
+            {{#if this.city}}
+            {{this.city}}, {{this.state}} {{this.zip}} <br>
+            {{else}}
+            {{/if}}
+            Phone: {{this.phone}} <br>
+            Email: <a href="#" data-bs-toggle="modal" data-bs-target="#emailDealer{{this._id}}">{{this.email}}</a><br>
+            Social Media: {{this.socialmedia}} <br>
+            Website: {{this.website}} <br>
+            Record Riots Help: {{this.help}} <br>
+            <br>
+        </p>
 
         <!-- Email Individual Dealer Modal -->
-        <div class="modal bg-dark min-vh-100 fade" id="emailDealer{{this._id}}" tabindex="-1" aria-labelledby="#emailDealer{{this._id}}" aria-hidden="true">
+        <div class="modal bg-dark min-vh-100 fade" id="emailDealer{{this._id}}" tabindex="-1"
+            aria-labelledby="#emailDealer{{this._id}}" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header bg-secondary" data-bs-theme="dark">
-                        <h1 class="modal-title fs-5" >Email to {{this.name}}</h1>
+                        <h1 class="modal-title fs-5">Email to {{this.name}}</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
@@ -46,7 +59,8 @@
                         <div class="modal-body bg-secondary">
                             <div class="mb-3">
                                 <label for="email" class="form-label">To:</label>
-                                <input type="email" class="form-control" name="email" value="{{this.email}}" aria-describedby="email" readonly>
+                                <input type="email" class="form-control" name="email" value="{{this.email}}"
+                                    aria-describedby="email" readonly>
                             </div>
 
                             <div class="mb-3">
@@ -61,17 +75,20 @@
                         </div>
                         <div class="modal-footer bg-dark-subtle">
                             <button type="submit" class="btn btn-primary">Send</button>
-                            <button type="button" class="btn btn-secondary text-white" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary text-white"
+                                data-bs-dismiss="modal">Close</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-    {{/each}}
+        {{/each}}
+    </div>
 </div>
 
 <!-- Email All Dealers Modal -->
-<div class="modal bg-dark min-vh-100 fade" id="emailAllDealersModal" tabindex="-1" aria-labelledby="#emailAlldealersModalLabel" aria-hidden="true">
+<div class="modal bg-dark min-vh-100 fade" id="emailAllDealersModal" tabindex="-1"
+    aria-labelledby="#emailAlldealersModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-secondary" data-bs-theme="dark">
@@ -107,3 +124,5 @@
         </div>
     </div>
 </div>
+
+<script src="../js/filterByName.js"></script>
