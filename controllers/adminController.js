@@ -521,7 +521,8 @@ exports.email_individual_dealer_from_dealers_list = async (req, res) => {
 };
 
 // send daily email summary at 9pm 
-cron.schedule('00 21 * * *', () => {
+cron.schedule('45 21 * * *', () => {
+    console.log('sending email...')
     const now = new Date();
     const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
@@ -543,7 +544,7 @@ cron.schedule('00 21 * * *', () => {
             async function main() {
                 await transporter.sendMail({
                     from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
-                    to: 'clubmekon@gmail.com', // recipient
+                    to: ['clubmekon@gmail.com', 'ryanbsy@gmail.com'], // recipient
                     subject: 'Daily Summary from Vinyl Steve', // subject line
                     text: `Daily Summary for ${today} \n ${rsvpList}`, // plain text body
                     html: `<h3>Daily Summary for ${today}:<h3>
