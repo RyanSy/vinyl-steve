@@ -106,12 +106,16 @@
                 <input type="hidden" name="id" value="{{this.id}}">
                 {{#if this.paid}}
                 {{else}}
-                <button type="button" class="btn btn-success mx-2 mb-2" data-bs-toggle="modal"
-                    data-bs-target="#paymentModal-{{this.id}}"><i class="bi bi-currency-dollar"></i></button>
-                <button type="submit" class="btn btn-warning mx-2 mb-2"><i class="bi bi-pencil"></i></button>
+                <span data-bs-toggle="tooltip" data-bs-title="Pay rent">
+                    <button type="button" class="btn btn-success mx-2 mb-2" data-bs-toggle="modal" data-bs-target="#paymentModal-{{this.id}}"><i class="bi bi-currency-dollar"></i></button>
+                </span>
+                <span data-bs-toggle="tooltip" data-bs-title="Edit RSVP">
+                    <button type="submit" class="btn btn-warning mx-2 mb-2"><i class="bi bi-pencil"></i></button>
+                </span>
                 {{/if}}
-                <button type="button" class="btn btn-danger mx-2 mb-2" data-bs-toggle="modal"
-                    data-bs-target="#deleteModal-{{this.id}}"><i class="bi bi-x-lg"></i></button>
+                <span data-bs-toggle="tooltip" data-bs-title="Delete RSVP">
+                    <button type="button" class="btn btn-danger mx-2 mb-2" data-bs-toggle="modal" data-bs-target="#deleteModal-{{this.id}}"><i class="bi bi-x-lg"></i></button>
+                </span>
             </form>
 
         </div>
