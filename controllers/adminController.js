@@ -364,6 +364,11 @@ exports.delete_discount = async (req, res) => {
 
 // render dealers list
 exports.render_dealers_list =  async (req, res) => {
+    const name = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
+    // *** TODO *** find fallbak image
+    const image = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
+    const email = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
+
     let dealersList;
     await Dealer.find({})
         .then((dealers) => {
@@ -375,6 +380,8 @@ exports.render_dealers_list =  async (req, res) => {
         });
 
     res.render('dealers-list', {
+        name: name,
+        image: image,
         dealersList: dealersList,
         messageSent: req.flash('messageSent')
     });
