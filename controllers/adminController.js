@@ -1,6 +1,6 @@
 const Show = require('../models/show');
 const Dealer = require('../models/dealer');
-const Rsvp = require('../models/rsvp');
+// const Rsvp = require('../models/rsvp');
 const moment = require('moment');
 const todaysDate = moment().format('YYYY-MM-DD');
 const helper_functions = require('../util/helperFunctions');
@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
         pass: process.env.BREVO_SMTP_KEY,
     },
 });
-const cron = require('node-cron');
+// const cron = require('node-cron');
 
 // render admin dashboard
 exports.render_admin_dashboard = async (req, res) => {
@@ -520,44 +520,42 @@ exports.email_individual_dealer_from_dealers_list = async (req, res) => {
     res.redirect('/admin/dealers-list');
 };
 
-// send daily email summary at 9pm 
-cron.schedule('00 21 * * *', () => {
-    console.log('sending email...')
-    const now = new Date();
-    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+// // send daily email summary at 9pm 
+// cron.schedule('01 21 * * *', () => {
+//     const now = new Date();
+//     const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
-    async function findRsvps() {
-        const results = await Rsvp.find({
-            createdAt: {
-                $gte: yesterday,
-                $lte: now
-            }
-        });
-        return results;
-    }
+//     async function findRsvps() {
+//         const results = await Rsvp.find({
+//             createdAt: {
+//                 $gte: yesterday,
+//                 $lte: now
+//             }
+//         });
+//         return results;
+//     }
 
-    findRsvps()
-        .then((rsvps) => {
-            const rsvpList = rsvps.map((rsvp) => `<li>${rsvp.name} - ${rsvp.show} / ${rsvp.date}</li>`).join('');
-            console.log(rsvpList);
-            const today = new Date().toDateString();
-            async function main() {
-                await transporter.sendMail({
-                    from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
-                    to: ['clubmekon@gmail.com', 'ryanbsy@gmail.com'], // recipient
-                    subject: 'Daily Summary from Vinyl Steve', // subject line
-                    text: `Daily Summary for ${today} \n ${rsvpList}`, // plain text body
-                    html: `<h3>Daily Summary for ${today}:<h3>
-                            ${rsvpList}`
-                });
-            }
+//     findRsvps()
+//         .then((rsvps) => {
+//             const rsvpList = rsvps.map((rsvp) => `<li>${rsvp.name} - ${rsvp.show} / ${rsvp.date}</li>`).join('');
+//             const today = new Date().toDateString();
+//             async function main() {
+//                 await transporter.sendMail({
+//                     from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
+//                     to: ['clubmekon@gmail.com', 'ryanbsy@gmail.com'], // recipient
+//                     subject: 'Daily Summary from Vinyl Steve', // subject line
+//                     text: `Daily Summary for ${today} \n ${rsvpList}`, // plain text body
+//                     html: `<h3>Daily Summary for ${today}:<h3>
+//                             ${rsvpList}`
+//                 });
+//             }
 
-            main().catch(console.error);
-        })
-        .catch((err) => {
-            console.error(err);
-        });
-}, {
-    scheduled: true,
-    timezone: 'America/New_York'
-});
+//             main().catch(console.error);
+//         })
+//         .catch((err) => {
+//             console.error(err);
+//         });
+// }, {
+//     scheduled: true,
+//     timezone: 'America/New_York'
+// });
