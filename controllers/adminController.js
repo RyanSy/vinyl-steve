@@ -520,7 +520,8 @@ exports.email_individual_dealer_from_dealers_list = async (req, res) => {
     res.redirect('/admin/dealers-list');
 };
 
-// // send daily email summary at 9pm 
+// use below script if app is always on/heroku dynos do not sleep
+// // send daily email summary at 9pm
 // cron.schedule('01 21 * * *', () => {
 //     const now = new Date();
 //     const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
