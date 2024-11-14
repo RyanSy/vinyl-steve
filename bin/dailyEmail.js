@@ -1,3 +1,5 @@
+// db setup
+const mongoose = require('mongoose');
 const Rsvp = require('../models/rsvp');
 const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
@@ -9,6 +11,12 @@ const transporter = nodemailer.createTransport({
         pass: process.env.BREVO_SMTP_KEY,
     },
 });
+const now = new Date();
+const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+mongoose
+    .connect(process.env.MONGODB_URI)
+    .catch((err) => console.log('error connecting to MongoDB', err));
 
 async function findRsvps() {
     const results = await Rsvp.find({
@@ -16,6 +24,9 @@ async function findRsvps() {
             $gte: yesterday,
             $lte: now
         }
+    })
+    .catch((err) => {
+        console.log('findRsvps() error:', err)
     });
     return results;
 }
@@ -38,5 +49,5 @@ findRsvps()
             main().catch(console.error);
         })
         .catch((err) => {
-            console.error(err);
+            console.error('error finding rsvps:', err);
         });
