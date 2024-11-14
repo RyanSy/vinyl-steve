@@ -1,5 +1,4 @@
 const Rsvp = require('../models/rsvp');
-const cron = require('node-cron');
 const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
     host: process.env.BREVO_SMTP_SERVER,
@@ -11,22 +10,17 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-// send daily email summary at 9pm 
-cron.schedule('01 21 * * *', () => {
-    const now = new Date();
-    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+async function findRsvps() {
+    const results = await Rsvp.find({
+        createdAt: {
+            $gte: yesterday,
+            $lte: now
+        }
+    });
+    return results;
+}
 
-    async function findRsvps() {
-        const results = await Rsvp.find({
-            createdAt: {
-                $gte: yesterday,
-                $lte: now
-            }
-        });
-        return results;
-    }
-
-    findRsvps()
+findRsvps()
         .then((rsvps) => {
             const rsvpList = rsvps.map((rsvp) => `<li>${rsvp.name} - ${rsvp.show} / ${rsvp.date}</li>`).join('');
             const today = new Date().toDateString();
@@ -46,7 +40,3 @@ cron.schedule('01 21 * * *', () => {
         .catch((err) => {
             console.error(err);
         });
-}, {
-    scheduled: true,
-    timezone: 'America/New_York'
-});
