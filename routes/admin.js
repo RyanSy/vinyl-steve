@@ -2,9 +2,10 @@ const express = require('express');
 const router = express.Router();
 const { requiresAuth } = require('express-openid-connect');
 const admin_controller = require('../controllers/adminController');
+const dealer_controller = require('../controllers/dealerController');
 
 // render admin dashboard
-router.get('/', requiresAuth(), admin_controller.render_admin_dashboard);
+router.get('/', requiresAuth(), dealer_controller.check_if_dealer_exists, admin_controller.render_admin_dashboard);
 
 // render rsvp list
 router.get('/rsvp-list/:id', requiresAuth(), admin_controller.render_rsvp_list);
@@ -19,7 +20,7 @@ router.post('/add-dealer-rsvp', requiresAuth(), admin_controller.add_dealer_rsvp
 router.post('/delete-rsvp', requiresAuth(), admin_controller.delete_dealer_rsvp);
 
 // view waiting list
-router.get('/waitlist/:id', requiresAuth(), admin_controller.render_waiting_list);
+router.get('/waitinglist/:id', requiresAuth(), admin_controller.render_waiting_list);
 
 // save discount
 router.post('/save-discount', requiresAuth(), admin_controller.save_discount);
@@ -47,5 +48,8 @@ router.post('/email-all-dealers_from_dealers_list', requiresAuth(), admin_contro
 
 // email individual dealers - from dealers list view
 router.post('/email-individual-dealer-from-dealers-list', requiresAuth(), admin_controller.email_individual_dealer_from_dealers_list);
+
+// email individual dealers - from waiting list view
+router.post('/email-individual-dealer-from-waiting-list', requiresAuth(), admin_controller.email_individual_dealer_from_waitinglist);
 
 module.exports = router;

@@ -21,6 +21,7 @@ exports.check_if_dealer_exists = async (req, res, next) => {
                 res.render('signup-form', userInfo);
             }
             else if (result.first_name) {
+                req.session.user_id = result._id.toString();
                 req.session.name = `${result.first_name} ${result.last_name}`;
                 req.session.email = result.email;
                 req.session.image = result.image;
@@ -28,6 +29,7 @@ exports.check_if_dealer_exists = async (req, res, next) => {
             }
             // next clause included because dealer model included only one property for name
             else if (result.name) {
+                req.session.user_id = result._id.toString();
                 req.session.name = result.name;
                 req.session.email = result.email;
                 req.session.image = result.image;
@@ -48,6 +50,9 @@ exports.save_dealer_info = async (req, res, next) => {
     req.session.image = req.body.image;
     const newDealer = new Dealer(dealerInfo);
     await newDealer.save()
+        .then((user) => {
+            req.session.user_id = user._id;
+        })
         .catch((err) => {
             console.log(err);
             res.render('error');
@@ -169,12 +174,12 @@ exports.delete_rsvp = async (req, res, next) => {
     next();
 }
 
-// save dealer to waitlist
-exports.save_dealer_to_waitlist = async (req, res) => {
+// save dealer to waitinglist
+exports.save_dealer_to_waitinglist = async (req, res) => {
     const show = await Show.find({ _id: req.body.id });
-    show[0].waiting_list.addToSet({ email: req.body.email });
+    show[0].waiting_list.addToSet({ user_id: req.body.user_id, name: req.body.name, email: req.body.email });
     show[0].save();
-    res.render('waitlist-confirmation');
+    res.render('waitinglist-confirmation');
 }
 
 // render discount page

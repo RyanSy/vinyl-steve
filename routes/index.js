@@ -60,8 +60,8 @@ router.post('/edit-rsvp/', requiresAuth(), rsvp_controller.show_edit_rsvp_page);
 // update rsvp - user
 router.post('/update-rsvp/', requiresAuth(), rsvp_controller.update_rsvp);
 
-// save dealer to waitlist
-router.post('/waitlist', requiresAuth(), dealer_controller.save_dealer_to_waitlist);
+// save dealer to waitinglist
+router.post('/waitinglist', requiresAuth(), dealer_controller.save_dealer_to_waitinglist);
 
 // get discount page
 router.get('/discount/:id', requiresAuth(), dealer_controller.render_discount_page);

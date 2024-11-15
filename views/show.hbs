@@ -74,8 +74,10 @@
         </p>
 
         <p>
-            <form action="/waitlist" method="post">
-                <input type="hidden" name="email" value="{{userEmail}}">
+            <form action="/waitinglist" method="post">
+                <input type="hidden" name="user_id" value="{{user_id}}">
+                <input type="hidden" name="name" value="{{name}}">
+                <input type="hidden" name="email" value="{{email}}">
                 <input type="hidden" name="id" value="{{show.id}}">
                 <button type="submit" class="btn btn-primary">Get On Waiting List</button>
             </form>

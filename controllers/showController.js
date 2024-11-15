@@ -42,8 +42,6 @@ exports.list_shows = async (req, res) => {
 
 // render specific record riot page
 exports.list_show = async (req, res) => {
-    const paypalClientId = process.env.PAYPAL_CLIENT_ID;
-
     const show = await Show.find({ _id: req.params.id });
     const showObject = helper_functions.createShowObject(show[0]);
     const numberOfTablesForRent = showObject.number_of_tables_for_rent;
@@ -61,11 +59,11 @@ exports.list_show = async (req, res) => {
     }
 
     const dataObject = {
+        user_id: req.session.user_id,
         name: req.session.name,
         image: req.session.image,
         email: req.session.email,
         show: showObject,
-        paypalClientId: paypalClientId,
         maxTablesAvailable: maxTablesAvailable,
         tablesAvailable: tablesAvailable
     };

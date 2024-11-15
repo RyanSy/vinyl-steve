@@ -18,6 +18,7 @@ const transporter = nodemailer.createTransport({
 
 // render admin dashboard
 exports.render_admin_dashboard = async (req, res) => {
+    console.log(req.session)
     const name = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
     // *** TODO *** find fallbak image
     const image = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
@@ -143,7 +144,6 @@ exports.render_rsvp_list = async (req, res) => {
                 const dealerInformation = showObject.dealer_information;
                 const tablesRented = showObject.tables_rented;
                 const archiveNotes = showObject.archive_notes;
-                console.log(dealerRsvpList)
 
                 const dataObject = {
                     name: name,
@@ -297,13 +297,15 @@ exports.render_waiting_list = async (req, res) => {
 
     const show = await Show.find({ _id: req.params.id });
     const dataObject = {
+        show_id: req.params.id,
         name: name,
         image: image,
         email: email,
         show: show[0],
+        messageSent: req.flash('messageSent')
     };
 
-    res.render('waitlist', dataObject);
+    res.render('waitinglist', dataObject);
 };
 
 // save discount
@@ -509,7 +511,7 @@ exports.email_individual_dealer_from_dealers_list = async (req, res) => {
     const message = req.body.message;
     
     async function main() {
-        await sendMail({
+        await transporter.sendMail({
             from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
             to: email, // recipient
             subject: subject, // subject line
@@ -527,6 +529,30 @@ exports.email_individual_dealer_from_dealers_list = async (req, res) => {
     res.redirect('/admin/dealers-list');
 };
 
+exports.email_individual_dealer_from_waitinglist = (req, res) => {
+    const show_id = req.body.show_id;
+    const email = req.body.email;
+    const subject = req.body.subject;
+    const message = req.body.message;
+    
+    async function main() {
+        await transporter.sendMail({
+            from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
+            to: email, // recipient
+            subject: subject, // subject line
+            text: message, // plain text body
+            /**
+             * html:// html body
+             *  */ 
+        });
+    }
+
+    main().catch(console.error);
+
+    req.flash('messageSent', 'Message sent successfully.');
+
+    res.redirect(`/admin/waitinglist/${show_id}`);
+} 
 // use below script if app is always on/heroku dynos do not sleep
 // // send daily email summary at 9pm
 // cron.schedule('01 21 * * *', () => {
