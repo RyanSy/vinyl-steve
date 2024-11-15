@@ -56,7 +56,7 @@ exports.list_show = async (req, res) => {
     }
 
     let tablesAvailable = true;
-    if (maxTablesAvailable == 0) {
+    if (maxTablesAvailable < 1) {
         tablesAvailable = false;
     }
 
@@ -69,5 +69,6 @@ exports.list_show = async (req, res) => {
         maxTablesAvailable: maxTablesAvailable,
         tablesAvailable: tablesAvailable
     };
+    console.log(dataObject)
     res.render('show', dataObject);
 };
