@@ -1,5 +1,6 @@
 const Show = require('../models/show');
 const Dealer = require('../models/dealer');
+const Cancellation = require('../models/cancellation');
 const moment = require('moment');
 
 // check if dealer exists, if so, list shows, if not prompt for info
@@ -130,8 +131,11 @@ exports.show_dealer_rsvps = async (req, res) => {
 
 // delete rsvp - dealer
 exports.delete_rsvp = async (req, res, next) => {
+    const name = req.session.name;
     const email = req.session.email;
     const showId = req.body.show_id;
+    const showName = req.body.show_name;
+    const date = req.body.date;
     const numberOfTables = Number(req.body.number_of_tables);
 
     // update show collection
@@ -171,6 +175,20 @@ exports.delete_rsvp = async (req, res, next) => {
             return;    
         });
 
+    // save to rsvp collection
+    const cancellation = new Cancellation({
+        name: name,
+        show: showName,
+        date: date,
+        canceledOn: new Date()
+    });
+
+    await cancellation.save()
+            .catch((err) => {
+                console.log(err);
+                res.render('error');
+            });
+    
     next();
 }
 
