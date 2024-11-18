@@ -67,6 +67,6 @@ exports.list_show = async (req, res) => {
         maxTablesAvailable: maxTablesAvailable,
         tablesAvailable: tablesAvailable
     };
-    console.log(dataObject)
+
     res.render('show', dataObject);
 };
