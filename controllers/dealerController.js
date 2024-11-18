@@ -39,7 +39,7 @@ exports.check_if_dealer_exists = async (req, res, next) => {
         })
         .catch((err) =>{
             console.log(err);
-            res.render('error');
+            res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
         });
 }
 
@@ -56,7 +56,7 @@ exports.save_dealer_info = async (req, res, next) => {
         })
         .catch((err) => {
             console.log(err);
-            res.render('error');
+            res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
         });
     res.redirect('/home');
 }
@@ -104,14 +104,14 @@ exports.show_dealer_rsvps = async (req, res) => {
                         })
                         .catch((err) => {
                             console.error(err);
-                            res.render('error');
+                            res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
                         });
                 }       
             } 
         })
         .catch((err) =>{
             console.log(err);
-            res.render('error');
+            res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
         });
         
     const dataObject = {
@@ -155,7 +155,7 @@ exports.delete_rsvp = async (req, res, next) => {
     await Show.updateOne(showFilter, showUpdate)
         .catch((err) => {
             console.log(err)
-            res.render('error');
+            res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
             return;    
         });
 
@@ -171,7 +171,7 @@ exports.delete_rsvp = async (req, res, next) => {
     await Dealer.updateOne(dealerFilter, dealerUpdate)
         .catch((err) => {
             console.log(err)
-            res.render('error');
+            res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
             return;    
         });
 
@@ -186,7 +186,7 @@ exports.delete_rsvp = async (req, res, next) => {
     await cancellation.save()
             .catch((err) => {
                 console.log(err);
-                res.render('error');
+                res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
             });
     
     next();
@@ -242,7 +242,7 @@ exports.save_discount = async (req, res, next) => {
     )
     .catch((err) => {
         console.log(err);
-        res.render('error');
+        res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
     });
 
     await Dealer.findOneAndUpdate(
@@ -255,7 +255,7 @@ exports.save_discount = async (req, res, next) => {
     )
     .catch((err) => {
         console.log(err);
-        res.render('error');
+        res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
     });
 
     res.redirect('/my-rsvps')
@@ -270,7 +270,7 @@ exports.render_edit_profile = async (req, res) => {
         })
         .catch((err) => {
             console.log(err);
-            res.render('error');
+            res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
         });
     res.render('edit-profile', {
         dealerInfo: dealerInfo,
@@ -287,7 +287,7 @@ exports.save_profile = async (req, res) => {
     await Dealer.findOneAndUpdate(filter, update)
         .catch((err) => {
             console.log(err);
-            res.render('error');
+            res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
         });
     
     req.flash('profileUpdated', 'Profile has been successfully updated.');

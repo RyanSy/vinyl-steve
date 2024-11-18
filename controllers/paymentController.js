@@ -14,7 +14,7 @@ exports.save_payment = async (req, res) => {
     )
     .catch((err) => {
         console.log(err);
-        res.render('error');
+        res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
     });
 
     await Dealer.findOneAndUpdate(
@@ -24,7 +24,7 @@ exports.save_payment = async (req, res) => {
     )
     .catch((err) => {
         console.log(err);
-        res.render('error');
+        res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
     });
 
     res.redirect('/payment-confirmation');

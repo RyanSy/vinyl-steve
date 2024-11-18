@@ -3,6 +3,13 @@
 <br>
 
 <div class="container-fluid d-flex w-auto p-3 flex-column">
+    {{#if messageSent}}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{messageSent}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {{/if}}
+
     <div class="d-flex flex-column align-items-center">
         {{#if isAdmin}}
             <h4><span class="text-warning">Dealer View</span> || <a href="/admin">Administrator View</a></h4>

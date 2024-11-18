@@ -114,7 +114,7 @@ exports.save_rsvp = async (req, res, next) => {
     Dealer.findOneAndUpdate(filter, update)
         .catch((err) =>{
             console.log(err);
-            res.render('error');
+            res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
         });
 
     // save to rsvp collection
@@ -130,7 +130,7 @@ exports.save_rsvp = async (req, res, next) => {
     await rsvp.save()
             .catch((err) => {
                 console.log(err);
-                res.render('error');
+                res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
             });
 
     // send confirmation email
@@ -237,7 +237,7 @@ exports.update_rsvp = async (req, res) => {
     )
     .catch((err) => {
         console.log(err);
-        res.render('error');
+        res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
     });
 
     await Dealer.findOneAndUpdate(
@@ -252,7 +252,7 @@ exports.update_rsvp = async (req, res) => {
     )
     .catch((err) => {
         console.log(err);
-        res.render('error');
+        res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
     });
 
     res.render('update-confirmation', {

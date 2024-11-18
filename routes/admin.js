@@ -52,4 +52,12 @@ router.post('/email-individual-dealer-from-dealers-list', requiresAuth(), admin_
 // email individual dealers - from waiting list view
 router.post('/email-individual-dealer-from-waiting-list', requiresAuth(), admin_controller.email_individual_dealer_from_waitinglist);
 
+// send email from error page
+router.post('/email-support', requiresAuth(), admin_controller.email_support);
+
+// show error page
+router.get('/error', requiresAuth(), (req, res) => {
+    res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
+})
+
 module.exports = router;

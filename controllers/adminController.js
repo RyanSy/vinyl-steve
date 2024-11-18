@@ -18,7 +18,6 @@ const transporter = nodemailer.createTransport({
 
 // render admin dashboard
 exports.render_admin_dashboard = async (req, res) => {
-    console.log(req.session)
     const name = JSON.stringify(req.oidc.user.name).replace(/"/g, '');
     // *** TODO *** find fallbak image
     const image = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
@@ -97,6 +96,7 @@ exports.render_admin_dashboard = async (req, res) => {
             shows: showsArraySorted,
             pastShows: pastShowsArraySorted,
             isAdmin: isAdmin,
+            messageSent: req.flash('messageSent')
         };
     } else {
         res.send('Unauthorized');
@@ -175,7 +175,7 @@ exports.render_rsvp_list = async (req, res) => {
         .catch((err) => {
             console.log('error:', err);
             res.send('err');
-            // res.render('error');
+            // res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
         });
 };
 
@@ -235,7 +235,7 @@ exports.delete_dealer_rsvp = async (req, res) => {
     };
     await Show.updateOne(showFilter, showUpdate).catch((err) => {
         console.log(err);
-        res.render('error');
+        res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
     });
 
     // update dealer db
@@ -251,7 +251,7 @@ exports.delete_dealer_rsvp = async (req, res) => {
     };
     await Dealer.updateOne(dealerFilter, dealerUpdate).catch((err) => {
         console.log(err);
-        res.render('error');
+        res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
     });
 
     req.flash('dealerDeleted', 'Dealer has been deleted.');
@@ -358,7 +358,7 @@ exports.delete_discount = async (req, res) => {
     await Show.updateOne(filter, update)
         .catch((err) => {
             console.log(err);
-            res.render('error');
+            res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
         });
 
     res.redirect(`/admin/rsvp-list/${id}`);
@@ -378,7 +378,7 @@ exports.render_dealers_list =  async (req, res) => {
         })
         .catch((err) => {
             console.log(err);
-            res.render('error');
+            res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
         });
 
     res.render('dealers-list', {
@@ -552,6 +552,30 @@ exports.email_individual_dealer_from_waitinglist = (req, res) => {
     req.flash('messageSent', 'Message sent successfully.');
 
     res.redirect(`/admin/waitinglist/${show_id}`);
+} 
+
+exports.email_support= (req, res) => {
+    const name = req.body.name;
+    const email = req.body.email;
+    const message = req.body.message;
+    
+    async function main() {
+        await transporter.sendMail({
+            from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
+            to: 'support@vinylsteve.com', // recipient
+            subject: `User message from ${name} via error page`, // subject line
+            text: `${message} \n reply to: ${email}`, // plain text body
+            /**
+             * html:// html body
+             *  */ 
+        });
+    }
+
+    main().catch(console.error);
+
+    req.flash('messageSent', 'Message sent successfully.');
+
+    res.redirect('/');
 } 
 // use below script if app is always on/heroku dynos do not sleep
 // // send daily email summary at 9pm

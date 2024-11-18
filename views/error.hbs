@@ -1,8 +1,35 @@
-<div class="container-fluid d-flex align-items-center w-auto vh-100 p-3 flex-column">
-    {{!-- <h1>{{message}}</h1>
-    <h2>{{error.status}}</h2> --}}
-    <h4>An unexpected error occured.</h4>
-    <a href="/">Return</a>
+{{>navbar}}
+
+<div class="vh-100">
+    <div class="container-fluid d-flex align-items-center p-3 flex-column">
+        {{!-- <h1>{{message}}</h1>
+        <h2>{{error.status}}</h2> --}}
+        <p>An unexpected error occured. You may send us a message below for help.</p>
+    </div>
+
+    <div class="container-fluid col-md-6">
+        <form action="/admin/email-support" method="post">
+            <div class="mb-3">
+                <label for="userName" class="form-label">Name</label>
+                <input type="text" class="form-control" name="name" id="userName" value="{{userName}}" readonly>
+            </div>
+            <div class="mb-3">
+                <label for="userEmail" class="form-label">Email</label>
+                <input type="email" class="form-control" name="email" id="userEmail" value="{{userEmail}}" readonly>
+            </div>
+            <div class="mb-3">
+                <label for="userMessage" class="form-label">Message</label>
+                <textarea class="form-control" name="message" id="userMessage" rows="3" placeholder="Please describe any issues you are experiencing."></textarea>
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary mb-3">Send Message</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="container-fluid d-flex align-items-center p-3 flex-column">
+                <a href="/">Home</a>
+    </div>
 </div>
 
 {{> footer}}

@@ -1,6 +1,13 @@
 {{>navbar}}
 
 <div class="container-fluid d-flex w-auto h-auto p-3 flex-column">
+    {{#if messageSent}}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{messageSent}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {{/if}}
+    
     <div class="jubmotron text-center mx-3">
         <h4><span class="text-warning">Administrator View</span> || <a href="/home">Dealer View</a></h4>
         <br>

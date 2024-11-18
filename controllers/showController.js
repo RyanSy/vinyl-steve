@@ -34,6 +34,7 @@ exports.list_shows = async (req, res) => {
         shows: showsArraySorted,
         isLoggedIn: true,
         profileUpdated: req.flash('profileUpdated'),
+        messageSent: req.flash('messageSent'),
         isAdmin: isAdmin
     };
 
