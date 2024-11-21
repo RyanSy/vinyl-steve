@@ -14,6 +14,19 @@ const transporter = nodemailer.createTransport({
         pass: process.env.BREVO_SMTP_KEY,
     },
 });
+
+// define reply to email address based on which admin is logged in
+const adminEmail = req.oidc.user.email;
+let replyTo;
+
+if (adminEmail == 'clubmekon@gmail.com' || adminEmail == 'recordriots@gmail.com' || adminEmail == 'ryanb.sy@gmail.com') {
+    replyTo = '"Steve Gritzan" <steve@vinylsteve.com>';
+}
+
+if (adminEmail == 'exilecds@optonline.net') {
+    replyTo = '"John Bastone" <john@vinylsteve.com>';
+}
+
 // const cron = require('node-cron');
 
 // render admin dashboard
@@ -449,8 +462,9 @@ exports.email_all_dealers = async (req, res) => {
 
     async function main() {
         await transporter.sendMail({
-            from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
-            to: dealerEmails, // list of receivers
+            from: replyTo, // sender address
+            to: "Vinyl Steve Dealers", 
+            bcc: dealerEmails, // list of receivers
             subject: subject, // subject line
             text: message, // plain text body
             /**
@@ -475,7 +489,7 @@ exports.email_individual_dealer = async (req, res) => {
     
     async function main() {
         await transporter.sendMail({
-            from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
+            from: replyTo, // sender address
             to: email, // recipient
             subject: subject, // subject line
             text: message, // plain text body
@@ -500,8 +514,9 @@ exports.email_all_dealers_from_dealers_list = async (req, res) => {
 
     async function main() {
         await transporter.sendMail({
-            from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
-            to: emails, // list of receivers
+            from: replyTo, // sender address
+            to: "Vinyl Steve Dealers", // list of receivers
+            bcc: emails,
             subject: subject, // subject line
             text: message, // plain text body
             /**
@@ -525,7 +540,7 @@ exports.email_individual_dealer_from_dealers_list = async (req, res) => {
     
     async function main() {
         await transporter.sendMail({
-            from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
+            from: replyTo, // sender address
             to: email, // recipient
             subject: subject, // subject line
             text: message, // plain text body
@@ -550,7 +565,7 @@ exports.email_individual_dealer_from_waitinglist = (req, res) => {
     
     async function main() {
         await transporter.sendMail({
-            from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
+            from: replyTo, // sender address
             to: email, // recipient
             subject: subject, // subject line
             text: message, // plain text body
