@@ -45,15 +45,19 @@ exports.save_rsvp = async (req, res, next) => {
     let paypalClientIdJohn;
     let postedBySteve;
     let postedByJohn;
+    let dealerListSteve;
+    let dealerListJohn;
 
     if (show[0].posted_by == 'mayfieldmouse') {
         paypalClientIdSteve = process.env.PAYPAL_CLIENT_ID_STEVE;
         postedBySteve = true;
+        dealerListSteve = true;
         postedByJohn = false;
     }
     if (show[0].posted_by == 'john bastone') {
         paypalClientIdJohn = process.env.PAYPAL_CLIENT_ID_JOHN;
         postedByJohn = true;
+        dealerListJohn = true;
         postedBySteve = false;
     }
 
@@ -86,26 +90,32 @@ exports.save_rsvp = async (req, res, next) => {
         email: userEmail 
     };
 
-    const update = { $push: {
-        shows: { 
-            id: showId,
-            name: showName,
-            city: showCity,
-            state: showState,
-            date: showDate,
-            month: showMonth,
-            day: showDay,
-            year: showYear,
-            number_of_tables: numberOfTables,
-            notes: dealerNotes,
-            paid: paid,
-            rent_due: rentDue,
-            paypalClientIdSteve: paypalClientIdSteve,
-            paypalClientIdJohn: paypalClientIdJohn,
-            posted_by_steve: postedBySteve,
-            posted_by_john: postedByJohn
-        }
-    } };
+    const update = { 
+        $set: {
+            dealer_list_steve: dealerListSteve,
+            dealer_list_john: dealerListJohn
+        },    
+        $push: {
+            shows: { 
+                id: showId,
+                name: showName,
+                city: showCity,
+                state: showState,
+                date: showDate,
+                month: showMonth,
+                day: showDay,
+                year: showYear,
+                number_of_tables: numberOfTables,
+                notes: dealerNotes,
+                paid: paid,
+                rent_due: rentDue,
+                paypalClientIdSteve: paypalClientIdSteve,
+                paypalClientIdJohn: paypalClientIdJohn,
+                posted_by_steve: postedBySteve,
+                posted_by_john: postedByJohn
+            }
+        } 
+    };
 
     // const options = { 
     //     new: true

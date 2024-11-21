@@ -370,16 +370,29 @@ exports.render_dealers_list =  async (req, res) => {
     // *** TODO *** find fallbak image
     const image = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
     const email = JSON.stringify(req.oidc.user.email).replace(/"/g, '');
-
+    
     let dealersList;
-    await Dealer.find({})
-        .then((dealers) => {
-            dealersList = dealers;
-        })
-        .catch((err) => {
-            console.log(err);
-            res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
-        });
+
+    if (email == 'exilecds@optonline.net' || email == 'recordshowmania@gmail.com') {
+        await Dealer.find({dealer_list_john: true})
+            .then((dealers) => {
+                dealersList = dealers;
+            })
+            .catch((err) => {
+                console.log(err);
+                res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
+            });
+    } else {
+        await Dealer.find({})
+            .then((dealers) => {
+                dealersList = dealers;
+            })
+            .catch((err) => {
+                console.log(err);
+                res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
+            });
+    }
+    
 
     res.render('dealers-list', {
         name: name,
