@@ -43,7 +43,7 @@ router.post('/email-all-dealers', requiresAuth(), admin_controller.email_all_dea
 // email individual dealers - from rsvp list view
 router.post('/email-individual-dealer', requiresAuth(), admin_controller.email_individual_dealer);
 
-// email all dealers -from rsvp list view
+// email all dealers -from dealers list view
 router.post('/email-all-dealers_from_dealers_list', requiresAuth(), admin_controller.email_all_dealers_from_dealers_list);
 
 // email individual dealers - from dealers list view
