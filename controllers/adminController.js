@@ -118,7 +118,7 @@ exports.render_rsvp_list = async (req, res) => {
         req.oidc.user.email == 'clubmekon@gmail.com' ||
         req.oidc.user.email == 'recordriots@gmail.com' ||
         req.oidc.user.email == 'recordshowmania@gmail.com' ||
-        req.oidc.user.email == 'johnbastone@optonline.net' ||
+        req.oidc.user.email == 'exilecds@optonline.net' ||
         req.oidc.user.email == 'ryanb.sy@gmail.com' 
     ) {
         isAdmin = true;
