@@ -106,9 +106,12 @@
                 <input type="hidden" name="id" value="{{this.id}}">
                 {{#if this.paid}}
                 {{else}}
-                <span data-bs-toggle="tooltip" data-bs-title="Pay rent">
-                    <button type="button" class="btn btn-success mx-2 mb-2" data-bs-toggle="modal" data-bs-target="#paymentModal-{{this.id}}"><i class="bi bi-currency-dollar"></i></button>
-                </span>
+                    {{#if this.posted_by_steve}}
+                    <span data-bs-toggle="tooltip" data-bs-title="Pay rent">
+                        <button type="button" class="btn btn-success mx-2 mb-2" data-bs-toggle="modal" data-bs-target="#paymentModal-{{this.id}}"><i class="bi bi-currency-dollar"></i></button>
+                    </span>
+                    {{else}}
+                    {{/if}}
                 <span data-bs-toggle="tooltip" data-bs-title="Edit RSVP">
                     <button type="submit" class="btn btn-warning mx-2 mb-2"><i class="bi bi-pencil"></i></button>
                 </span>
@@ -181,12 +184,6 @@
     {{#if this.posted_by_steve}}
     <script
         src="https://www.paypal.com/sdk/js?client-id={{../paypalClientIdSteve}}&components=buttons&enable-funding=venmo,card&disable-funding=paylater"
-        data-sdk-integration-source="integrationbuilder_sc"></script>
-    {{/if}}
-
-    {{#if this.posted_by_john}}
-    <script
-        src="https://www.paypal.com/sdk/js?client-id={{../paypalClientIdJohn}}&components=buttons&enable-funding=venmo,card&disable-funding=paylater"
         data-sdk-integration-source="integrationbuilder_sc"></script>
     {{/if}}
 

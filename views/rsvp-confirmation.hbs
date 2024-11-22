@@ -16,8 +16,12 @@
 
         <div class="form-group mb-3">
             Rent Due: ${{rentDue}} <br>
-            Optional - choose a payment method below to pre-pay your table fees ($5 convenience fee will be applied):
         </div>
+
+        {{#if posted_by_steve}}
+        <p>
+            Optional - choose a payment method below to pre-pay your table fees ($5 convenience fee will be applied):
+        </p>
 
         <form id="savePaymentForm" action="/save-payment" method="post">
             <input type="hidden" name="email" value="{{email}}">
@@ -29,6 +33,7 @@
             <div id="paypal-button-container"></div>
             <p id="result-message"></p>
         </div>
+        {{/if}}
     </div>
 </main>
 
@@ -36,19 +41,12 @@
 <script src="https://www.paypal.com/sdk/js?client-id={{paypalClientIdSteve}}&components=buttons&enable-funding=venmo,card&disable-funding=paylater" data-sdk-integration-source="integrationbuilder_sc"></script>
 {{/if}}
 
-{{#if posted_by_john}}
-<script src="https://www.paypal.com/sdk/js?client-id={{paypalClientIdJohn}}&components=buttons&enable-funding=venmo,card&disable-funding=paylater" data-sdk-integration-source="integrationbuilder_sc"></script>
-{{/if}}
 
 <script>
     let posted_by;
 
     if ({{posted_by_steve}}) {
         posted_by = 'mayfieldmouse';
-    }
-
-    if ({{posted_by_john}}) {
-        posted_by = 'john_bastone';
     }
 
     let cart = {
