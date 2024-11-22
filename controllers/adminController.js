@@ -15,18 +15,6 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-// define reply to email address based on which admin is logged in
-const adminEmail = req.oidc.user.email;
-let replyTo;
-
-if (adminEmail == 'clubmekon@gmail.com' || adminEmail == 'recordriots@gmail.com' || adminEmail == 'ryanb.sy@gmail.com') {
-    replyTo = '"Steve Gritzan" <steve@vinylsteve.com>';
-}
-
-if (adminEmail == 'exilecds@optonline.net') {
-    replyTo = '"John Bastone" <john@vinylsteve.com>';
-}
-
 // const cron = require('node-cron');
 
 // render admin dashboard
@@ -459,7 +447,17 @@ exports.email_all_dealers = async (req, res) => {
     const dealerEmails = req.body.email;
     const subject = req.body.subject;
     const message = req.body.message;
-
+    const adminEmail = req.oidc.user.email;
+    let replyTo;
+    
+    if (adminEmail == 'clubmekon@gmail.com' || adminEmail == 'recordriots@gmail.com' || adminEmail == 'ryanb.sy@gmail.com') {
+        replyTo = '"Steve Gritzan" <steve@vinylsteve.com>';
+    }
+    
+    if (adminEmail == 'exilecds@optonline.net') {
+        replyTo = '"John Bastone" <john@vinylsteve.com>';
+    }
+    
     async function main() {
         await transporter.sendMail({
             from: replyTo, // sender address
@@ -486,6 +484,16 @@ exports.email_individual_dealer = async (req, res) => {
     const email = req.body.email;
     const subject = req.body.subject;
     const message = req.body.message;
+    const adminEmail = req.oidc.user.email;
+    let replyTo;
+    
+    if (adminEmail == 'clubmekon@gmail.com' || adminEmail == 'recordriots@gmail.com' || adminEmail == 'ryanb.sy@gmail.com') {
+        replyTo = '"Steve Gritzan" <steve@vinylsteve.com>';
+    }
+    
+    if (adminEmail == 'exilecds@optonline.net') {
+        replyTo = '"John Bastone" <john@vinylsteve.com>';
+    }
     
     async function main() {
         await transporter.sendMail({
@@ -511,6 +519,16 @@ exports.email_all_dealers_from_dealers_list = async (req, res) => {
     const emails = req.body.emails;
     const subject = req.body.subject;
     const message = req.body.message;
+    const adminEmail = req.oidc.user.email;
+    let replyTo;
+    
+    if (adminEmail == 'clubmekon@gmail.com' || adminEmail == 'recordriots@gmail.com' || adminEmail == 'ryanb.sy@gmail.com') {
+        replyTo = '"Steve Gritzan" <steve@vinylsteve.com>';
+    }
+    
+    if (adminEmail == 'exilecds@optonline.net') {
+        replyTo = '"John Bastone" <john@vinylsteve.com>';
+    }
 
     async function main() {
         await transporter.sendMail({
@@ -537,6 +555,16 @@ exports.email_individual_dealer_from_dealers_list = async (req, res) => {
     const email = req.body.email;
     const subject = req.body.subject;
     const message = req.body.message;
+    const adminEmail = req.oidc.user.email;
+    let replyTo;
+    
+    if (adminEmail == 'clubmekon@gmail.com' || adminEmail == 'recordriots@gmail.com' || adminEmail == 'ryanb.sy@gmail.com') {
+        replyTo = '"Steve Gritzan" <steve@vinylsteve.com>';
+    }
+    
+    if (adminEmail == 'exilecds@optonline.net') {
+        replyTo = '"John Bastone" <john@vinylsteve.com>';
+    }
     
     async function main() {
         await transporter.sendMail({
@@ -562,6 +590,16 @@ exports.email_individual_dealer_from_waitinglist = (req, res) => {
     const email = req.body.email;
     const subject = req.body.subject;
     const message = req.body.message;
+    const adminEmail = req.oidc.user.email;
+    let replyTo;
+    
+    if (adminEmail == 'clubmekon@gmail.com' || adminEmail == 'recordriots@gmail.com' || adminEmail == 'ryanb.sy@gmail.com') {
+        replyTo = '"Steve Gritzan" <steve@vinylsteve.com>';
+    }
+    
+    if (adminEmail == 'exilecds@optonline.net') {
+        replyTo = '"John Bastone" <john@vinylsteve.com>';
+    }
     
     async function main() {
         await transporter.sendMail({
