@@ -136,6 +136,7 @@ exports.delete_rsvp = async (req, res, next) => {
     const showId = req.body.show_id;
     const showName = req.body.show_name;
     const date = req.body.date;
+    const postedBy = req.body.posted_by;
     const numberOfTables = Number(req.body.number_of_tables);
 
     // update show collection
@@ -175,11 +176,12 @@ exports.delete_rsvp = async (req, res, next) => {
             return;    
         });
 
-    // save to rsvp collection
+    // save to cancellation collection
     const cancellation = new Cancellation({
         name: name,
         show: showName,
         date: date,
+        posted_by: postedBy,
         canceledOn: new Date()
     });
 

@@ -40,6 +40,7 @@ exports.save_rsvp = async (req, res, next) => {
 
     const show = await Show.find({ _id: showId });
 
+    const postedBy = show[0].posted_by;
     // define paypal client id based on who posted show
     let paypalClientIdSteve;
     let paypalClientIdJohn;
@@ -48,13 +49,13 @@ exports.save_rsvp = async (req, res, next) => {
     let dealerListSteve;
     let dealerListJohn;
 
-    if (show[0].posted_by == 'mayfieldmouse') {
+    if (postedBy == 'mayfieldmouse') {
         paypalClientIdSteve = process.env.PAYPAL_CLIENT_ID_STEVE;
         postedBySteve = true;
         dealerListSteve = true;
         postedByJohn = false;
     }
-    if (show[0].posted_by == 'john bastone') {
+    if (postedBy == 'john bastone') {
         paypalClientIdJohn = process.env.PAYPAL_CLIENT_ID_JOHN;
         postedByJohn = true;
         dealerListJohn = true;
@@ -132,6 +133,7 @@ exports.save_rsvp = async (req, res, next) => {
         name: user,
         show: showName,
         date: showDate,
+        posted_by: postedBy,
         tables_rented: numberOfTables,
         rent_due: rentDue,
         createdAt: new Date()

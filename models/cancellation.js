@@ -7,7 +7,8 @@ const cancellationSchema = new Schema(
         name: {type: String},
         show: {type: String},
         date: {type: String},
-        canceledOn: {type: Date},
+        posted_by: {type: String},
+        canceledOn: {type: Date}
     },
     { strict: false }
 );
