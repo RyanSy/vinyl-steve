@@ -104,7 +104,7 @@ async function emailJohn() {
     // send email
     await transporter.sendMail({
         from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
-        to: ['ryanbsy@gmail.com'], // recipient
+        to: ['johnbastone@optonline.net', 'ryanbsy@gmail.com'], // recipient
         subject: 'Daily Summary from Vinyl Steve', // subject line
         text: `Daily Summary for ${yesterday} \n RSVPs Confirmed: \n ${rsvpList} \n Cancellations: \n ${cancellationList}`, // plain text body
         html: `<h3>Daily Summary for ${yesterday}:<h3>
