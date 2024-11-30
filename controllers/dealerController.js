@@ -79,33 +79,21 @@ exports.show_dealer_rsvps = async (req, res) => {
         .then(async (result) => {
             if (!result[0]) {
                 message = 'You have no shows listed.';
-            } else if (result[0]) {
+            }
+            
+            if (result[0]) {
                 if (result[0].shows.length == 0) {
                     message = 'You have no shows listed.';
                 }
                 
-                let sortByDate = (array) => {
-                    return array.sort(function (a, b) {
-                        return new Date(moment(a.date, 'dddd, MMMM Do YYYY')) - new Date(moment(b.date, 'dddd, MMMM Do YYYY'));
-                    });
-                };
-                shows = sortByDate(result[0].shows);
-                
-                for (let i = 0; i < shows.length; i++) {
-                    await Show.findOne({_id: shows[i].id})
-                        .then((show) => {
-                            shows[i].posted_by = show.posted_by;
-                            if (shows[i].posted_by == 'mayfieldmouse') {
-                                shows[i].posted_by_steve = true;
-                            }
-                            if (shows[i].posted_by == 'john bastone') {
-                                shows[i].posted_by_john = true;
-                            }
-                        })
-                        .catch((err) => {
-                            console.error(err);
-                            res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
+                if (result[0].shows.length > 0) {
+                    let sortByDate = (array) => {
+                        return array.sort(function (a, b) {
+                            return new Date(moment(a.date, 'dddd, MMMM Do YYYY')) - new Date(moment(b.date, 'dddd, MMMM Do YYYY'));
                         });
+                    };
+                    shows = sortByDate(result[0].shows);
+
                 }       
             } 
         })
