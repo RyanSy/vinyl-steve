@@ -32,7 +32,8 @@ exports.render_admin_dashboard = async (req, res) => {
         email == 'recordriots@gmail.com' ||
         email == 'recordshowmania@gmail.com' ||
         email == 'exilecds@optonline.net' ||
-        email == 'ryanb.sy@gmail.com'
+        email == 'ryanb.sy@gmail.com' ||
+        email == 'johnbastone@optonline.net'
     ) {
         isAdmin = true;
     }
@@ -50,7 +51,7 @@ exports.render_admin_dashboard = async (req, res) => {
         });
     }
 
-    if (email == 'exilecds@optonline.net' || email == 'recordshowmania@gmail.com') {
+    if (email == 'exilecds@optonline.net' || email == 'johnbastone@optonline.net' || email == 'recordshowmania@gmail.com') {
         shows = await Show.find({
             $and: [
                 { date: { $gte: todaysDate } },
@@ -78,7 +79,7 @@ exports.render_admin_dashboard = async (req, res) => {
                 ],
             });
         }
-        if (email == 'exilecds@optonline.net' || email == 'recordshowmania@gmail.com') {
+        if (email == 'exilecds@optonline.net' || email == 'johnbastone@optonline.net' ||  email == 'recordshowmania@gmail.com') {
             pastShows = await Show.find({
                 $and: [
                     { date: { $gte: '2024-06-01', $lte: todaysDate } },
@@ -120,7 +121,8 @@ exports.render_rsvp_list = async (req, res) => {
         req.oidc.user.email == 'recordriots@gmail.com' ||
         req.oidc.user.email == 'recordshowmania@gmail.com' ||
         req.oidc.user.email == 'exilecds@optonline.net' ||
-        req.oidc.user.email == 'ryanb.sy@gmail.com' 
+        req.oidc.user.email == 'ryanb.sy@gmail.com' ||
+        req.oidc.user.email == 'johnbastone@optonline.net'  
     ) {
         isAdmin = true;
     }
@@ -274,7 +276,10 @@ exports.render_rsvp_print_view = async (req, res) => {
     if (
         req.oidc.user.email == 'clubmekon@gmail.com' ||
         req.oidc.user.email == 'recordriots@gmail.com' ||
-        req.oidc.user.email == 'recordshowmania@gmail.com'
+        req.oidc.user.email == 'recordshowmania@gmail.com' ||
+        req.oidc.user.email == 'exilecds@optonline.net' ||
+        req.oidc.user.email == 'ryanb.sy@gmail.com' ||
+        req.oidc.user.email == 'johnbastone@optonline.net'  
     ) {
         isAdmin = true;
     }
@@ -374,7 +379,7 @@ exports.render_dealers_list =  async (req, res) => {
     
     let dealersList;
 
-    if (email == 'exilecds@optonline.net' || email == 'recordshowmania@gmail.com') {
+    if (email == 'exilecds@optonline.net' || email == 'johnbastone@optonline.net' || email == 'recordshowmania@gmail.com') {
         await Dealer.find({dealer_list_john: true})
             .then((dealers) => {
                 dealersList = dealers;
@@ -454,7 +459,7 @@ exports.email_all_dealers = async (req, res) => {
         replyTo = '"Steve Gritzan" <steve@vinylsteve.com>';
     }
     
-    if (adminEmail == 'exilecds@optonline.net') {
+    if (adminEmail == 'exilecds@optonline.net' || adminEmail == 'johnbastone@optonline.net') {
         replyTo = '"John Bastone" <john@vinylsteve.com>';
     }
     
@@ -491,7 +496,7 @@ exports.email_individual_dealer = async (req, res) => {
         replyTo = '"Steve Gritzan" <steve@vinylsteve.com>';
     }
     
-    if (adminEmail == 'exilecds@optonline.net') {
+    if (adminEmail == 'exilecds@optonline.net' || adminEmail == 'johnbastone@optonline.net') {
         replyTo = '"John Bastone" <john@vinylsteve.com>';
     }
     
@@ -526,7 +531,7 @@ exports.email_all_dealers_from_dealers_list = async (req, res) => {
         replyTo = '"Steve Gritzan" <steve@vinylsteve.com>';
     }
     
-    if (adminEmail == 'exilecds@optonline.net') {
+    if (adminEmail == 'exilecds@optonline.net' || adminEmail == 'johnbastone@optonline.net') {
         replyTo = '"John Bastone" <john@vinylsteve.com>';
     }
 
@@ -562,7 +567,7 @@ exports.email_individual_dealer_from_dealers_list = async (req, res) => {
         replyTo = '"Steve Gritzan" <steve@vinylsteve.com>';
     }
     
-    if (adminEmail == 'exilecds@optonline.net') {
+    if (adminEmail == 'exilecds@optonline.net' || adminEmail == 'johnbastone@optonline.net') {
         replyTo = '"John Bastone" <john@vinylsteve.com>';
     }
     
@@ -597,7 +602,7 @@ exports.email_individual_dealer_from_waitinglist = (req, res) => {
         replyTo = '"Steve Gritzan" <steve@vinylsteve.com>';
     }
     
-    if (adminEmail == 'exilecds@optonline.net') {
+    if (adminEmail == 'exilecds@optonline.net' || adminEmail == 'johnbastone@optonline.net') {
         replyTo = '"John Bastone" <john@vinylsteve.com>';
     }
     

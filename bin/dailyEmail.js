@@ -55,7 +55,7 @@ async function emailSteve() {
     await transporter.sendMail({
         from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
         to: ['clubmekon@gmail.com', 'ryanbsy@gmail.com'], // recipient
-        subject: 'Daily Summary from Vinyl Steve', // subject line
+        subject: "Daily Summary from Vinyl Steve - Steve's Shows", // subject line
         text: `Daily Summary for ${yesterday} \n RSVPs Confirmed: \n ${rsvpList} \n Cancellations: \n ${cancellationList}`, // plain text body
         html: `<h3>Daily Summary for ${yesterday}:<h3>
                 <h4>RSVPs Confirmed</h4>
@@ -105,7 +105,7 @@ async function emailJohn() {
     await transporter.sendMail({
         from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
         to: ['johnbastone@optonline.net', 'ryanbsy@gmail.com'], // recipient
-        subject: 'Daily Summary from Vinyl Steve', // subject line
+        subject: "Daily Summary from Vinyl Steve - John's Shows", // subject line
         text: `Daily Summary for ${yesterday} \n RSVPs Confirmed: \n ${rsvpList} \n Cancellations: \n ${cancellationList}`, // plain text body
         html: `<h3>Daily Summary for ${yesterday}:<h3>
                 <h4>RSVPs Confirmed</h4>
