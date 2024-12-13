@@ -98,7 +98,7 @@
 
             <form action="/admin/email-all-dealers_from_dealers_list" method="post">
                 {{#each dealersList}}
-                <input type="text" name="emails[]" value="{{this.email}}">
+                <input style="display: none;" type="text" name="emails[]" value="{{this.email}}">
                 {{/each}}
                 <div class="modal-body bg-secondary">
                     <div class="mb-3">
