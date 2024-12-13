@@ -314,6 +314,31 @@ exports.render_waiting_list = async (req, res) => {
     res.render('waitinglist', dataObject);
 };
 
+// delete from waiting list
+exports.delete_from_waiting_list = async (req, res) => {
+    const showId = req.body.show_id;
+    const userId = req.body.user_id;
+
+    // update show db
+    const filter = {
+        _id: showId,
+    };
+    const update = {
+        $pull: {
+            waiting_list: {
+                user_id: userId,
+            },
+        }
+    };
+
+    await Show.updateOne(filter, update).catch((err) => {
+        console.log(err);
+        res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
+    });
+
+    res.redirect(`/admin/waitinglist/${showId}`);
+}
+
 // save discount
 exports.save_discount = async (req, res) => {
     const id = req.body.id;

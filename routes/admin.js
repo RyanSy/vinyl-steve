@@ -22,6 +22,9 @@ router.post('/delete-rsvp', requiresAuth(), admin_controller.delete_dealer_rsvp)
 // view waiting list
 router.get('/waitinglist/:id', requiresAuth(), admin_controller.render_waiting_list);
 
+// delete from waiting list
+router.post('/delete-from-waiting-list', requiresAuth(), admin_controller.delete_from_waiting_list);
+
 // save discount
 router.post('/save-discount', requiresAuth(), admin_controller.save_discount);
 
