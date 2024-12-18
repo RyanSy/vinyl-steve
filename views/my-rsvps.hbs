@@ -40,30 +40,24 @@
         <div class="col-3">
             Date
         </div>
-        <div class="col-3">
+        <div class="col-6">
             Show
         </div>
-        <div class="col-2">
-            # of Tables
-        </div>
-        <div class="col-2">
+        <div class="col-3">
             Paid
         </div>
     </div>
     {{/if}}
     
     {{#each shows}}
-    <div class="row px-2 pt-3 pb-2">
+    <div class="row px-2 pt-3 pb-2 mb-3">
         <div class="col-3">
             {{this.month}} {{this.day}}, {{this.year}}
         </div>
+        <div class="col-6">
+            {{this.name}}<br>{{this.city}}, {{this.state}}<br># of Tables: {{this.number_of_tables}}
+        </div>
         <div class="col-3">
-            {{this.name}}<br>{{this.city}}, {{this.state}}
-        </div>
-        <div class="col-2">
-            {{this.number_of_tables}}
-        </div>
-        <div class="col-2">
             {{#if this.paid}}
             Yes
             {{else}}
@@ -98,9 +92,8 @@
                     </div>
                 </div>
             </div>
-
         </div>
-        <div class="col-2">
+        <div class="mt-3 mb-3 row">
             <form action="/edit-rsvp" method="post">
                 <input type="hidden" name="email" value="{{../email}}">
                 <input type="hidden" name="id" value="{{this.id}}">
@@ -108,20 +101,23 @@
                 {{else}}
                     {{#if this.posted_by_steve}}
                     <span data-bs-toggle="tooltip" data-bs-title="Pay rent">
-                        <button type="button" class="btn btn-success mx-2 mb-2" data-bs-toggle="modal" data-bs-target="#paymentModal-{{this.id}}"><i class="bi bi-currency-dollar"></i></button>
+                        <button type="button" class="btn btn-success mx-2 mb-2" data-bs-toggle="modal" data-bs-target="#paymentModal-{{this.id}}">Pay Rent</button>
                     </span>
                     {{else}}
                     {{/if}}
                 <span data-bs-toggle="tooltip" data-bs-title="Edit RSVP">
-                    <button type="submit" class="btn btn-warning mx-2 mb-2"><i class="bi bi-pencil"></i></button>
+                    <button type="submit" class="btn btn-warning mx-2 mb-2">Edit</button>
                 </span>
                 {{/if}}
                 <span data-bs-toggle="tooltip" data-bs-title="Delete RSVP">
-                    <button type="button" class="btn btn-danger mx-2 mb-2" data-bs-toggle="modal" data-bs-target="#deleteModal-{{this.id}}"><i class="bi bi-x-lg"></i></button>
+                    <button type="button" class="btn btn-danger mx-2 mb-2" data-bs-toggle="modal" data-bs-target="#deleteModal-{{this.id}}">Delete</button>
                 </span>
             </form>
 
         </div>
+
+        <hr>
+
     </div>
 
     <!-- Delete Modal -->
