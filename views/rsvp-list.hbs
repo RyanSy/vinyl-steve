@@ -235,9 +235,6 @@
             <div class="col">
                 <strong>Name</strong>
             </div>
-            <div class="col text-center">
-                <strong># Tables</strong>
-            </div>
             <div class="col">
                 <strong>Notes</strong>
             </div>
@@ -250,9 +247,8 @@
         <div class="row my-3">
             <div class="col text-break">
                 <a href="#" data-bs-toggle="modal" data-bs-target="#emailDealer{{this._id}}">{{this.name}}</a>
-            </div>
-            <div class="col text-break text-center">
-                {{this.number_of_tables}}
+                <br>
+                # of Tables: {{this.number_of_tables}}
             </div>
             <div class="col text-break">
                 {{this.notes}}
