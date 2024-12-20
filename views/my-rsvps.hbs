@@ -38,13 +38,13 @@
     {{#if shows}}
     <div class="row px-2 pt-3 pb-2">
         <div class="col-3">
-            Date
+            <strong>Date</strong>
         </div>
         <div class="col-6">
-            Show
+            <strong>Show</strong>
         </div>
         <div class="col-3">
-            Paid
+            <strong>Paid</strong>
         </div>
     </div>
     {{/if}}
@@ -101,16 +101,16 @@
                 {{else}}
                     {{#if this.posted_by_steve}}
                     <span data-bs-toggle="tooltip" data-bs-title="Pay rent">
-                        <button type="button" class="btn btn-success mx-2 mb-2" data-bs-toggle="modal" data-bs-target="#paymentModal-{{this.id}}">Pay Rent</button>
+                        <button style="width: 90px" type="button" class="btn btn-success mx-2 mb-2" data-bs-toggle="modal" data-bs-target="#paymentModal-{{this.id}}">Pay Rent</button>
                     </span>
                     {{else}}
                     {{/if}}
                 <span data-bs-toggle="tooltip" data-bs-title="Edit RSVP">
-                    <button type="submit" class="btn btn-warning mx-2 mb-2">Edit</button>
+                    <button style="width: 90px" type="submit" class="btn btn-warning mx-2 mb-2">Edit</button>
                 </span>
                 {{/if}}
                 <span data-bs-toggle="tooltip" data-bs-title="Delete RSVP">
-                    <button type="button" class="btn btn-danger mx-2 mb-2" data-bs-toggle="modal" data-bs-target="#deleteModal-{{this.id}}">Delete</button>
+                    <button style="width: 90px" type="button" class="btn btn-danger mx-2 mb-2" data-bs-toggle="modal" data-bs-target="#deleteModal-{{this.id}}">Delete</button>
                 </span>
             </form>
 
