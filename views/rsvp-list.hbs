@@ -238,9 +238,6 @@
             <div class="col">
                 <strong>Notes</strong>
             </div>
-            <div class="col">
-                <strong>Paid?</strong>
-            </div>
         </div>
         <hr>
         {{#each dealerRsvpList}}
@@ -248,19 +245,16 @@
             <div class="col text-break">
                 <a href="#" data-bs-toggle="modal" data-bs-target="#emailDealer{{this._id}}">{{this.name}}</a>
                 <br>
-                # of Tables: {{this.number_of_tables}}
+                <strong># of Tables:</strong> {{this.number_of_tables}}
+                <br>
+                <strong>Rent Due:</strong> {{#if this.paid}}$0{{else}}${{this.rent_due}}{{/if}}
             </div>
             <div class="col text-break">
                 {{this.notes}}
             </div>
-            <div class="col text-break">
-                {{#if this.paid}}
-                Yes
-                {{else}}
-                No <br>
-                (${{this.rent_due}} due)
-                {{/if}}
-            </div>
+            {{!-- <div class="col text-break">
+                
+            </div> --}}
         </div>
         <div class="pt-3 my-3 row">
             <button style="width: 90px" type="button" class="btn btn-danger mx-2 mb-2" data-bs-toggle="modal"
