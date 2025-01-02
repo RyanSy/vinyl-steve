@@ -21,15 +21,19 @@
             {{#if show.waiting_list}}
                 {{#each show.waiting_list}}
                 <div class="row">
-                    <div class="col">
+                    <div class="d-flex">
+                        <div class="p-2">
                         {{this.name}} / <a href="#" data-bs-toggle="modal"
                             data-bs-target="#emailDealer{{this.user_id}}">{{this.email}}</a>
+                        </div>
+
+                        <div class="ms-auto p-2">
+                            <button type="button" class="btn btn-danger mx-2 mb-2" data-bs-toggle="modal"
+                                data-bs-target="#deleteDealerModal{{this.user_id}}">X</button>
+                        </div>
                     </div>
 
-                    <div class="col">
-                        <button type="button" class="btn btn-danger mx-2 mb-2" data-bs-toggle="modal"
-                            data-bs-target="#deleteDealerModal{{this.user_id}}">X</button>
-                    </div>
+                    <hr>
 
                     <!-- Email Individual Dealer Modal -->
                     <div class="modal bg-dark min-vh-100 fade" id="emailDealer{{this.user_id}}" tabindex="-1"
