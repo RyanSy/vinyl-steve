@@ -207,8 +207,8 @@ exports.show_edit_rsvp_page = async (req, res) => {
     const numberOfTablesForRent = show.number_of_tables_for_rent;
     const maxTablesPerDealer = show.max_tables_per_dealer;
     let maxTablesAvailable;
-    if (numberOfTablesForRent < maxTablesPerDealer) {
-        maxTablesAvailable = numberOfTablesForRent;
+    if (numberOfTablesForRent + dealerShow.number_of_tables < maxTablesPerDealer) {
+        maxTablesAvailable = numberOfTablesForRent + dealerShow.number_of_tables;
     } else {
         maxTablesAvailable = maxTablesPerDealer;
     }
@@ -223,6 +223,7 @@ exports.show_edit_rsvp_page = async (req, res) => {
         email: email,
         dealerShow: dealerShow,
         show: showObject,
+        maxTablesPerDealer: maxTablesPerDealer, 
         maxTablesAvailable: maxTablesAvailable,
         tablesAvailable: tablesAvailable
     });
