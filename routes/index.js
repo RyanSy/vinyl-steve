@@ -5,6 +5,7 @@ const show_controller = require('../controllers/showController');
 const dealer_controller = require('../controllers/dealerController');
 const rsvp_controller = require('../controllers/rsvpController');
 const payment_controller = require('../controllers/paymentController');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 // render index, redirect to home page if logged in
 router.get('/', (req, res) => {
@@ -68,6 +69,25 @@ router.get('/discount/:id', requiresAuth(), dealer_controller.render_discount_pa
 
 // save user discount
 router.post('/save-discount', requiresAuth(), dealer_controller.save_discount);
+
+// create stripe checkout session
+router.post('/create-checkout-session', requiresAuth(), payment_controller.create_checkout_session);
+
+router.get('/payment-processing/:session_id', requiresAuth(), (req, res) => { 
+    res.render('payment-processing', {
+        session_id: req.params.session_id
+    });
+});
+
+router.get('/session_status', async (req, res) => {
+    const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
+  
+    res.send({
+      status: session.status,
+      payment_status: session.payment_status,
+      customer_email: session.customer_details.email
+    });
+}); 
 
 // save payment
 router.post('/save-payment', requiresAuth(), payment_controller.save_payment);

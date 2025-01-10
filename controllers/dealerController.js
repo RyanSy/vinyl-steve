@@ -104,7 +104,9 @@ exports.show_dealer_rsvps = async (req, res) => {
         shows: shows,
         message: message,
         discountFailure: req.flash('discountFailure'),
-        discountSuccess: req.flash('discountSuccess')
+        discountSuccess: req.flash('discountSuccess'),
+        stripe_publishable_key: process.env.STRIPE_PUBLISHABLE_KEY,
+        payment_page: true
     }
 
     res.render('my-rsvps', dataObject);
