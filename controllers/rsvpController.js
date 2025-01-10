@@ -1,4 +1,4 @@
-const Show = require('../models/show');
+const Show = require('../models/show'); 
 const Dealer = require('../models/dealer');
 const Rsvp = require('../models/rsvp');
 const helperFunctions = require('../util/helperFunctions');
@@ -110,6 +110,7 @@ exports.save_rsvp = async (req, res, next) => {
                 notes: dealerNotes,
                 paid: paid,
                 rent_due: rentDue,
+                posted_by: postedBy,
                 paypalClientIdSteve: paypalClientIdSteve,
                 paypalClientIdJohn: paypalClientIdJohn,
                 posted_by_steve: postedBySteve,

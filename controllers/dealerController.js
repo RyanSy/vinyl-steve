@@ -93,7 +93,6 @@ exports.show_dealer_rsvps = async (req, res) => {
                         });
                     };
                     shows = sortByDate(result[0].shows);
-
                 }       
             } 
         })
