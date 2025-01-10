@@ -67,11 +67,7 @@ exports.show_dealer_rsvps = async (req, res) => {
     // *** TODO *** find fallbak image
     const image = req.session.image;
     const email = req.session.email;
-
-    // define paypal client id based on who posted show
-    const paypalClientIdSteve = process.env.PAYPAL_CLIENT_ID_STEVE;
-    // const paypalClientIdJohn = process.env.PAYPAL_CLIENT_ID_JOHN;
-
+ 
     let message;
     let shows;
 
@@ -108,9 +104,7 @@ exports.show_dealer_rsvps = async (req, res) => {
         shows: shows,
         message: message,
         discountFailure: req.flash('discountFailure'),
-        discountSuccess: req.flash('discountSuccess'),
-        paypalClientIdSteve: paypalClientIdSteve
-        // paypalClentIdJohn: paypalClientIdJohn
+        discountSuccess: req.flash('discountSuccess')
     }
 
     res.render('my-rsvps', dataObject);

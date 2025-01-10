@@ -23,143 +23,14 @@
             Optional - choose a payment method below to pre-pay your table fees ($5 convenience fee will be applied):
         </p>
 
-        <form id="savePaymentForm" action="/save-payment" method="post">
+        {{!-- <form id="savePaymentForm" action="/save-payment" method="post">
             <input type="hidden" name="email" value="{{email}}">
             <input type="hidden" name="id" value="{{id}}">
             <input type="hidden" name="rent_due" value="{{rentDue}}">
-        </form>
+        </form> --}}
 
-        <div class="form-group text-center mb-3">
-            <div id="paypal-button-container"></div>
-            <p id="result-message"></p>
-        </div>
         {{/if}}
     </div>
 </main>
-
-{{#if posted_by_steve}}
-<script src="https://www.paypal.com/sdk/js?client-id={{paypalClientIdSteve}}&components=buttons&enable-funding=venmo,card&disable-funding=paylater" data-sdk-integration-source="integrationbuilder_sc"></script>
-{{/if}}
-
-
-<script>
-    let posted_by;
-
-    if ({{posted_by_steve}}) {
-        posted_by = 'mayfieldmouse';
-    }
-
-    let cart = {
-        id: '{{id}}',
-        paid: true,
-        rentDue: {{rentDue}} + 5,
-        posted_by: posted_by
-    };
-
-    // after successful payment, submit save payment form
-    const savePaymentForm = document.getElementById('savePaymentForm');
-    async function submitPaymentForm() {
-        savePaymentForm.submit();
-    }
-
-    window.paypal
-        .Buttons({
-            style: {
-                shape: "rect",
-                layout: "vertical",
-            },
-            async createOrder() {
-                try {
-                    const response = await fetch("/api/orders", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        // use the "body" param to optionally pass additional order information
-                        // like product ids and quantities
-                        body: JSON.stringify({
-                            cart: [cart]
-                        }),
-                    });
-
-                    const orderData = await response.json();
-
-                    if (orderData.id) {
-                        return orderData.id;
-                    } else {
-                        const errorDetail = orderData?.details?.[0];
-                        const errorMessage = errorDetail
-                            ? `${errorDetail.issue} ${errorDetail.description} (${orderData.debug_id})`
-                            : JSON.stringify(orderData);
-
-                        throw new Error(errorMessage);
-                    }
-                } catch (error) {
-                    console.error(error);
-                    resultMessage(`Could not initiate PayPal Checkout...<br><br>${error}`);
-                }
-            },
-            async onApprove(data, actions) {
-                console.log(data.orderID);
-                try {
-                    const response = await fetch(`/api/orders/${data.orderID}/capture`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    });
-
-                    const orderData = await response.json();
-                    // Three cases to handle:
-                    //   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
-                    //   (2) Other non-recoverable errors -> Show a failure message
-                    //   (3) Successful transaction -> Show confirmation or thank you message
-
-                    const errorDetail = orderData?.details?.[0];
-
-                    if (errorDetail?.issue === "INSTRUMENT_DECLINED") {
-                        // (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
-                        // recoverable state, per https://developer.paypal.com/docs/checkout/standard/customize/handle-funding-failures/
-                        return actions.restart();
-                    } else if (errorDetail) {
-                        // (2) Other non-recoverable errors -> Show a failure message
-                        throw new Error(`${errorDetail.description} (${orderData.debug_id})`);
-                    } else if (!orderData.purchase_units) {
-                        throw new Error(JSON.stringify(orderData));
-                    } else {
-                        // (3) Successful transaction -> Show confirmation or thank you message
-                        // Or go to another URL:  actions.redirect('thank_you.html');
-                        submitPaymentForm();
-                        const transaction =
-                            orderData?.purchase_units?.[0]?.payments?.captures?.[0] ||
-                            orderData?.purchase_units?.[0]?.payments?.authorizations?.[0];
-                        resultMessage(
-                            `Transaction ${transaction.status}! Transaction ID: ${transaction.id}`,
-                        );
-                        console.log(
-                            "Capture result",
-                            orderData,
-                            JSON.stringify(orderData, null, 2),
-                        );
-                    }
-                } catch (error) {
-                    console.error(error);
-
-                    // fetch transaction error page?
-
-                    resultMessage(
-                        `Sorry, your transaction could not be processed...<br><br>${error}`,
-                    );
-                }
-            },
-        })
-        .render("#paypal-button-container");
-
-    // Example function to show a result to the user. Your site's UI library can be used instead.
-    function resultMessage(message) {
-        const container = document.querySelector("#result-message");
-        container.innerHTML = message;
-    }
-</script>
 
 {{> footer}}

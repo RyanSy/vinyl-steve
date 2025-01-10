@@ -82,11 +82,6 @@ router.get('/payment-error', requiresAuth(), (req, res) => {
     res.render('payment-unsuccessful');
 });
 
-// paypal payment routes
-router.post('/api/orders', requiresAuth(), payment_controller.create_order);
-router.post('/api/orders/:orderID/capture', requiresAuth(), payment_controller.on_approve);
-
-
 // get user profile info
 // router.get('/profile', requiresAuth(), (req, res) => {
 //     res.send(gify(req.oidc.user));
