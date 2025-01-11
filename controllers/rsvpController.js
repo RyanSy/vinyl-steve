@@ -179,8 +179,6 @@ exports.save_rsvp = async (req, res, next) => {
         rentDue: rentDue,
         posted_by_steve: postedBySteve,
         posted_by_john: postedByJohn,
-        stripe_publishable_key: process.env.STRIPE_PUBLISHABLE_KEY,
-        payment_page: true
     };    
 
     res.render('rsvp-confirmation', dataObject);
