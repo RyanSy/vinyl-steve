@@ -104,7 +104,7 @@ exports.show_dealer_rsvps = async (req, res) => {
         shows: shows,
         message: message,
         discountFailure: req.flash('discountFailure'),
-        discountSuccess: req.flash('discountSuccess')
+        discountSuccess: req.flash('discountSuccess'),
     }
 
     res.render('my-rsvps', dataObject);
