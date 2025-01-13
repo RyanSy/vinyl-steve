@@ -37,10 +37,6 @@ exports.payment_conformation = async (req, res) => {
   const email = req.params.email;
   const objectId = new mongoose.Types.ObjectId(id);
 
-  console.log(id)
-  console.log(email)
-  console.log(objectId)
-
   await Show.findOneAndUpdate(
     { _id: objectId },
     { $set: { ['dealer_rsvp_list.$[el].paid']: true } },
