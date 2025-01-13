@@ -73,13 +73,8 @@ router.post('/save-discount', requiresAuth(), dealer_controller.save_discount);
 // create stripe checkout session
 router.post('/create-checkout-session', requiresAuth(), payment_controller.create_checkout_session);
 
-// save payment
-router.post('/save-payment', requiresAuth(), payment_controller.save_payment);
-
 // payment confirmation
-router.get('/payment-confirmation', requiresAuth(), (req, res) => 
-    { res.render('payment-confirmation');
-});
+router.get('/payment-confirmation/:email/:id', requiresAuth(), payment_controller.payment_conformation);
 
 // payment error
 router.get('/payment-error', requiresAuth(), (req, res) => {

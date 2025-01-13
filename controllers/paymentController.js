@@ -1,9 +1,12 @@
 const Show = require('../models/show');
 const Dealer = require('../models/dealer');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const mongoose = require('mongoose');
 
 // create stripe checkout session
 exports.create_checkout_session = async (req, res) => {
+  const email = req.body.email;
+  const id = req.body.id;
   const session = await stripe.checkout.sessions.create({
     line_items: [{
       price_data: {
@@ -16,11 +19,11 @@ exports.create_checkout_session = async (req, res) => {
       quantity: 1,
     }],
     metadata: {
-      email: req.body.email,
-      id: req.body.id,
+      email: email,
+      id: id,
     },
     mode: 'payment',
-    success_url: `${process.env.AUTH0_BASE_URL}/payment-confirmation`,
+    success_url: `${process.env.AUTH0_BASE_URL}/payment-confirmation/${email}/${id}`,
     cancel_url: `${process.env.AUTH0_BASE_URL}/payment-unsuccessful`
   });
 
@@ -28,29 +31,40 @@ exports.create_checkout_session = async (req, res) => {
 }
 
 // update payment status in db
-exports.save_payment = async (req, res) => {
-  const id = req.body.id;
-  const email = req.body.email;
+exports.payment_conformation = async (req, res) => {
+  const id = req.params.id;
+  const email = req.params.email;
+  const objectId = new mongoose.Types.ObjectId(id);
+
+  console.log(id)
+  console.log(email)
+  console.log(objectId)
 
   await Show.findOneAndUpdate(
-    { _id: id },
-    { $set: { 'dealer_rsvp_list.$[el].paid': true } },
-    { arrayFilters: [{ 'el.email': email }] }
-  )
+      { _id: objectId },
+      { $set: { ['dealer_rsvp_list.$[el].paid']: true } },
+      { arrayFilters: [{ 'el.email': email }] }
+    )
+    // .then(updatedShow => {
+    //   console.log('updatedShow:', updatedShow);
+    // })
     .catch((err) => {
       console.log(err);
       res.render('error', { userName: req.oidc.user.name, userEmail: req.oidc.user.email });
     });
 
   await Dealer.findOneAndUpdate(
-    { email: email },
-    { $set: { 'shows.$[el].paid': true } },
-    { arrayFilters: [{ 'el.id': id }] }
-  )
+      { email: email },
+      { $set: { ['shows.$[el].paid']: true } },
+      { arrayFilters: [{ 'el.id': id }] }
+    )
+    // .then(updatedDealer => {
+    //   console.log('updatedDealer:', updatedDealer);
+    // })
     .catch((err) => {
       console.log(err);
       res.render('error', { userName: req.oidc.user.name, userEmail: req.oidc.user.email });
     });
 
-  res.redirect('/payment-confirmation');
+  res.render('payment-confirmation');
 }
