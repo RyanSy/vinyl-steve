@@ -18,6 +18,7 @@ exports.create_checkout_session = async (req, res) => {
       },
       quantity: 1,
     }],
+    // use metadata when implementing checkout session completed webhook
     metadata: {
       email: email,
       id: id,
@@ -41,10 +42,13 @@ exports.payment_conformation = async (req, res) => {
   console.log(objectId)
 
   await Show.findOneAndUpdate(
-      { _id: objectId },
-      { $set: { ['dealer_rsvp_list.$[el].paid']: true } },
-      { arrayFilters: [{ 'el.email': email }] }
-    )
+    { _id: objectId },
+    { $set: { ['dealer_rsvp_list.$[el].paid']: true } },
+    {
+      arrayFilters: [{ 'el.email': email }], 
+      new: true
+    }
+  )
     // .then(updatedShow => {
     //   console.log('updatedShow:', updatedShow);
     // })
@@ -54,10 +58,12 @@ exports.payment_conformation = async (req, res) => {
     });
 
   await Dealer.findOneAndUpdate(
-      { email: email },
-      { $set: { ['shows.$[el].paid']: true } },
-      { arrayFilters: [{ 'el.id': id }] }
-    )
+    { email: email },
+    { $set: { ['shows.$[el].paid']: true } },
+    { arrayFilters: [{ 'el.id': id }],
+      new: true
+    }
+  )
     // .then(updatedDealer => {
     //   console.log('updatedDealer:', updatedDealer);
     // })
