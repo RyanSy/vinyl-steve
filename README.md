@@ -41,7 +41,7 @@ Website architecture is based on the [MDN Express web framework tutorial][MDN-ur
 
 Ryan Sy - ryanbsy@gmail.com
 
-Project Link: [https://github.com/RyanSy/recordshowmania](https://github.com/RyanSy/recordshowmania)
+Project Link: [https://github.com/RyanSy/vinyl-steve](https://github.com/RyanSy/vinyl-steve)
 
 
 
