@@ -12,7 +12,7 @@
 
 
 ## About The Project
-Vinyl Steve is the brainchild of NJ based record store owner and record show organizer [Stephen Gritzan](https://www.linkedin.com/in/stephen-gritzan-6a5281a5/). Steve tasked me with the goal of creating an application that allows him to efficiently manage reservations for the record shows that he runs, and where vendors can easily register (and optionally pay in advance) for spaces to sell.
+Vinylsteve.com is the brainchild of NJ based record store owner and record show organizer [Stephen Gritzan](https://www.linkedin.com/in/stephen-gritzan-6a5281a5/). Steve tasked me with the goal of creating an application that allows him to efficiently manage reservations for the record shows that he runs, and where vendors can easily register (and optionally pay in advance) for spaces to sell.
 
 
 ## Tech Stack
