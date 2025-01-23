@@ -1,10 +1,9 @@
-  <h3 align="center">Vinyl Steve</h3>
+<div align="center">
+  <h1 align="center">Vinyl Steve</h1>
 
-  <p>
-    Vinylsteve.com is a website that allows vendors to reserve spaces at record shows (flea markets where people buy and sell records, CDs and other music-related items), and for the event organizer to manage those reservations.
-  </p>
-
-  <p>
+  <p align="center">
+    Vinyl Steve is a website that allows vendors to reserve spaces at record shows (flea markets where people buy and sell records, CDs and other music-related items), and for the event organizers to manage those reservations.
+    <br />
     <a href="https://www.vinylsteve.com/">View Live Site</a>
   </p>
 </div>
