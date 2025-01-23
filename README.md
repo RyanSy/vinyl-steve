@@ -27,6 +27,7 @@ Vinylsteve.com is the brainchild of NJ based record store owner and record show 
 [![Heroku][Heroku]][Heroku-url]
 [![Cloudflare][Cloudflare]][Cloudflare-url]
 [![Auth0][Auth0]][Auth0-url]
+[![Stripe][Stripe]][Stripe-url]
 
 Website architecture is based on the [MDN Express web framework tutorial][MDN-url].
 
@@ -36,10 +37,13 @@ Website architecture is based on the [MDN Express web framework tutorial][MDN-ur
 * Application deployed to Heroku
 * Cloudflare used for CDN
 * Auth0 used for user authentication
+* Stripe used for payments
 
 ## Contact
 
 Ryan Sy - ryanbsy@gmail.com
+
+Live Site: https://www.vinylsteve.com/
 
 Project Link: [https://github.com/RyanSy/vinyl-steve](https://github.com/RyanSy/vinyl-steve)
 
@@ -66,4 +70,6 @@ Project Link: [https://github.com/RyanSy/vinyl-steve](https://github.com/RyanSy/
 [Cloudflare-url]: https://www.cloudflare.com/
 [Auth0]: https://img.shields.io/badge/Auth0-EB5424?logo=auth0&logoColor=fff&style=for-the-badge
 [Auth0-url]: https://auth0.com/
+[Stripe]: https://img.shields.io/badge/Stripe-635BFF?logo=stripe&logoColor=fff&style=for-the-badge
+[Stripe-url]: https://stripe.com/
 [MDN-url]: https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/Express_Nodejs/Tutorial_local_library_website
