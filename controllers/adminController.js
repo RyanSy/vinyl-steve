@@ -45,7 +45,6 @@ exports.render_admin_dashboard = async (req, res) => {
         shows = await Show.find({
             $and: [
                 { date: { $gte: todaysDate } },
-                { name: /record riot/i },
                 { $or: [{posted_by: 'mayfieldmouse'}, {posted_by: 'ryan sy'}] }
             ]
         });
@@ -55,7 +54,6 @@ exports.render_admin_dashboard = async (req, res) => {
         shows = await Show.find({
             $and: [
                 { date: { $gte: todaysDate } },
-                { name: /record riot/i },
                 { posted_by: 'john bastone'}
             ]
         });
