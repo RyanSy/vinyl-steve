@@ -212,9 +212,9 @@ exports.add_dealer_rsvp = async (req, res) => {
 
 // delete dealer
 exports.delete_dealer_rsvp = async (req, res) => {
-    console.log('delete', req.body)
     const id = req.body.id;
     const name = req.body.name;
+    const email = req.body.email;
     const numberOfTablesForRent = req.body.number_of_tables_for_rent;
     const numberOfTables = req.body.number_of_tables;
     const newNumberOfTablesForRent =
@@ -239,7 +239,7 @@ exports.delete_dealer_rsvp = async (req, res) => {
 
     // update dealer db
     const dealerFilter = {
-        name: name,
+        email: email,
     };
     const dealerUpdate = {
         $pull: {
