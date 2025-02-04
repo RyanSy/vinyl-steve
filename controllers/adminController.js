@@ -72,7 +72,6 @@ exports.render_admin_dashboard = async (req, res) => {
             pastShows = await Show.find({
                 $and: [
                     { date: { $gte: '2024-06-01', $lte: todaysDate } },
-                    { name: /record riot/i },
                     { posted_by: 'mayfieldmouse'}
                 ],
             });
@@ -81,7 +80,6 @@ exports.render_admin_dashboard = async (req, res) => {
             pastShows = await Show.find({
                 $and: [
                     { date: { $gte: '2024-06-01', $lte: todaysDate } },
-                    { name: /record riot/i },
                     { posted_by: 'john bastone'}
                 ],
             });
