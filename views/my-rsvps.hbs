@@ -10,13 +10,9 @@
     <hr>
 
     {{#if message}}
-    <div class="align-items-center d-flex w-auto vh-100 flex-column">
+    <div class="align-items-center d-flex vh-100 w-auto flex-column">
         <p>
         <h4>{{message}}</h4>
-        </p>
-
-        <p>
-            <a class="btn btn-primary" href="/home">Return to list of shows</a>
         </p>
     </div>
     {{/if}}
@@ -36,17 +32,17 @@
     {{/if}}
 
     {{#if shows}}
-    <div class="row px-2 pt-3 pb-2">
-        <div class="col-3">
-            <strong>Date</strong>
+        <div class="row px-2 pt-3 pb-2">
+            <div class="col-3">
+                <strong>Date</strong>
+            </div>
+            <div class="col-6">
+                <strong>Show</strong>
+            </div>
+            <div class="col-3">
+                <strong>Paid</strong>
+            </div>
         </div>
-        <div class="col-6">
-            <strong>Show</strong>
-        </div>
-        <div class="col-3">
-            <strong>Paid</strong>
-        </div>
-    </div>
     {{/if}}
     
     {{#each shows}}
