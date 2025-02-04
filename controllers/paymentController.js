@@ -5,30 +5,39 @@ const mongoose = require('mongoose');
 
 // create stripe checkout session
 exports.create_checkout_session = async (req, res) => {
-  const email = req.body.email;
+  const name = req.session.name;
+  const email = req.session.email;
   const id = req.body.id;
-  const session = await stripe.checkout.sessions.create({
-    line_items: [{
-      price_data: {
-        currency: 'usd',
-        product_data: {
-          name: `${req.body.name} - Table Rent (includes $5 convenience fee)`,
+  try {
+    const session = await stripe.checkout.sessions.create({
+      line_items: [{
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: `${req.body.name} - Table Rent (includes $5 convenience fee)`,
+          },
+          unit_amount: (req.body.rent_due * 100) + 500,
         },
-        unit_amount: (req.body.rent_due * 100) + 500,
+        quantity: 1,
+      }],
+      // use metadata when implementing checkout session completed webhook
+      metadata: {
+        email: email,
+        id: id,
       },
-      quantity: 1,
-    }],
-    // use metadata when implementing checkout session completed webhook
-    metadata: {
-      email: email,
-      id: id,
-    },
-    mode: 'payment',
-    success_url: `${process.env.AUTH0_BASE_URL}/payment-confirmation/${email}/${id}`,
-    cancel_url: `${process.env.AUTH0_BASE_URL}/payment-unsuccessful`
-  });
-
-  res.redirect(303, session.url);
+      mode: 'payment',
+      success_url: `${process.env.AUTH0_BASE_URL}/payment-confirmation/${email}/${id}`,
+      cancel_url: `${process.env.AUTH0_BASE_URL}/payment-unsuccessful`
+    });
+  
+    res.redirect(303, session.url);
+  } catch(e) {
+      console.log(e);
+      res.render('error', {
+        userName: name,
+        userEmail: email
+      });
+  } 
 }
 
 // update payment status in db
