@@ -3,7 +3,7 @@ const moment = require('moment');
 const todaysDate = moment().format('YYYY-MM-DD');
 const helper_functions = require('../util/helperFunctions');
 
-// render home page with list of record riots
+// render home page with list of shows posted by Steve, John, or Ryan
 exports.list_shows = async (req, res) => {
     let isAdmin = false;
 
@@ -21,7 +21,7 @@ exports.list_shows = async (req, res) => {
     const shows = await Show.find({
         $and: [
             { date: { $gte: todaysDate } },
-            { name: /record riot/i },
+            { posted_by: ['mayfieldmouse', 'john bastone'] },
             { rsvp: true }
         ],
     });
