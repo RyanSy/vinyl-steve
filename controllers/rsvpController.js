@@ -226,7 +226,7 @@ exports.update_rsvp = async (req, res) => {
     const email = req.body.email;
     const oldNumberOfTables = req.body.old_number_of_tables;
     const numberOfTables = req.body.number_of_tables;
-    const change = oldNumberOfTables - numberOfTables;
+    const change = Math.abs(oldNumberOfTables - numberOfTables);
     const notes = req.body.notes;
     const rentDue = tableRent * numberOfTables;
     
