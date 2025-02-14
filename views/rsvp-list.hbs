@@ -38,6 +38,13 @@
     </div>
     {{/if}}
 
+    {{#if rsvpUpdated}}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{rsvpUpdated}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {{/if}}
+
     <div class="text-center">
         <h4>RSVP List for {{showName}}</h4>
         <h5>{{showDate}}</h5>
@@ -64,7 +71,7 @@
                 $ <input type="number" name="discount_amount" required>
             </div>
             <div class="mb-3">
-                <small>* New amount due will be shown when dealer applies discount code</small>
+                <small>* New rent amount due will be shown when dealer applies discount code</small>
             </div>
             <div class="form-group mb-3">
                 <button type="submit" class="btn btn-primary">Save Discount</button>
@@ -75,42 +82,47 @@
         <p>
         <h4>Available Discount Codes:</h4>
         <br>
-        {{#each discountCodes}}
-        <div class="row">
-            <div class="col-2">
-                Code: {{this.code}} <br>
-                Amount: ${{this.amount}}
+        {{#if discountCodes}}
+            {{#each discountCodes}}
+            <div class="row">
+                <div class="col-2">
+                    Code: {{this.code}} <br>
+                    Amount: ${{this.amount}}
+                </div>
+                <div class="col-2">
+                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteDiscountModal">X</button>
+                </div>
             </div>
-            <div class="col-2">
-                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteDiscountModal">X</button>
-            </div>
-        </div>
-        <br>
-        <div class="modal fade" id="deleteDiscountModal" tabindex="-1" aria-labelledby="deleteDiscountModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content text-secondary">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Confirm Delete</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        Delete this discount code?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary text-white"
-                            data-bs-dismiss="modal">Close</button>
-                        <form action="/admin/delete-discount" method="post">
-                            <input type="hidden" name="id" value="{{../showId}}">
-                            <input type="hidden" name="code" value="{{this.code}}">
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
+            <br>
+            <div class="modal fade" id="deleteDiscountModal" tabindex="-1" aria-labelledby="deleteDiscountModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content text-secondary">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Confirm Delete</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Delete this discount code?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary text-white"
+                                data-bs-dismiss="modal">Close</button>
+                            <form action="/admin/delete-discount" method="post">
+                                <input type="hidden" name="id" value="{{../showId}}">
+                                <input type="hidden" name="code" value="{{this.code}}">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        {{/each}}
+            {{/each}}
+        {{else}}
+            <span>No discount codes have been created yet.</span>
+        {{/if}}
         </p>
+        <br>
         <hr>
         {{!-- add dealer --}}
         <form action="/admin/add-dealer-rsvp" method="post">
@@ -186,6 +198,8 @@
         </form>
         <br>
         <hr>
+        <h4>Dealer RSVPs:</h4>
+        <br>
         <p>
         <!-- Email All Dealers Button trigger modal -->
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#emailAllDealersModal">Email All Dealers</button>
@@ -230,7 +244,7 @@
             </div>
         </div>
         </p>
-        <hr>
+        <br>
         <div class="row">
             <div class="col">
                 <strong>Name</strong>
@@ -241,56 +255,30 @@
         </div>
         <hr>
         {{#each dealerRsvpList}}
-        <div class="row my-3">
-            <div class="col text-break">
-                <a href="#" data-bs-toggle="modal" data-bs-target="#emailDealer{{this._id}}">{{this.name}}</a>
-                <br>
-                <strong># of Tables:</strong> {{this.number_of_tables}}
-                <br>
-                <strong>Rent Due:</strong> {{#if this.paid}}$0{{else}}${{this.rent_due}}{{/if}}
-            </div>
-            <div class="col text-break">
-                {{this.notes}}
-            </div>
-            {{!-- <div class="col text-break">
-                
-            </div> --}}
-        </div>
-        <div class="pt-3 my-3 row">
-            <button style="width: 90px" type="button" class="btn btn-danger mx-2 mb-2" data-bs-toggle="modal"
-                data-bs-target="#deleteRsvpModal{{this._id}}">Delete</button>
-        </div>
-
-        <hr>
-
-        <!-- Delete RSVP Modal -->
-            <div class="modal fade" id="deleteRsvpModal{{this._id}}" tabindex="-1" aria-labelledby="deleteRsvpModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content text-secondary">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Confirm Delete</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Delete this dealer?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary text-white"
-                                data-bs-dismiss="modal">Close</button>
-                            <form action="/admin/delete-rsvp" method="post">
-                                <input type="hidden" name="id" value="{{../showId}}">
-                                <input type="hidden" name="name" value="{{this.name}}">
-                                <input type="hidden" name="email" value="{{this.email}}">
-                                <input type="hidden" name="number_of_tables_for_rent"
-                                    value="{{../numberOfTablesForRent}}">
-                                <input type="hidden" name="number_of_tables" value="{{this.number_of_tables}}">
-                                <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
-                        </div>
-                    </div>
+            <div class="row my-3">
+                <div class="col text-break">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#emailDealer{{this._id}}">{{this.name}}</a>
+                    <br>
+                    <strong># of Tables:</strong> {{this.number_of_tables}}
+                    <br>
+                    <strong>Rent Due:</strong> {{#if this.paid}}$0{{else}}${{this.rent_due}}{{/if}}
                 </div>
+                <div class="col text-break">
+                    {{this.notes}}
+                </div>
+                {{!-- <div class="col text-break">
+                    
+                </div> --}}
             </div>
+            <div class="pt-3 my-3 row">
+                <button style="width: 90px" type="button" class="btn btn-warning mx-2 mb-2" data-bs-toggle="modal"
+                    data-bs-target="#editRsvpModal{{this._id}}">Edit</button>
+                <button style="width: 90px" type="button" class="btn btn-danger mx-2 mb-2" data-bs-toggle="modal"
+                    data-bs-target="#deleteRsvpModal{{this._id}}">Delete</button>
+            </div>
+
+            <hr>
+
             <!-- Email Individual Dealer Modal -->
             <div class="modal bg-dark min-vh-100 fade" id="emailDealer{{this._id}}" tabindex="-1" aria-labelledby="#emailIndividualDealerModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -323,6 +311,77 @@
                                 <button type="button" class="btn btn-secondary text-white" data-bs-dismiss="modal">Close</button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit RSVP Modal -->
+            <div class="modal fade" id="editRsvpModal{{this._id}}" tabindex="-1" aria-labelledby="editRsvpModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content text-secondary">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="editRsvpModalLabel">Edit RSVP</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        {{!-- if tables available, render input --}}
+                        <form action="/admin/update-rsvp" method="post">
+                            <div class="modal-body">
+                                <input type="hidden" name="id" value="{{../showId}}">
+                                <input type="hidden" name="table_rent" value="{{../tableRent}}">
+                                <input type="hidden" name="email" value="{{this.email}}">                              
+                                <input type="hidden" name="updated_by_admin" value="true">
+                                <input type="hidden" name="name" value="{{this.name}}">
+                                <input type="hidden" name="notes" value="{{this.notes}}">
+                                <div class="form-group mb-3">
+                                    <span>Dealer: {{this.name}}</span>
+                                </div>
+                                
+                                <div class="form-group mb-3">
+                                    <label for="dealer-name">Old Number of Tables: </label>
+                                    <input class="form-control w-25" type="number" name="old_number_of_tables" value="{{this.number_of_tables}}" readonly>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="dealer-name">New Number of Tables: </label>
+                                    <input class="form-control w-25" type="number" name="number_of_tables"  min="0" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary text-white" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete RSVP Modal -->
+            <div class="modal fade" id="deleteRsvpModal{{this._id}}" tabindex="-1" aria-labelledby="deleteRsvpModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content text-secondary">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="deleteRsvpModalLabel">Confirm Delete</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Delete this dealer?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary text-white"
+                                data-bs-dismiss="modal">Close</button>
+                            <form action="/admin/delete-rsvp" method="post">
+                                <input type="hidden" name="id" value="{{../showId}}">
+                                <input type="hidden" name="name" value="{{this.name}}">
+                                <input type="hidden" name="email" value="{{this.email}}">
+                                <input type="hidden" name="number_of_tables_for_rent"
+                                    value="{{../numberOfTablesForRent}}">
+                                <input type="hidden" name="number_of_tables" value="{{this.number_of_tables}}">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

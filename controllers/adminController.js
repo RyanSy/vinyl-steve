@@ -143,6 +143,8 @@ exports.render_rsvp_list = async (req, res) => {
                 const dealerInformation = showObject.dealer_information;
                 const tablesRented = showObject.tables_rented;
                 const archiveNotes = showObject.archive_notes;
+                let tablesAvailable;
+                numberOfTablesForRent > 0 ? tablesAvailable = true : tablesAvailable = false;
 
                 const dataObject = {
                     name: name,
@@ -160,11 +162,14 @@ exports.render_rsvp_list = async (req, res) => {
                     dealerInformation: dealerInformation,
                     tablesRented: tablesRented,
                     archiveNotes: archiveNotes,
+                    tablesAvailable: tablesAvailable,
                     dealerInfoUpdated: req.flash('dealerInfoUpdated'),
                     dealerAdded: req.flash('dealerAdded'),
                     dealerDeleted: req.flash('dealerDeleted'),
                     archiveNotesUpdated: req.flash('archiveNotesUpdated'),
-                    messageSent: req.flash('messageSent')
+                    messageSent: req.flash('messageSent'),
+                    rsvpUpdated: req.flash('rsvpUpdated'),
+                    id: req.flash('id')
                 };
                 isAdmin
                     ? res.render('rsvp-list', dataObject)

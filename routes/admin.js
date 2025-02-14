@@ -3,6 +3,7 @@ const router = express.Router();
 const { requiresAuth } = require('express-openid-connect');
 const admin_controller = require('../controllers/adminController');
 const dealer_controller = require('../controllers/dealerController');
+const rsvp_controller = require('../controllers/rsvpController');
 
 // render admin dashboard
 router.get('/', requiresAuth(), dealer_controller.check_if_dealer_exists, admin_controller.render_admin_dashboard);
@@ -15,6 +16,9 @@ router.get('/print-view/:id', requiresAuth(), admin_controller.render_rsvp_print
 
 // add dealer rsvp
 router.post('/add-dealer-rsvp', requiresAuth(), admin_controller.add_dealer_rsvp);
+
+// update dealer rsvp
+router.post('/update-rsvp', requiresAuth(), rsvp_controller.update_rsvp, admin_controller.render_rsvp_list);
 
 // delete dealer rsvp
 router.post('/delete-rsvp', requiresAuth(), admin_controller.delete_dealer_rsvp);

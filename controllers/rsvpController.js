@@ -146,7 +146,7 @@ exports.save_rsvp = async (req, res, next) => {
 
     const htmlMessage = `<p>Thanks ${user}! Your RSVP for the ${showName} on ${showDate} has been confirmed. We're happy that you'll be selling with us!</p> 
 
-    <p>You can pay for your tables with ??? or CREDIT CARD through the Vinyl Steve payment portal OR pay for tables in CASH on the day of the show when we collect (around 2 PM). Either method is acceptable.</p>
+    <p>You can pay for your tables in advance with a CREDIT CARD through the Vinyl Steve payment portal OR pay for tables in CASH on the day of the show when we collect (around 2 PM). Either method is acceptable.</p>
 
     <p>If your circumstances change and you need to CANCEL your reservation, it is YOUR responsibility to go back into www.vinylsteve.com and cancel the reservation in your account---not by calling or texting us. Abuse of NOT cancelling your RSVP could lead to a pre-payment requirement. Please be thoughtful.</p>
 
@@ -220,13 +220,13 @@ exports.show_edit_rsvp_page = async (req, res) => {
     });
 }
 
-exports.update_rsvp = async (req, res) => {
+exports.update_rsvp = async (req, res, next) => {
     const id = req.body.id;
-    const tableRent = req.body.table_rent
+    const tableRent = req.body.table_rent;
     const email = req.body.email;
     const oldNumberOfTables = req.body.old_number_of_tables;
     const numberOfTables = req.body.number_of_tables;
-    const change = Math.abs(oldNumberOfTables - numberOfTables);
+    const change = oldNumberOfTables - numberOfTables;
     const notes = req.body.notes;
     const rentDue = tableRent * numberOfTables;
     
@@ -264,6 +264,15 @@ exports.update_rsvp = async (req, res) => {
         res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
     });
 
+    if (req.body.updated_by_admin) {
+        req.flash('rsvpUpdated', 'RSVP has been updated.');
+        res.redirect(`/admin/rsvp-list/${id}`);
+    } else{
+        next();
+    }
+}
+
+exports.render_update_confirmation = (req, res) => {
     res.render('update-confirmation', {
         name: req.session.name,
         image: req.session.image

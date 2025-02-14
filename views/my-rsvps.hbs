@@ -2,7 +2,7 @@
 
 <br>
 
-<div class="container-fluid d-flex w-auto p-3 flex-column">
+<div class="container-fluid d-flex vh-100 w-auto p-3 flex-column">
     <div class="d-flex flex-column align-items-center">
         <h3>My RSVPs</h3>
     </div>
@@ -10,7 +10,7 @@
     <hr>
 
     {{#if message}}
-    <div class="align-items-center d-flex vh-100 w-auto flex-column">
+    <div class="align-items-center d-flex w-auto flex-column">
         <p>
         <h4>{{message}}</h4>
         </p>
@@ -164,6 +164,7 @@
         </p>
     </div>
 
-    {{> footer}}
+    
 </div>
 
+{{> footer}}

@@ -5,7 +5,6 @@ const show_controller = require('../controllers/showController');
 const dealer_controller = require('../controllers/dealerController');
 const rsvp_controller = require('../controllers/rsvpController');
 const payment_controller = require('../controllers/paymentController');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 // render index, redirect to home page if logged in
 router.get('/', (req, res) => {
@@ -56,10 +55,10 @@ router.get('/already-registered', requiresAuth(), (req, res) =>
 router.post('/rsvp-confirmation', requiresAuth(), rsvp_controller.save_rsvp);
 
 // render edit rsvp page - user
-router.post('/edit-rsvp/', requiresAuth(), rsvp_controller.show_edit_rsvp_page);
+router.post('/edit-rsvp', requiresAuth(), rsvp_controller.show_edit_rsvp_page);
 
 // update rsvp - user
-router.post('/update-rsvp/', requiresAuth(), rsvp_controller.update_rsvp);
+router.post('/update-rsvp', requiresAuth(), rsvp_controller.update_rsvp, rsvp_controller.render_update_confirmation);
 
 // save dealer to waitinglist
 router.post('/waitinglist', requiresAuth(), dealer_controller.save_dealer_to_waitinglist);
