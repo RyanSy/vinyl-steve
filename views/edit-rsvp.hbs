@@ -44,8 +44,7 @@
                 <label for="number_of_tables">* Number Of Tables: </label>
                 {{#if tablesAvailable}}
                     <input class="form-control" type="number" min="1" name="number_of_tables" max="{{maxTablesPerDealer}}" value="{{dealerShow.number_of_tables}}" required>
-                    <div class="form-text text-white">* Required - Max: {{maxTablesAvailable}}</div>
-
+                    <div class="form-text text-white">* Required - Max: {{maxTablesPerDealer}}</div>
                 {{else}}
                     <input class="form-control" type="number" min="1" name="number_of_tables" max="{{maxTablesPerDealer}}" value="{{dealerShow.number_of_tables}}" readonly>
                     <small>Tables are currently sold out.</small>

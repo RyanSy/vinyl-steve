@@ -197,14 +197,8 @@ exports.show_edit_rsvp_page = async (req, res) => {
     const showObject = helperFunctions.createShowObject(show);
     const numberOfTablesForRent = show.number_of_tables_for_rent;
     const maxTablesPerDealer = show.max_tables_per_dealer;
-    let maxTablesAvailable;
-    if (numberOfTablesForRent + dealerShow.number_of_tables < maxTablesPerDealer) {
-        maxTablesAvailable = numberOfTablesForRent + dealerShow.number_of_tables;
-    } else {
-        maxTablesAvailable = maxTablesPerDealer;
-    }
     let tablesAvailable = true;
-    if (maxTablesAvailable == 0) {
+    if (numberOfTablesForRent == 0) {
         tablesAvailable = false;
     }
 
@@ -215,7 +209,6 @@ exports.show_edit_rsvp_page = async (req, res) => {
         dealerShow: dealerShow,
         show: showObject,
         maxTablesPerDealer: maxTablesPerDealer, 
-        maxTablesAvailable: maxTablesAvailable,
         tablesAvailable: tablesAvailable
     });
 }
