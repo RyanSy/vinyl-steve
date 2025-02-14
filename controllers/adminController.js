@@ -169,6 +169,7 @@ exports.render_rsvp_list = async (req, res) => {
                     archiveNotesUpdated: req.flash('archiveNotesUpdated'),
                     messageSent: req.flash('messageSent'),
                     rsvpUpdated: req.flash('rsvpUpdated'),
+                    notEnoughTables: req.flash('notEnoughTables'),
                     id: req.flash('id')
                 };
                 isAdmin
@@ -194,23 +195,27 @@ exports.add_dealer_rsvp = async (req, res) => {
     const numberOfTables = Number(req.body.number_of_tables);
     const newNumberOfTablesForRent = numberOfTablesForRent - numberOfTables;
 
-    // save rsvp to shows db
-    const show = await Show.find({ _id: id });
-    const dealerRsvp = {
-        name: name,
-        email: email,
-        notes: dealerNotes,
-        number_of_tables: numberOfTables,
-        rent_due: numberOfTables * tableRent
-    };
-    show[0].number_of_tables_for_rent = newNumberOfTablesForRent;
-    show[0].dealer_rsvp_list.addToSet(dealerRsvp);
-    show[0].save().catch((err) => {
-        console.log(err);
-        res.send('error');
-    });
-
-    req.flash('dealerAdded', 'Dealer has been added.');
+    // if adding dealer tables doesn't bring total availabe to a negative amount, save rsvp to shows db
+    if (newNumberOfTablesForRent >= 0) {
+        const show = await Show.find({ _id: id });
+        const dealerRsvp = {
+            name: name,
+            email: email,
+            notes: dealerNotes,
+            number_of_tables: numberOfTables,
+            rent_due: numberOfTables * tableRent
+        };
+        show[0].number_of_tables_for_rent = newNumberOfTablesForRent;
+        show[0].dealer_rsvp_list.addToSet(dealerRsvp);
+        show[0].save().catch((err) => {
+            console.log(err);
+            res.send('error');
+        });
+    
+        req.flash('dealerAdded', 'Dealer has been added.');    
+    } else {
+        req.flash('notEnoughTables', 'Insufficient tables available.');
+    }
 
     res.redirect(`/admin/rsvp-list/${id}`);
 };

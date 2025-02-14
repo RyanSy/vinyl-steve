@@ -45,6 +45,13 @@
     </div>
     {{/if}}
 
+    {{#if notEnoughTables}}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{notEnoughTables}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {{/if}}
+
     <div class="text-center">
         <h4>RSVP List for {{showName}}</h4>
         <h5>{{showDate}}</h5>
