@@ -105,7 +105,7 @@ exports.payment_conformation = async (req, res) => {
   // send payment confirmation email to Steve
   await transporter.sendMail({
     from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
-    to: ['recordriots@gmail.com', 'ryanbsy@gmail.com'], // recipient
+    to: 'recordriots@gmail.com', // recipient
     subject: `Table rent payment from ${dealerName} for ${showName} on ${showDate}`, // subject line
     text: `${dealerName} has paid $${totalAmountPaid} for ${showName} on ${showDate}.`, // plain text body
     html: `<p>${dealerName} has paid $${totalAmountPaid} ($${rentDue} + $5 fee) for "${showName}" on ${showDate}.<p>`

@@ -2,6 +2,16 @@ const Show = require('../models/show');
 const Dealer = require('../models/dealer');
 const Cancellation = require('../models/cancellation');
 const moment = require('moment');
+const nodemailer = require('nodemailer');
+const transporter = nodemailer.createTransport({
+    host: process.env.BREVO_SMTP_SERVER,
+    port: process.env.BREVO_SMTP_PORT,
+    secure: false, // true for port 465, false for other ports
+    auth: {
+        user: process.env.BREVO_LOGIN,
+        pass: process.env.BREVO_SMTP_KEY,
+    },
+});
 
 // check if dealer exists, if so, list shows, if not prompt for info
 exports.check_if_dealer_exists = async (req, res, next) => {
@@ -167,10 +177,20 @@ exports.delete_rsvp = async (req, res, next) => {
     });
 
     await cancellation.save()
-            .catch((err) => {
-                console.log(err);
-                res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
-            });
+        .catch((err) => {
+            console.log(err);
+            res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
+        });
+    
+    await transporter.sendMail({
+            from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
+            to: 'ryanbsy@gmail.com', 
+            subject: 'Vinyl Steve Cancellation', // subject line
+            text: `${name} has canceled their RSVP for "${showName}" on ${date}.`, // plain text body
+            /**
+             * html:// html body
+             *  */ 
+        }).catch(console.error);
     
     next();
 }

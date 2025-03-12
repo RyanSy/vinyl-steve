@@ -273,10 +273,10 @@ exports.delete_dealer_rsvp = async (req, res) => {
 
     async function main() {
         await transporter.sendMail({
-            from: '"Vinyl Steve <info@vinylsteve.com>"', // sender address
+            from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
             to: 'ryanbsy@gmail.com', 
             subject: 'Vinyl Steve Cancellation', // subject line
-            text: `${name} has canceled their RSVP for ${showName} on ${showDate}.`, // plain text body
+            text: `${name} has canceled their RSVP for "${showName}" on ${showDate}.`, // plain text body
             /**
              * html:// html body
              *  */ 
