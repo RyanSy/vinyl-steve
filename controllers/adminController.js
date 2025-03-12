@@ -234,8 +234,9 @@ exports.delete_dealer_rsvp = async (req, res) => {
     const email = req.body.email;
     const numberOfTablesForRent = req.body.number_of_tables_for_rent;
     const numberOfTables = req.body.number_of_tables;
-    const newNumberOfTablesForRent =
-        Number(numberOfTablesForRent) + Number(numberOfTables);
+    const newNumberOfTablesForRent = Number(numberOfTablesForRent) + Number(numberOfTables);
+    const showName = req.body.show_name;
+    const showDate = req.body.show_date;
 
     // update show db
     const showFilter = {
@@ -269,6 +270,20 @@ exports.delete_dealer_rsvp = async (req, res) => {
         console.log(err);
         res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
     });
+
+    async function main() {
+        await transporter.sendMail({
+            from: '"Vinyl Steve <info@vinylsteve.com>"', // sender address
+            to: 'ryanbsy@gmail.com', 
+            subject: 'Vinyl Steve Cancellation', // subject line
+            text: `${name} has canceled their RSVP for ${showName} on ${showDate}.`, // plain text body
+            /**
+             * html:// html body
+             *  */ 
+        });
+    }
+
+    main().catch(console.error);
 
     req.flash('dealerDeleted', 'Dealer has been deleted.');
 
