@@ -494,11 +494,11 @@ exports.email_all_dealers = async (req, res) => {
     let replyTo;
     
     if (adminEmail == 'clubmekon@gmail.com' || adminEmail == 'recordriots@gmail.com' || adminEmail == 'ryanb.sy@gmail.com') {
-        replyTo = '"Steve Gritzan" <steve@vinylsteve.com>';
+        replyTo = '"Steve Gritzan" <recordriots@gmail.com>';
     }
     
     if (adminEmail == 'exilecds@optonline.net' || adminEmail == 'johnbastone@optonline.net') {
-        replyTo = '"John Bastone" <john@vinylsteve.com>';
+        replyTo = '"John Bastone" <johnbastone@optonline.net>';
     }
     
     async function main() {
@@ -531,11 +531,11 @@ exports.email_individual_dealer = async (req, res) => {
     let replyTo;
     
     if (adminEmail == 'clubmekon@gmail.com' || adminEmail == 'recordriots@gmail.com' || adminEmail == 'ryanb.sy@gmail.com') {
-        replyTo = '"Steve Gritzan" <steve@vinylsteve.com>';
+        replyTo = '"Steve Gritzan" <recordriots@gmail.com>';
     }
     
     if (adminEmail == 'exilecds@optonline.net' || adminEmail == 'johnbastone@optonline.net') {
-        replyTo = '"John Bastone" <john@vinylsteve.com>';
+        replyTo = '"John Bastone" <johnbastone@optonline.net>';
     }
     
     async function main() {
@@ -566,11 +566,11 @@ exports.email_all_dealers_from_dealers_list = async (req, res) => {
     let replyTo;
     
     if (adminEmail == 'clubmekon@gmail.com' || adminEmail == 'recordriots@gmail.com' || adminEmail == 'ryanb.sy@gmail.com') {
-        replyTo = '"Steve Gritzan" <steve@vinylsteve.com>';
+        replyTo = '"Steve Gritzan" <recordriots@gmail.com>';
     }
     
     if (adminEmail == 'exilecds@optonline.net' || adminEmail == 'johnbastone@optonline.net') {
-        replyTo = '"John Bastone" <john@vinylsteve.com>';
+        replyTo = '"John Bastone" <johnbastone@optonline.net>';
     }
 
     async function main() {
@@ -602,11 +602,11 @@ exports.email_individual_dealer_from_dealers_list = async (req, res) => {
     let replyTo;
     
     if (adminEmail == 'clubmekon@gmail.com' || adminEmail == 'recordriots@gmail.com' || adminEmail == 'ryanb.sy@gmail.com') {
-        replyTo = '"Steve Gritzan" <steve@vinylsteve.com>';
+        replyTo = '"Steve Gritzan" <recordriots@gmail.com>';
     }
     
     if (adminEmail == 'exilecds@optonline.net' || adminEmail == 'johnbastone@optonline.net') {
-        replyTo = '"John Bastone" <john@vinylsteve.com>';
+        replyTo = '"John Bastone" <johnbastone@optonline.net>';
     }
     
     async function main() {
@@ -637,11 +637,11 @@ exports.email_individual_dealer_from_waitinglist = (req, res) => {
     let replyTo;
     
     if (adminEmail == 'clubmekon@gmail.com' || adminEmail == 'recordriots@gmail.com' || adminEmail == 'ryanb.sy@gmail.com') {
-        replyTo = '"Steve Gritzan" <steve@vinylsteve.com>';
+        replyTo = '"Steve Gritzan" <recordriots@gmail.com>';
     }
     
     if (adminEmail == 'exilecds@optonline.net' || adminEmail == 'johnbastone@optonline.net') {
-        replyTo = '"John Bastone" <john@vinylsteve.com>';
+        replyTo = '"John Bastone" <johnbastone@optonline.net>';
     }
     
     async function main() {

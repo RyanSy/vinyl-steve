@@ -138,10 +138,18 @@ exports.save_rsvp = async (req, res, next) => {
                 res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
             });
     
-    let paymentMessage;
-
-    postedBySteve ? paymentMessage = 'You can pay for your tables with ??? or CREDIT CARD through the Vinyl Steve payment portal OR pay for tables in CASH on the day of the show when we collect (around 2 PM). Either method is acceptable.' : paymentMessage = 'Table rent (in CASH or VENMO) will be collected around 1:30PM.'
     // send confirmation email
+    let paymentMessage;
+    let senderEmail;
+
+    if (postedBySteve) {
+        paymentMessage = 'You can pay for your tables with ??? or CREDIT CARD through the Vinyl Steve payment portal OR pay for tables in CASH on the day of the show when we collect (around 2 PM). Either method is acceptable.';
+        senderEmail = '"Steve Gritzan" <recordriots@gmail.com>'
+    } else {
+        paymentMessage = 'Table rent (in CASH or VENMO) will be collected around 1:30PM.';
+        senderEmail = '"John Bastone" <johnbastone@optonline.net>';
+    }
+
     const textMessage = `Thanks ${user}! Your RSVP for the Jersey City Record Riot on Saturday, April 5th, 2025 has been confirmed. We're happy that you'll be selling with us! \r\n ${paymentMessage} \r\n If your circumstances change and you need to CANCEL your reservation, it is YOUR responsibility to go back into www.vinylsteve.com and cancel the reservation in your account---not by calling or texting us. Abuse of NOT cancelling your RSVP could lead to a pre-payment requirement. Please be thoughtful. \r\n We greatly appreciate your support of Record Riots! \r\n Steve & John \r\n PS: When is load-in time? All Record Riots start at 10 AM and load-in GENERALLY starts at 8 AM. Please check info for the Vinyl Steve website for specific details of load-in at each venue---but you'll NEVER be wrong arriving at 8 AM!`;
 
     const htmlMessage = `<p>Thanks ${user}! Your RSVP for the ${showName} on ${showDate} has been confirmed. We're happy that you'll be selling with us!</p> 
@@ -158,7 +166,7 @@ exports.save_rsvp = async (req, res, next) => {
 
     async function main() {
         await transporter.sendMail({
-            from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
+            from: senderEmail, // sender address
             to: userEmail, // recipient
             subject: `RSVP Confirmation: ${showName} - ${showDate}`, // subject line
             text: textMessage, // plain text body
