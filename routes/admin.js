@@ -4,6 +4,7 @@ const { requiresAuth } = require('express-openid-connect');
 const admin_controller = require('../controllers/adminController');
 const dealer_controller = require('../controllers/dealerController');
 const rsvp_controller = require('../controllers/rsvpController');
+const email_controller = require('../controllers/emailController');
 
 // render admin dashboard
 router.get('/', requiresAuth(), dealer_controller.check_if_dealer_exists, admin_controller.render_admin_dashboard);
@@ -45,22 +46,22 @@ router.post('/edit-dealer-information/:id', requiresAuth(), admin_controller.edi
 router.post('/edit-archive-notes/:id', requiresAuth(), admin_controller.edit_archive_notes, admin_controller.render_rsvp_list);
 
 // email all dealers -from rsvp list view
-router.post('/email-all-dealers', requiresAuth(), admin_controller.email_all_dealers);
+router.post('/email-all-dealers', requiresAuth(), email_controller.email_all_dealers);
 
 // email individual dealers - from rsvp list view
-router.post('/email-individual-dealer', requiresAuth(), admin_controller.email_individual_dealer);
+router.post('/email-individual-dealer', requiresAuth(), email_controller.email_individual_dealer);
 
 // email all dealers -from dealers list view
-router.post('/email-all-dealers_from_dealers_list', requiresAuth(), admin_controller.email_all_dealers_from_dealers_list);
+router.post('/email-all-dealers_from_dealers_list', requiresAuth(), email_controller.email_all_dealers_from_dealers_list);
 
 // email individual dealers - from dealers list view
-router.post('/email-individual-dealer-from-dealers-list', requiresAuth(), admin_controller.email_individual_dealer_from_dealers_list);
+router.post('/email-individual-dealer-from-dealers-list', requiresAuth(), email_controller.email_individual_dealer_from_dealers_list);
 
 // email individual dealers - from waiting list view
-router.post('/email-individual-dealer-from-waiting-list', requiresAuth(), admin_controller.email_individual_dealer_from_waitinglist);
+router.post('/email-individual-dealer-from-waiting-list', requiresAuth(), email_controller.email_individual_dealer_from_waitinglist);
 
 // send email from error page
-router.post('/email-support', requiresAuth(), admin_controller.email_support);
+router.post('/email-support', requiresAuth(), email_controller.email_support);
 
 // show error page
 router.get('/error', requiresAuth(), (req, res) => {
