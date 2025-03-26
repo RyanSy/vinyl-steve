@@ -7,7 +7,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     {{/if}}
-    
+
     <div class="jubmotron text-center mx-3">
         <h4><span class="text-warning">Administrator View</span> || <a href="/home">Dealer View</a></h4>
         <br>
@@ -30,42 +30,51 @@
     </ul>
 
     <br>
-    
+
     <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="current-tab-pane" role="tabpanel" aria-labelledby="current-tab" tabindex="0">
+        <div class="tab-pane fade show active" id="current-tab-pane" role="tabpanel" aria-labelledby="current-tab"
+            tabindex="0">
             {{#each shows}}
-                <div class="row px-3 pt-3 pb-2 mx-3">
-                    <div class="col-4">
-                        {{this.month}} {{this.day}}, {{this.year}}
-                    </div>
-                    <div class="col-8">
-                        <a href="/admin/rsvp-list/{{this.id}}">{{this.name}}<br>{{this.city}}, {{this.state}}</a> <br>
-                        Tables available: {{#if this.number_of_tables_for_rent}} {{this.number_of_tables_for_rent}} {{else}} Sold
-                        out{{/if}} <br>
-                        Tables rented: {{this.tables_rented}}
-                    </div>
+            <div class="row px-3 pt-3 pb-2 mx-3">
+                <div class="col-4">
+                    {{this.month}} {{this.day}}, {{this.year}}
                 </div>
+                <div class="col-8">
+                    <a href="/admin/rsvp-list/{{this.id}}">{{this.name}}<br>{{this.city}}, {{this.state}}</a> <br>
+                    Tables available: {{#if this.number_of_tables_for_rent}} {{this.number_of_tables_for_rent}} {{else}}
+                    Sold
+                    out{{/if}} <br>
+                    Tables rented: {{this.tables_rented}}
+                </div>
+            </div>
             {{/each}}
         </div>
 
         <div class="tab-pane fade" id="past-tab-pane" role="tabpanel" aria-labelledby="past-tab" tabindex="0">
             {{#each pastShows}}
-                <div class="row px-3 pt-3 pb-2 mx-3">
-                    <div class="col-4">
-                        {{this.month}} {{this.day}}, {{this.year}}
-                    </div>
-                    <div class="col-8">
-                        <a href="/admin/rsvp-list/{{this.id}}">{{this.name}}<br>{{this.city}}, {{this.state}}</a> <br>
-                        Tables available: {{#if this.number_of_tables_for_rent}} {{this.number_of_tables_for_rent}} {{else}} Sold
+            <div class="row px-3 pt-3 pb-2 mx-3">
+                <div class="col-2">
+                    {{this.month}} {{this.day}}, {{this.year}}
+                </div>
+                <div class="col-8">
+                    <a href="/admin/rsvp-list/{{this.id}}">{{this.name}}<br>{{this.city}}, {{this.state}}</a> <br>
+                    <div id="show{{this.id}}" class="collapse">
+                        Tables available: {{#if this.number_of_tables_for_rent}} {{this.number_of_tables_for_rent}}
+                        {{else}} Sold
                         out{{/if}} <br>
                         Tables rented: {{this.tables_rented}} <br>
                         Archive notes: <span style="white-space: pre-wrap;">{{this.archive_notes}}</span>
                     </div>
                 </div>
+                <div class="col-2">
+                    <button class="btn btn-primary toggle" type="button" data-bs-toggle="collapse" data-bs-target="#show{{this.id}}" aria-expanded="false" aria-controls="collapse"></button>
+                </div>
+            </div>
             {{/each}}
         </div>
     </div>
-
 </div>
 
 {{> footer}}
+
+<script src="js/toggleButtons.js"></script>
