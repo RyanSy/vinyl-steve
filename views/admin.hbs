@@ -52,22 +52,24 @@
 
         <div class="tab-pane fade" id="past-tab-pane" role="tabpanel" aria-labelledby="past-tab" tabindex="0">
             {{#each pastShows}}
-            <div class="row px-3 pt-3 pb-2 mx-3">
-                <div class="col-2">
+            <div class="row px-3 pt-3 pb-2 mx-lg-3">
+                <div class="col-4 gs-0">
                     {{this.month}} {{this.day}}, {{this.year}}
                 </div>
-                <div class="col-8">
-                    <a href="/admin/rsvp-list/{{this.id}}">{{this.name}}<br>{{this.city}}, {{this.state}}</a> <br>
-                    <div id="show{{this.id}}" class="collapse">
-                        Tables available: {{#if this.number_of_tables_for_rent}} {{this.number_of_tables_for_rent}}
-                        {{else}} Sold
-                        out{{/if}} <br>
-                        Tables rented: {{this.tables_rented}} <br>
-                        Archive notes: <span style="white-space: pre-wrap;">{{this.archive_notes}}</span>
+                <div class="col-8 gx-0 d-flex justify-content-between">
+                    <div class="me-3">
+                        <a href="/admin/rsvp-list/{{this.id}}">{{this.name}}<br>{{this.city}}, {{this.state}}</a> <br>
+                        <div id="show{{this.id}}" class="collapse">
+                            Tables available: {{#if this.number_of_tables_for_rent}} {{this.number_of_tables_for_rent}}
+                            {{else}} Sold
+                            out{{/if}} <br>
+                            Tables rented: {{this.tables_rented}} <br>
+                            Archive notes: <span style="white-space: pre-wrap;">{{this.archive_notes}}</span>
+                        </div>
                     </div>
-                </div>
-                <div class="col-2">
-                    <button class="btn btn-primary toggle" type="button" data-bs-toggle="collapse" data-bs-target="#show{{this.id}}" aria-expanded="false" aria-controls="collapse"></button>
+                    <div class="ml-3">
+                        <button class="btn btn-primary toggle ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#show{{this.id}}" aria-expanded="false" aria-controls="collapse"></button>
+                    </div>
                 </div>
             </div>
             {{/each}}
