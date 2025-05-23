@@ -1,13 +1,14 @@
+const config = require('../config.json');
 const Show = require('../models/show');
 const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
-    host: process.env.BREVO_SMTP_SERVER,
-    port: process.env.BREVO_SMTP_PORT,
+    host: process.env.BREVO_SMTP_SERVER || config.BREVO_SMTP_SERVER,
+    port: process.env.BREVO_SMTP_PORT || config.BREVO_SMTP_PORT,
     secure: false, // true for port 465, false for other ports
     auth: {
-        user: process.env.BREVO_LOGIN,
-        pass: process.env.BREVO_SMTP_KEY,
+        user: process.env.BREVO_LOGIN || config.BREVO_LOGIN,
+        pass: process.env.BREVO_SMTP_KEY || config.BREVO_SMTP_KEY,
     },
 });
 
@@ -16,14 +17,14 @@ async function connectToDB() {
     console.log('Connecting to MongoDB...');
 
     try {
-        await mongoose.connect(process.env.MONGODB_URI);
+        await mongoose.connect(process.env.MONGODB_URI || config.MONGODB_URI);
         console.log('MongoDB connected.');
     } catch(err) {
         console.error(err);
     }
 }
 
-// Get shows that are 72 hours away
+// Get shows that are within 72 hours away
 async function getShowsWithin72Hours() {
     console.log('Finding shows within 72 hours...');
     const today = new Date();
@@ -82,7 +83,7 @@ async function emailDealerReminders(showInfo) {
         senderEmail = '"John Bastone" <john@vinylsteve.com>';
     }
 
-    const textBody = `Hello, \n\n This is a friendly reminder that you are registered for ${showName} on ${showDateFormatted}. Please log into https://vinylsteve.com for full details of your RSVP. \n\n Thank you, \n ${senderName}`;
+    const textBody = `Hello, \n\n This is a friendly reminder that you are registered for ${showName} on ${showDateFormatted}. For full details of your RSVP, log into https://vinylsteve.com. \n\n Thank you, \n ${senderName}`;
 
     const htmlBody = `
         <p>Hello,</p>
@@ -100,7 +101,7 @@ async function emailDealerReminders(showInfo) {
         await transporter.sendMail({
             from: senderEmail,
             to: "Vinyl Steve Dealers", 
-            bcc: 'ryanbsy@gmail.com',
+            bcc: dealerEmails,
             subject: `RSVP Reminder for ${showName} on ${showDateFormatted}`,
             text: textBody, // plain text body
             html: htmlBody
@@ -113,7 +114,7 @@ async function emailDealerReminders(showInfo) {
 }
 
 async function main() {
-    connectToDB();
+    await connectToDB();
 
     const shows  = await getShowsWithin72Hours();
 
