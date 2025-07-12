@@ -88,11 +88,21 @@ exports.show_dealer_rsvps = async (req, res) => {
             }
             
             if (result[0]) {
+                shows = result[0].shows;
+
                 if (result[0].shows.length == 0) {
                     message = 'You have no shows listed.';
                 }
                 
                 if (result[0].shows.length > 0) {
+                    for (let i = 0; i < shows.length; i++) {
+                        const show = await Show.find({ _id: shows[i].id });
+                        if (show.length > 0) {
+                            shows[i].date =  moment(show[0].date).format('MMM D, YYYY');
+                        } else {
+                            console.log(`Show with ID ${result[0].shows[i].id} not found.`);
+                        }
+                    }
                     let sortByDate = (array) => {
                         return array.sort(function (a, b) {
                             return new Date(moment(a.date, 'dddd, MMMM Do YYYY')) - new Date(moment(b.date, 'dddd, MMMM Do YYYY'));

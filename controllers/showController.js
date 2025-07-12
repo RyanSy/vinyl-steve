@@ -21,7 +21,7 @@ exports.list_shows = async (req, res) => {
     const shows = await Show.find({
         $and: [
             { date: { $gte: todaysDate } },
-            { posted_by: ['mayfieldmouse', 'john bastone'] },
+            { posted_by: ['mayfieldmouse', 'john bastone', 'ryan sy'] },
             { rsvp: true }
         ],
     });
