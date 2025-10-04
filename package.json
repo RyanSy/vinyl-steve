@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "DEBUG=vinyl-steve:* nodemon bin/www -e hbs,js,json",
+    "dev-windows": "set DEBUG=recordshowmania:*&& nodemon ./bin/www",
     "start": "pm2-runtime start ecosystem.config.js --env production"
   },
   "dependencies": {
