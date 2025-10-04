@@ -1,14 +1,42 @@
-const config = require('../config.json');
+const fs = require('fs');
+
+// Include config file if testing locally; if in production use env variables.
+const filePath = __dirname + '/config.json';
+
+let host;
+let port;
+let login;
+let pass;
+let db_uri;
+
+if (fs.existsSync(filePath)) {
+    console.log('Config file detected.');
+    const config = require('./config.json');
+    console.log(config)
+    host = config.BREVO_SMTP_SERVER;
+    port = config.BREVO_SMTP_PORT;
+    login = config.BREVO_LOGIN;
+    pass = config.BREVO_SMTP_KEY;
+    db_uri = config.MONGODB_URI;
+} else {
+    console.log('No config file detected.');
+    host = process.env.BREVO_SMTP_SERVER;
+    port = process.env.BREVO_SMTP_PORT;
+    login = process.env.BREVO_LOGIN;
+    pass = process.env.BREVO_SMTP_KEY;
+    db_uri = process.env.MONGODB_URI;
+}
+
 const Show = require('../models/show');
 const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
-    host: process.env.BREVO_SMTP_SERVER || config.BREVO_SMTP_SERVER,
-    port: process.env.BREVO_SMTP_PORT || config.BREVO_SMTP_PORT,
+    host: host,
+    port: port,
     secure: false, // true for port 465, false for other ports
     auth: {
-        user: process.env.BREVO_LOGIN || config.BREVO_LOGIN,
-        pass: process.env.BREVO_SMTP_KEY || config.BREVO_SMTP_KEY,
+        user: login,
+        pass: pass,
     },
 });
 
@@ -17,7 +45,7 @@ async function connectToDB() {
     console.log('Connecting to MongoDB...');
 
     try {
-        await mongoose.connect(process.env.MONGODB_URI || config.MONGODB_URI);
+        await mongoose.connect(db_uri);
         console.log('MongoDB connected.');
     } catch(err) {
         console.error(err);
@@ -107,7 +135,7 @@ async function emailDealerReminders(showInfo) {
             html: htmlBody
         });
 
-        console.log('Emails sent.');
+        console.log(`Emails sent from ${senderEmail}`);
     } catch(err) {
         console.error('Error sending emails:', err);
     }

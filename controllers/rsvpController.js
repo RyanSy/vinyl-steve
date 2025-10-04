@@ -144,7 +144,7 @@ exports.save_rsvp = async (req, res, next) => {
 
     if (postedBySteve) {
         paymentMessage = 'You can pay for your tables with ??? or CREDIT CARD through the Vinyl Steve payment portal OR pay for tables in CASH on the day of the show when we collect (around 2 PM). Either method is acceptable.';
-        senderEmail = '"Steve Gritzan" <steve@vinylsteve.com>'
+        senderEmail = '"Steve Gritzan" <steve@vinylsteve.com>';
     } else {
         paymentMessage = 'Table rent (in CASH or VENMO) will be collected around 1:30PM.';
         senderEmail = '"John Bastone" <john@vinylsteve.com>';
