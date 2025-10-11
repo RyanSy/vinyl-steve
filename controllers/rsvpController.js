@@ -143,26 +143,28 @@ exports.save_rsvp = async (req, res, next) => {
     let senderEmail;
 
     if (postedBySteve) {
-        paymentMessage = 'You can pay for your tables with ??? or CREDIT CARD through the Vinyl Steve payment portal OR pay for tables in CASH on the day of the show when we collect (around 2 PM). Either method is acceptable.';
+        paymentMessage = 'You can pay for your tables in advance with a CREDIT CARD through the Vinyl Steve payment portal OR pay for tables in CASH on the day of the show when we collect (around 2 PM). Either method is acceptable.';
         senderEmail = '"Steve Gritzan" <steve@vinylsteve.com>';
     } else {
         paymentMessage = 'Table rent (in CASH or VENMO) will be collected around 1:30PM.';
         senderEmail = '"John Bastone" <john@vinylsteve.com>';
     }
 
-    const textMessage = `Thanks ${user}! Your RSVP for the Jersey City Record Riot on Saturday, April 5th, 2025 has been confirmed. We're happy that you'll be selling with us! \r\n ${paymentMessage} \r\n If your circumstances change and you need to CANCEL your reservation, it is YOUR responsibility to go back into www.vinylsteve.com and cancel the reservation in your account---not by calling or texting us. Abuse of NOT cancelling your RSVP could lead to a pre-payment requirement. Please be thoughtful. \r\n We greatly appreciate your support of Record Riots! \r\n Steve & John \r\n PS: When is load-in time? All Record Riots start at 10 AM and load-in GENERALLY starts at 8 AM. Please check info for the Vinyl Steve website for specific details of load-in at each venue---but you'll NEVER be wrong arriving at 8 AM!`;
+    const textMessage = `Thanks ${user}! Your RSVP/waiting list request for the The Erie Record Riot! on Saturday, January 31st, 2026 has been received and confirmed. We are looking forward to this event! \r\n If there were tables available when you reserved, you are OFFICIALLY confirmed for the show. ${paymentMessage} You will receive a reminder email several days BEFORE the show. \r\n If there were no tables available and you were put on the waiting list, there is nothing more for you to do. If a table becomes available, we will contact you via email. (You are NOT required to take a "waiting list" table, since often this would be at the last minute.) \r\n If you have a reservation and your circumstances change and you need to CANCEL your reservation, it is YOUR responsibility to go back into www.vinylsteve.com and cancel the reservation in your account---not by calling or texting us. Abuse of NOT cancelling your RSVP could lead to a pre-payment requirement. Please be thoughtful! \r\n We greatly appreciate your support of Record Riots! \r\n Steve & John \r\n PS: When is load-in time? All Record Riots start at 9:30 or 10 AM and load-in GENERALLY starts at 7:30 or 8 AM. Please check info for the Vinyl Steve website for specific details of load-in at each venue---but you'll NEVER be wrong arriving at 8 AM! Also, except for outdoor events, we ALWAYS supply tables and chairs at indoor shows.`;
 
-    const htmlMessage = `<p>Thanks ${user}! Your RSVP for the ${showName} on ${showDate} has been confirmed. We're happy that you'll be selling with us!</p> 
+    const htmlMessage = `<p>Thanks ${user}! Your RSVP/waiting list request for the ${showName} on ${showDate} has been received and confirmed. We are looking forward to this event!</p> 
 
-    <p>You can pay for your tables in advance with a CREDIT CARD through the Vinyl Steve payment portal OR pay for tables in CASH on the day of the show when we collect (around 2 PM). Either method is acceptable.</p>
+    <p>If there were tables available when you reserved, you are OFFICIALLY confirmed for the show. ${paymentMessage} You will receive a reminder email several days BEFORE the show.</p>
 
-    <p>If your circumstances change and you need to CANCEL your reservation, it is YOUR responsibility to go back into www.vinylsteve.com and cancel the reservation in your account---not by calling or texting us. Abuse of NOT cancelling your RSVP could lead to a pre-payment requirement. Please be thoughtful.</p>
+    <p>If there were no tables available and you were put on the waiting list, there is nothing more for you to do. If a table becomes available, we will contact you via email. (You are NOT required to take a "waiting list" table, since often this would be at the last minute.)</p>
+
+    <p>If you have a reservation and your circumstances change and you need to CANCEL your reservation, it is YOUR responsibility to go back into www.vinylsteve.com and cancel the reservation in your account---not by calling or texting us. Abuse of NOT cancelling your RSVP could lead to a pre-payment requirement. Please be thoughtful!</p>
 
     <p>We greatly appreciate your support of Record Riots!</p>
-
+    
     <p>Steve & John</p>
 
-    <p>PS: When is load-in time? All Record Riots start at 10 AM and load-in GENERALLY starts at 8 AM. Please check info for the Vinyl Steve website for specific details of load-in at each venue---but you'll NEVER be wrong arriving at 8 AM!</p>`;
+    <p>PS: When is load-in time? All Record Riots start at 9:30 or 10 AM and load-in GENERALLY starts at 7:30 or 8 AM. Please check info for the Vinyl Steve website for specific details of load-in at each venue---but you'll NEVER be wrong arriving at 8 AM! Also, except for outdoor events, we ALWAYS supply tables and chairs at indoor shows.</p>`;
 
     async function main() {
         await transporter.sendMail({
