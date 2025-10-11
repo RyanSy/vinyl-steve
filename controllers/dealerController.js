@@ -74,53 +74,78 @@ exports.save_dealer_info = async (req, res, next) => {
 // show dealer rsvps - dealer view
 exports.show_dealer_rsvps = async (req, res) => {
     const name = req.session.name;
-    // *** TODO *** find fallbak image
+    // *** TODO *** find fallback image
     const image = req.session.image;
     const email = req.session.email;
  
     let message;
-    let shows;
+    let shows = []; // Array is now 'shows' and will only contain upcoming events
 
-    await Dealer.find({ email: email })
-        .then(async (result) => {
-            if (!result[0]) {
-                message = 'You have no shows listed.';
+    // Helper function to sort shows by date
+    // Sorts in ascending order (oldest date first) to show the next upcoming show first.
+    let sortByDate = (array, ascending = true) => {
+        return array.sort(function (a, b) {
+            // Use moment with the formatted date string for reliable date comparison
+            const dateA = moment(a.date, 'MMM D, YYYY');
+            const dateB = moment(b.date, 'MMM D, YYYY');
+
+            if (ascending) {
+                return dateA - dateB;
+            } else {
+                return dateB - dateA;
             }
-            
-            if (result[0]) {
-                shows = result[0].shows;
-
-                if (result[0].shows.length == 0) {
-                    message = 'You have no shows listed.';
-                }
-                
-                if (result[0].shows.length > 0) {
-                    for (let i = 0; i < shows.length; i++) {
-                        const show = await Show.find({ _id: shows[i].id });
-                        if (show.length > 0) {
-                            shows[i].date =  moment(show[0].date).format('MMM D, YYYY');
-                        } else {
-                            console.log(`Show with ID ${result[0].shows[i].id} not found.`);
-                        }
-                    }
-                    let sortByDate = (array) => {
-                        return array.sort(function (a, b) {
-                            return new Date(moment(a.date, 'dddd, MMMM Do YYYY')) - new Date(moment(b.date, 'dddd, MMMM Do YYYY'));
-                        });
-                    };
-                    shows = sortByDate(result[0].shows);
-                }       
-            } 
-        })
-        .catch((err) =>{
-            console.log(err);
-            res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
         });
+    };
+
+    try {
+        const result = await Dealer.find({ email: email });
+
+        if (!result[0] || result[0].shows.length === 0) {
+            // No dealer found or dealer has no RSVP history
+            message = 'You have no shows listed.';
+        } else {
+            const allShows = result[0].shows;
+
+            for (let i = 0; i < allShows.length; i++) {
+                const dealerShow = allShows[i];
+                
+                // Fetch the full show details using the ID stored in the dealer's array
+                const showData = await Show.findOne({ _id: dealerShow.id }); 
+
+                if (showData) {
+                    const rawDate = showData.date; // Assuming this is in a sortable format like YYYY-MM-DD
+                    const formattedDate = moment(rawDate).format('MMM D, YYYY');
+                    
+                    // Assign the formatted date and location for display
+                    dealerShow.date = formattedDate; 
+                    dealerShow.city = showData.city; 
+                    dealerShow.state = showData.state; 
+
+                    // Check if the show date is today or in the future
+                    if (moment().isSameOrBefore(rawDate, 'day')) {
+                        shows.push(dealerShow); // Only push upcoming shows
+                    } 
+                    // Past shows are now ignored and not added to the 'shows' array.
+                } else {
+                    console.log(`Show with ID ${dealerShow.id} not found and was skipped.`);
+                }
+            }
+
+            // Apply sorting (ascending, next show first)
+            shows = sortByDate(shows, true); 
+        }
+    } catch(err) {
+        console.error(err);
+        // Handle database or other errors
+        res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
+        return; 
+    }
         
     const dataObject = {
         name: name,
         image: image,
         email: email,
+        // Pass the single 'shows' array containing only upcoming RSVPs
         shows: shows,
         message: message,
         discountFailure: req.flash('discountFailure'),
