@@ -114,16 +114,18 @@ async function emailDealerReminders(showInfo) {
     const textBody = `Hello, \n\n This is a friendly reminder that you are registered for ${showName} on ${showDateFormatted}. For full details of your RSVP, log into https://vinylsteve.com. \n\n Thank you, \n ${senderName}`;
 
     const htmlBody = `
-        <p>Hello,</p>
+        <p>Hello dealer!</p>
 
         <p>
-            This is a friendly reminder that you are registered for ${showName} on ${showDateFormatted}. Please log into <a href="https://vinylsteve.com" target="_blank">Vinyl Steve</a> for full details of your RSVP.
+            This is a friendly reminder that you are registered to sell at ${showName} on ${showDateFormatted}. If you are NOT planning on selling with us, please log in to <a href="https://vinylsteve.com" target="_blank">VinylSteve.com</a> and CANCEL your reservation. Are you confused about what shows you've booked? Simply go to <a href="https://vinylsteve.com" target="_blank">VinylSteve.com</a>, click on the upper right hand corner of the screen and then "My RSVPs." This will give you a list of the shows that you have reserved. EASY!
         </p>
 
-        <p>Thank you,<br>
-            ${senderName}
-        </p>
-    `;
+        <p>Thanks for being part of the Record Riot family!</p>
+
+        <p>Steve & John</p>
+
+        <p>PS: Please be aware that frequent last-minute cancellations may affect your standing with Record Riots and you may be asked to pay for your tables in advance.</p
+`;
 
     try {
         await transporter.sendMail({
