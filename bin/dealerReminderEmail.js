@@ -40,7 +40,13 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-// Connect to MongoDB
+/**
+ * @async
+ * @function connectToDB
+ * @description Establishes a connection to the MongoDB database using the global 'db_uri' variable.
+ * Logs success or error messages to the console.
+ * @returns {Promise<void>}
+ */
 async function connectToDB() {
     console.log('Connecting to MongoDB...');
 
@@ -52,7 +58,15 @@ async function connectToDB() {
     }
 }
 
-// Get shows that are within 72 hours away
+/**
+ * @async
+ * @function getShowsWithin72Hours
+ * @description Queries the database for shows that meet specific criteria:
+ * 1. Posted by 'mayfieldmouse' or 'john bastone'.
+ * 2. The show date is within the next 72 hours (from the moment the script runs).
+ * 3. The 'reminder_sent' flag is not set to true.
+ * @returns {Promise<Array<Object>>} An array of Mongoose Show documents that are eligible for a reminder email.
+ */
 async function getShowsWithin72Hours() {
     console.log('Finding shows within 72 hours...');
     const today = new Date();
@@ -62,7 +76,11 @@ async function getShowsWithin72Hours() {
     try {
         const shows = await Show.find({
             posted_by: { $in: ['mayfieldmouse', 'john bastone'] },
-            date: { $gt: todayString }
+            date: { $gt: todayString },
+            $or: [
+                { reminder_sent: false },
+                { reminder_sent: { $exists: false } }
+            ]
         });
         
         try {
@@ -73,8 +91,11 @@ async function getShowsWithin72Hours() {
         }
 
         const showsWithin72Hours = shows.filter(show => {
-            const showDate = new Date(show.date); // Convert "YYYY-MM-DD" to Date
-            return showDate >= today && showDate <= in72Hours;
+            // Convert "YYYY-MM-DD" to Date at midnight UTC for accurate comparison
+            const showDate = new Date(show.date + 'T00:00:00Z'); 
+            
+            // Check if show date is between now and 72 hours from now (inclusive of the 72nd hour)
+            return showDate > today && showDate <= in72Hours;
         });
 
         return showsWithin72Hours;
@@ -83,6 +104,31 @@ async function getShowsWithin72Hours() {
     }
 }
 
+/**
+ * @async
+ * @function updateShowReminderStatus
+ * @description Updates a specific show document in the database, setting the 'reminder_sent'
+ * field to true to prevent future duplicate emails.
+ * @param {string} showId The MongoDB ObjectId (as a string) of the show to update.
+ * @returns {Promise<void>}
+ */
+async function updateShowReminderStatus(showId) {
+    try {
+        await Show.updateOne({ _id: showId }, { reminder_sent: true });
+        console.log(`Updated reminder_sent for show ID: ${showId}`);
+    } catch(err) {
+        console.error(`Error updating reminder_sent for show ID: ${showId}`, err);
+    }
+}
+
+/**
+ * @async
+ * @function emailDealerReminders
+ * @description Sends a single reminder email to all dealers RSVP'd for a given show.
+ * After a successful send, it marks the show as having had the reminder sent.
+ * @param {Object} showInfo The Mongoose Show document containing show and dealer information.
+ * @returns {Promise<void>}
+ */
 async function emailDealerReminders(showInfo) {
     console.log('Emailing dealer reminders...');
     
@@ -138,20 +184,32 @@ async function emailDealerReminders(showInfo) {
         });
 
         console.log(`Emails sent from ${senderEmail}`);
+
+        await updateShowReminderStatus(showInfo._id);
     } catch(err) {
         console.error('Error sending emails:', err);
     }
 }
 
+/**
+ * @async
+ * @function main
+ * @description The primary execution function of the script. It connects to the database,
+ * retrieves eligible shows, and iterates through them to send dealer reminders.
+ * @returns {Promise<void>}
+ */
 async function main() {
     await connectToDB();
 
     const shows  = await getShowsWithin72Hours();
 
     if (shows.length > 0) {
-        shows.forEach(show => emailDealerReminders(show));
+        console.log(`Found ${shows.length} show(s) within 72 hours that haven't been emailed.`);
+        for (const show of shows) {
+            await emailDealerReminders(show);
+        }
     } else {
-        console.log('No shows found.');
+        console.log('No eligible shows found to send reminders for.');
     }
 }
 

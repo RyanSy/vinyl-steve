@@ -65,7 +65,8 @@ const showSchema = new Schema(
         waiting_list: [{ user_id: String, name: String, email: String }],
         discount_codes: [{ code: String, amount: Number }],
         dealer_information: {type: String, max: 200},
-        archive_notes: {type: String, max: 200}
+        archive_notes: {type: String, max: 200},
+        reminder_sent: {type: Boolean, default: false}
     },
     { strict: false }
 );
