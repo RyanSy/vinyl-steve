@@ -4,6 +4,7 @@ const Dealer = require('../models/dealer');
 const moment = require('moment');
 const todaysDate = moment().format('YYYY-MM-DD');
 const helper_functions = require('../util/helperFunctions');
+const { transporter, notifyWaitlistOfOpening } = require('../util/emailer');
 // const cron = require('node-cron');
 
 // render admin dashboard
@@ -273,6 +274,11 @@ exports.delete_dealer_rsvp = async (req, res) => {
     }
 
     main().catch(console.error);
+
+    // notify anyone on the waiting list that a table has opened up
+    await Show.findOne({ _id: id })
+        .then((updatedShow) => notifyWaitlistOfOpening(updatedShow))
+        .catch((err) => console.log('Failed to notify waiting list:', err));
 
     req.flash('dealerDeleted', 'Dealer has been deleted.');
 

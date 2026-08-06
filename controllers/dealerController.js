@@ -2,16 +2,7 @@ const Show = require('../models/show');
 const Dealer = require('../models/dealer');
 const Cancellation = require('../models/cancellation');
 const moment = require('moment');
-const nodemailer = require('nodemailer');
-const transporter = nodemailer.createTransport({
-    host: process.env.BREVO_SMTP_SERVER,
-    port: process.env.BREVO_SMTP_PORT,
-    secure: false, // true for port 465, false for other ports
-    auth: {
-        user: process.env.BREVO_LOGIN,
-        pass: process.env.BREVO_SMTP_KEY,
-    },
-});
+const { transporter, notifyWaitlistOfOpening } = require('../util/emailer');
 
 // check if dealer exists, if so, list shows, if not prompt for info
 exports.check_if_dealer_exists = async (req, res, next) => {
@@ -226,7 +217,12 @@ exports.delete_rsvp = async (req, res, next) => {
              * html:// html body
              *  */ 
         }).catch(console.error);
-    
+
+    // notify anyone on the waiting list that a table has opened up
+    await Show.findOne({ _id: showId })
+        .then((updatedShow) => notifyWaitlistOfOpening(updatedShow))
+        .catch((err) => console.log('Failed to notify waiting list:', err));
+
     next();
 }
 
