@@ -25,9 +25,9 @@ exports.create_checkout_session = async (req, res) => {
         price_data: {
           currency: 'usd',
           product_data: {
-            name: `${req.body.name} - Table Rent (includes $5 convenience fee)`,
+            name: `${req.body.name} - Table Rent (includes 3.5% convenience fee)`,
           },
-          unit_amount: (req.body.rent_due * 100) + 500,
+          unit_amount: Math.round(req.body.rent_due * 100 * 1.035),
         },
         quantity: 1,
       }],
