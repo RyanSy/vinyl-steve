@@ -96,7 +96,11 @@ exports.save_rsvp = async (req, res, next) => {
         },
         {
             $inc: { number_of_tables_for_rent: -numberOfTables },
-            $addToSet: { dealer_rsvp_list: dealerRsvp }
+            $addToSet: { dealer_rsvp_list: dealerRsvp },
+            // If this dealer was on the waiting list for this show, a
+            // successful RSVP supersedes that entry — remove it in the
+            // same atomic write so they never end up on both lists.
+            $pull: { waiting_list: { email: userEmail } }
         },
         { new: true }
     );

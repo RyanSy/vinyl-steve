@@ -80,6 +80,7 @@ exports.show_dealer_rsvps = async (req, res) => {
  
     let message;
     let shows = []; // Array is now 'shows' and will only contain upcoming events
+    let waitingListShows = []; // Shows the dealer is on the waiting list for (upcoming only)
 
     // Helper function to sort shows by date
     // Sorts in ascending order (oldest date first) to show the next upcoming show first.
@@ -134,6 +135,30 @@ exports.show_dealer_rsvps = async (req, res) => {
             // Apply sorting (ascending, next show first)
             shows = sortByDate(shows, true); 
         }
+
+        // Waiting list is stored on the Show doc itself (waiting_list array),
+        // not on the Dealer doc, so it needs its own query.
+        const waitingListShowDocs = await Show.find({ 'waiting_list.email': email });
+
+        for (let i = 0; i < waitingListShowDocs.length; i++) {
+            const showData = waitingListShowDocs[i];
+            const rawDate = showData.date;
+
+            // Only show upcoming waiting-list entries, same as confirmed RSVPs
+            if (moment().isSameOrBefore(rawDate, 'day')) {
+                const waitingListEntry = showData.waiting_list.find((entry) => entry.email === email);
+                waitingListShows.push({
+                    id: showData._id.toString(),
+                    user_id: waitingListEntry ? waitingListEntry.user_id : undefined,
+                    name: showData.name,
+                    city: showData.city,
+                    state: showData.state,
+                    date: moment(rawDate).format('MMM D, YYYY')
+                });
+            }
+        }
+
+        waitingListShows = sortByDate(waitingListShows, true);
     } catch(err) {
         console.error(err);
         // Handle database or other errors
@@ -147,6 +172,7 @@ exports.show_dealer_rsvps = async (req, res) => {
         email: email,
         // Pass the single 'shows' array containing only upcoming RSVPs
         shows: shows,
+        waitingListShows: waitingListShows,
         message: message,
         discountFailure: req.flash('discountFailure'),
         discountSuccess: req.flash('discountSuccess'),
@@ -239,6 +265,15 @@ exports.save_dealer_to_waitinglist = async (req, res) => {
 
     const show = await Show.findOne({ _id: showId });
 
+    // if dealer already has a confirmed RSVP for this show, send them to
+    // the same page used elsewhere for that case instead of letting them
+    // double up on a waiting list they don't need to be on
+    const alreadyRegistered = show.dealer_rsvp_list.some((entry) => entry.email === email);
+    if (alreadyRegistered) {
+        res.redirect('/already-registered');
+        return;
+    }
+
     // if dealer is already on the waiting list, don't add them again
     const alreadyOnWaitingList = show.waiting_list.some((entry) => entry.email === email);
     if (alreadyOnWaitingList) {
@@ -250,13 +285,30 @@ exports.save_dealer_to_waitinglist = async (req, res) => {
     // subdocuments (each gets its own auto-generated _id), so the explicit
     // check above is what actually prevents duplicates. This atomic guard
     // also covers the race where two requests from the same dealer land
-    // at nearly the same time.
+    // at nearly the same time (including one that RSVPs while the other
+    // is still trying to join the waiting list).
     await Show.findOneAndUpdate(
-        { _id: showId, 'waiting_list.email': { $ne: email } },
+        { _id: showId, 'waiting_list.email': { $ne: email }, 'dealer_rsvp_list.email': { $ne: email } },
         { $push: { waiting_list: { user_id: userId, name: name, email: email } } }
     );
 
     res.render('waitinglist-confirmation');
+}
+
+// leave waiting list - dealer
+exports.leave_waiting_list = async (req, res) => {
+    const showId = req.body.show_id;
+    const email = req.session.email;
+
+    await Show.updateOne(
+        { _id: showId },
+        { $pull: { waiting_list: { email: email } } }
+    ).catch((err) => {
+        console.log(err);
+        res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
+    });
+
+    res.redirect('/my-rsvps');
 }
 
 // render discount page

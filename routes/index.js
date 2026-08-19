@@ -68,6 +68,9 @@ router.post('/update-rsvp', requiresAuth(), rsvp_controller.update_rsvp, rsvp_co
 // save dealer to waitinglist
 router.post('/waitinglist', requiresAuth(), dealer_controller.save_dealer_to_waitinglist);
 
+// leave waiting list - by user
+router.post('/leave-waiting-list', requiresAuth(), dealer_controller.leave_waiting_list);
+
 // get discount page
 router.get('/discount/:id', requiresAuth(), dealer_controller.render_discount_page);
 
