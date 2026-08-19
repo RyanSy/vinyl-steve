@@ -27,6 +27,10 @@
                 font-size: 3.5rem;
             }
         }
+
+        .menu-toggle .icon-x { display: none; }
+        .menu-toggle[aria-expanded="true"] .icon-bars { display: none; }
+        .menu-toggle[aria-expanded="true"] .icon-x { display: inline-block; }
     </style>
 
     {{#if payment_page}}
