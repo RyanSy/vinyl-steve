@@ -13,6 +13,17 @@ const transporter = nodemailer.createTransport({
     },
 });
 
+// Show docs use posted_by to indicate which organizer to send dealer-facing
+// email from ('mayfieldmouse' = Steve, 'john bastone' = John). Falls back to
+// Steve's address for any other value so a sendMail call never gets an
+// empty 'from'.
+function getSenderEmail(postedBy) {
+    if (postedBy === 'john bastone') {
+        return '"John Bastone" <john@vinylsteve.com>';
+    }
+    return '"Steve Gritzan" <steve@vinylsteve.com>';
+}
+
 // check if dealer exists, if so, list shows, if not prompt for info
 exports.check_if_dealer_exists = async (req, res, next) => {
     const image = JSON.stringify(req.oidc.user.picture).replace(/"/g, '');
@@ -252,6 +263,36 @@ exports.delete_rsvp = async (req, res, next) => {
              * html:// html body
              *  */ 
         }).catch(console.error);
+
+    // notify anyone on the waiting list that a table opened up. Re-query
+    // rather than reuse an earlier read, since we need the state after the
+    // $inc/$pull above was applied.
+    const showAfterCancellation = await Show.findOne({ _id: showId }).catch((err) => {
+        console.log(err);
+        return null;
+    });
+
+    if (showAfterCancellation && showAfterCancellation.waiting_list.length > 0) {
+        const senderEmail = getSenderEmail(postedBy);
+
+        const textMessage = `Good news! A table has opened up for ${showName} on ${date}, since another dealer canceled their reservation. If you'd still like a table, please go to vinylsteve.com and RSVP as soon as possible \u2014 tables are given out on a first-come, first-served basis, so this isn't a guaranteed spot. If you're no longer interested, there's nothing you need to do.`;
+
+        const htmlMessage = `<p>Good news! A table has opened up for <strong>${showName}</strong> on ${date}, since another dealer canceled their reservation.</p>
+        <p>If you'd still like a table, please go to <a href="https://vinylsteve.com">vinylsteve.com</a> and RSVP as soon as possible &mdash; tables are given out on a first-come, first-served basis, so this isn't a guaranteed spot.</p>
+        <p>If you're no longer interested, there's nothing you need to do.</p>`;
+
+        // Send individually (not bcc) so a bad address for one dealer
+        // doesn't block delivery to the others.
+        for (const entry of showAfterCancellation.waiting_list) {
+            await transporter.sendMail({
+                from: senderEmail,
+                to: entry.email,
+                subject: `Table Available: ${showName} - ${date}`,
+                text: textMessage,
+                html: htmlMessage
+            }).catch(console.error);
+        }
+    }
     
     next();
 }
@@ -291,6 +332,24 @@ exports.save_dealer_to_waitinglist = async (req, res) => {
         { _id: showId, 'waiting_list.email': { $ne: email }, 'dealer_rsvp_list.email': { $ne: email } },
         { $push: { waiting_list: { user_id: userId, name: name, email: email } } }
     );
+
+    // send waiting list confirmation email
+    const senderEmail = getSenderEmail(show.posted_by);
+
+    const textMessage = `Thanks ${name}! You've been added to the waiting list for ${show.name} on ${show.date}. If a table becomes available, we'll email you to let you know \u2014 tables are given out on a first-come, first-served basis, so getting the email isn't a guarantee of a table. You are NOT required to take a "waiting list" table if offered, since often this would be at the last minute. \r\n We appreciate your interest in this event!`;
+
+    const htmlMessage = `<p>Thanks ${name}! You've been added to the waiting list for <strong>${show.name}</strong> on ${show.date}.</p>
+    <p>If a table becomes available, we'll email you to let you know &mdash; tables are given out on a first-come, first-served basis, so getting the email isn't a guarantee of a table.</p>
+    <p>You are NOT required to take a "waiting list" table if offered, since often this would be at the last minute.</p>
+    <p>We appreciate your interest in this event!</p>`;
+
+    await transporter.sendMail({
+        from: senderEmail,
+        to: email,
+        subject: `Waiting List Confirmation: ${show.name} - ${show.date}`,
+        text: textMessage,
+        html: htmlMessage
+    }).catch(console.error);
 
     res.render('waitinglist-confirmation');
 }
