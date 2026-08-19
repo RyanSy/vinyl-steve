@@ -1,6 +1,6 @@
 {
   "name": "vinyl-steve",
-  "version": "1.0.2",
+  "version": "1.0.5",
   "private": true,
   "scripts": {
     "dev": "DEBUG=vinyl-steve:* nodemon bin/www -e hbs,js,json",
