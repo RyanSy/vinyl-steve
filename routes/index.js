@@ -51,6 +51,11 @@ router.get('/already-registered', requiresAuth(), (req, res) =>
     { res.render('already-registered');
 });
 
+// inform user they're already on the waiting list
+router.get('/already-on-waiting-list', requiresAuth(), (req, res) => 
+    { res.render('already-on-waiting-list');
+});
+
 // save dealer rsvp - user
 router.post('/rsvp-confirmation', requiresAuth(), rsvp_controller.save_rsvp);
 

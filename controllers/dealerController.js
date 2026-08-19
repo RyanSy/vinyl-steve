@@ -232,9 +232,28 @@ exports.delete_rsvp = async (req, res, next) => {
 
 // save dealer to waitinglist
 exports.save_dealer_to_waitinglist = async (req, res) => {
-    const show = await Show.find({ _id: req.body.id });
-    show[0].waiting_list.addToSet({ user_id: req.body.user_id, name: req.body.name, email: req.body.email });
-    show[0].save();
+    const showId = req.body.id;
+    const userId = req.body.user_id;
+    const name = req.body.name;
+    const email = req.body.email;
+
+    const show = await Show.findOne({ _id: showId });
+
+    // if dealer is already on the waiting list, don't add them again
+    const alreadyOnWaitingList = show.waiting_list.some((entry) => entry.email === email);
+    if (alreadyOnWaitingList) {
+        res.redirect('/already-on-waiting-list');
+        return;
+    }
+
+    // addToSet doesn't dedupe here since waiting_list entries are schema
+    // subdocuments (each gets its own auto-generated _id), so the explicit
+    // check above is what actually prevents duplicates.
+    await Show.findOneAndUpdate(
+        { _id: showId, 'waiting_list.email': { $ne: email } },
+        { $push: { waiting_list: { user_id: userId, name: name, email: email } } }
+    );
+
     res.render('waitinglist-confirmation');
 }
 
