@@ -29,18 +29,19 @@ exports.save_rsvp = async (req, res, next) => {
     const showDay = req.body.day;
     const showYear = req.body.year;
     const tableRent = req.body.table_rent;
-    const numberOfTablesForRent = req.body.number_of_tables_for_rent;
     const dealerName = req.session.name;
     const numberOfTables = req.body.number_of_tables;
     const dealerNotes = req.body.notes;
     const paid = req.body.paid;
-    const newNumberOfTablesForRent = numberOfTablesForRent - numberOfTables;
 
     const rentDue = numberOfTables * tableRent;
 
-    const show = await Show.find({ _id: showId });
+    // read-only lookup: used for posted_by and the duplicate-RSVP check.
+    // NOT used for the table-availability math (that must come straight
+    // from the DB at write time, not from data captured on page load).
+    const showDoc = await Show.findOne({ _id: showId });
 
-    const postedBy = show[0].posted_by;
+    const postedBy = showDoc.posted_by;
 
     let postedBySteve;
     let postedByJohn;
@@ -59,7 +60,7 @@ exports.save_rsvp = async (req, res, next) => {
     }
 
     // if dealer rsvp list contains user, dont save and inform user
-    const containsDealer = show[0].dealer_rsvp_list.some((user) => user.email === req.session.email);
+    const containsDealer = showDoc.dealer_rsvp_list.some((user) => user.email === req.session.email);
     if (containsDealer) {
         res.redirect('/already-registered');
         return;
@@ -76,9 +77,26 @@ exports.save_rsvp = async (req, res, next) => {
         posted_by_steve: postedBySteve,
         posted_by_john: postedByJohn
     };
-    show[0].number_of_tables_for_rent = newNumberOfTablesForRent;
-    show[0].dealer_rsvp_list.addToSet(dealerRsvp);
-    show[0].save();
+
+    // Atomic, DB-checked update: only succeeds if the show still has at
+    // least `numberOfTables` tables available at the moment this write
+    // executes. This prevents two concurrent RSVPs (or a stale page load)
+    // from both succeeding and overbooking the show.
+    const show = await Show.findOneAndUpdate(
+        { _id: showId, number_of_tables_for_rent: { $gte: numberOfTables } },
+        {
+            $inc: { number_of_tables_for_rent: -numberOfTables },
+            $addToSet: { dealer_rsvp_list: dealerRsvp }
+        },
+        { new: true }
+    );
+
+    if (!show) {
+        // No document matched, meaning not enough tables were left by the
+        // time this request was processed. Send them to the waiting list
+        // instead of confirming a table that doesn't exist.
+        return res.redirect('/waitinglist');
+    }
 
     // save rsvp to dealers db
     const filter = { 
