@@ -28,18 +28,28 @@ exports.save_rsvp = async (req, res, next) => {
     const showMonth = req.body.month;
     const showDay = req.body.day;
     const showYear = req.body.year;
-    const tableRent = req.body.table_rent;
+    const tableRent = Number(req.body.table_rent);
     const dealerName = req.session.name;
-    const numberOfTables = req.body.number_of_tables;
+    // req.body fields arrive as strings — must coerce to Number before
+    // using them in arithmetic or in a Mongo numeric comparison ($gte),
+    // otherwise the comparison compares by BSON type and can behave
+    // unexpectedly.
+    const numberOfTables = Number(req.body.number_of_tables);
     const dealerNotes = req.body.notes;
     const paid = req.body.paid;
 
     const rentDue = numberOfTables * tableRent;
 
-    // read-only lookup: used for posted_by and the duplicate-RSVP check.
-    // NOT used for the table-availability math (that must come straight
-    // from the DB at write time, not from data captured on page load).
+    // read-only lookup: used for posted_by only. NOT used for the
+    // table-availability or duplicate-RSVP checks — those are enforced
+    // atomically against the live DB state below, not against data that
+    // may be stale by the time this request is processed.
     const showDoc = await Show.findOne({ _id: showId });
+
+    if (!showDoc) {
+        res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
+        return;
+    }
 
     const postedBy = showDoc.posted_by;
 
@@ -59,13 +69,6 @@ exports.save_rsvp = async (req, res, next) => {
         postedBySteve = false;
     }
 
-    // if dealer rsvp list contains user, dont save and inform user
-    const containsDealer = showDoc.dealer_rsvp_list.some((user) => user.email === req.session.email);
-    if (containsDealer) {
-        res.redirect('/already-registered');
-        return;
-    }
-
     // save rsvp to shows db
     const dealerRsvp = {
         name: dealerName,
@@ -78,12 +81,19 @@ exports.save_rsvp = async (req, res, next) => {
         posted_by_john: postedByJohn
     };
 
-    // Atomic, DB-checked update: only succeeds if the show still has at
-    // least `numberOfTables` tables available at the moment this write
-    // executes. This prevents two concurrent RSVPs (or a stale page load)
-    // from both succeeding and overbooking the show.
+    // Atomic, DB-checked update. The query condition — not a prior read —
+    // is what decides whether this RSVP is allowed to go through:
+    //   - number_of_tables_for_rent must have enough tables left
+    //   - dealer_rsvp_list must not already contain this dealer's email
+    // Both are checked and applied in a single write, so two concurrent
+    // requests (two dealers racing for the last table, or the same
+    // dealer double-submitting) can't both succeed.
     const show = await Show.findOneAndUpdate(
-        { _id: showId, number_of_tables_for_rent: { $gte: numberOfTables } },
+        {
+            _id: showId,
+            number_of_tables_for_rent: { $gte: numberOfTables },
+            'dealer_rsvp_list.email': { $ne: userEmail }
+        },
         {
             $inc: { number_of_tables_for_rent: -numberOfTables },
             $addToSet: { dealer_rsvp_list: dealerRsvp }
@@ -92,10 +102,16 @@ exports.save_rsvp = async (req, res, next) => {
     );
 
     if (!show) {
-        // No document matched, meaning not enough tables were left by the
-        // time this request was processed. Send them to the waiting list
-        // instead of confirming a table that doesn't exist.
-        return res.redirect('/waitinglist');
+        // Either there weren't enough tables left, or this dealer is
+        // already on the list for this show. Figure out which, so we can
+        // send them to the right place instead of silently failing.
+        const containsDealer = showDoc.dealer_rsvp_list.some((entry) => entry.email === userEmail);
+        if (containsDealer) {
+            res.redirect('/already-registered');
+        } else {
+            res.redirect('/waitinglist');
+        }
+        return;
     }
 
     // save rsvp to dealers db
@@ -243,10 +259,10 @@ exports.show_edit_rsvp_page = async (req, res) => {
 
 exports.update_rsvp = async (req, res, next) => {
     const id = req.body.id;
-    const tableRent = req.body.table_rent;
+    const tableRent = Number(req.body.table_rent);
     const email = req.body.email;
-    const oldNumberOfTables = req.body.old_number_of_tables;
-    const numberOfTables = req.body.number_of_tables;
+    const oldNumberOfTables = Number(req.body.old_number_of_tables);
+    const numberOfTables = Number(req.body.number_of_tables);
     const change = oldNumberOfTables - numberOfTables;
     const notes = req.body.notes;
     const rentDue = tableRent * numberOfTables;

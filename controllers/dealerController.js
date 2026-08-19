@@ -248,7 +248,9 @@ exports.save_dealer_to_waitinglist = async (req, res) => {
 
     // addToSet doesn't dedupe here since waiting_list entries are schema
     // subdocuments (each gets its own auto-generated _id), so the explicit
-    // check above is what actually prevents duplicates.
+    // check above is what actually prevents duplicates. This atomic guard
+    // also covers the race where two requests from the same dealer land
+    // at nearly the same time.
     await Show.findOneAndUpdate(
         { _id: showId, 'waiting_list.email': { $ne: email } },
         { $push: { waiting_list: { user_id: userId, name: name, email: email } } }
