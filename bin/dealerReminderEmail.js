@@ -82,13 +82,6 @@ async function getShowsWithin72Hours() {
                 { reminder_sent: { $exists: false } }
             ]
         });
-        
-        try {
-            await mongoose.connection.close();
-            console.log('Mongoose connection closed.');
-        } catch (error) {
-            console.error('Error closing Mongoose connection:', error);
-        }
 
         const showsWithin72Hours = shows.filter(show => {
             // Convert "YYYY-MM-DD" to Date at midnight UTC for accurate comparison
@@ -210,6 +203,13 @@ async function main() {
         }
     } else {
         console.log('No eligible shows found to send reminders for.');
+    }
+
+    try {
+        await mongoose.connection.close();
+        console.log('Mongoose connection closed.');
+    } catch (error) {
+        console.error('Error closing Mongoose connection:', error);
     }
 }
 
