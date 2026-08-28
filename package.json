@@ -1,11 +1,12 @@
 {
   "name": "vinyl-steve",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "private": true,
   "scripts": {
     "dev": "DEBUG=vinyl-steve:* nodemon bin/www -e hbs,js,json",
     "dev-windows": "set DEBUG=recordshowmania:*&& nodemon ./bin/www",
-    "start": "pm2-runtime start ecosystem.config.js --env production"
+    "start": "pm2-runtime start ecosystem.config.js --env production",
+    "test-daily-email": "node bin/dailyEmailTest.js"
   },
   "dependencies": {
     "compression": "^1.7.4",

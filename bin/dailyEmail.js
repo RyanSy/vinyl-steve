@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Rsvp = require('../models/rsvp');
 const Cancellation = require('../models/cancellation');
+const WaitlistEvent = require('../models/waitlistEvent');
 const now = new Date();
 const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 const nodemailer = require('nodemailer');
@@ -51,17 +52,39 @@ async function emailSteve() {
     
     const cancellationList = cancellations.map((cancellation) => `<li>${cancellation.name} - ${cancellation.show} / ${cancellation.date}</li>`).join('');
 
+    // find waitlist joins/leaves
+    const waitlistEvents = await WaitlistEvent.find({
+        eventAt: {
+            $gte: yesterday,
+            $lte: now,
+        },
+        posted_by: 'mayfieldmouse'
+    })
+    .catch((err) => {
+        console.log('findWaitlistEvents() error:', err)
+    });
+
+    const waitlistJoins = waitlistEvents.filter((event) => event.action === 'joined');
+    const waitlistLeaves = waitlistEvents.filter((event) => event.action === 'left');
+
+    const waitlistJoinsList = waitlistJoins.map((event) => `<li>${event.name} - ${event.show} / ${event.date}</li>`).join('');
+    const waitlistLeavesList = waitlistLeaves.map((event) => `<li>${event.name} - ${event.show} / ${event.date}</li>`).join('');
+
     // send email
     await transporter.sendMail({
         from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
         to: ['clubmekon@gmail.com', 'ryanbsy@gmail.com'], // recipient
         subject: "Daily Summary from Vinyl Steve - Steve's Shows", // subject line
-        text: `Daily Summary for ${yesterday} \n RSVPs Confirmed: \n ${rsvpList} \n Cancellations: \n ${cancellationList}`, // plain text body
+        text: `Daily Summary for ${yesterday} \n RSVPs Confirmed: \n ${rsvpList} \n Cancellations: \n ${cancellationList} \n Dealers Joined Waiting List: \n ${waitlistJoinsList} \n Dealers Left Waiting List: \n ${waitlistLeavesList}`, // plain text body
         html: `<h3>Daily Summary for ${yesterday}:<h3>
                 <h4>RSVPs Confirmed</h4>
                 ${rsvpList}
                 <h4>Cancellations</h4>
-                ${cancellationList}`
+                ${cancellationList}
+                <h4>Dealers Joined Waiting List</h4>
+                ${waitlistJoinsList}
+                <h4>Dealers Left Waiting List</h4>
+                ${waitlistLeavesList}`
     });
 }
 /**
@@ -101,17 +124,39 @@ async function emailJohn() {
     
     const cancellationList = cancellations.map((cancellation) => `<li>${cancellation.name} - ${cancellation.show} / ${cancellation.date}</li>`).join('');
 
+    // find waitlist joins/leaves
+    const waitlistEvents = await WaitlistEvent.find({
+        eventAt: {
+            $gte: yesterday,
+            $lte: now
+        },
+        posted_by: 'john bastone'
+    })
+    .catch((err) => {
+        console.log('findWaitlistEvents() error:', err)
+    });
+
+    const waitlistJoins = waitlistEvents.filter((event) => event.action === 'joined');
+    const waitlistLeaves = waitlistEvents.filter((event) => event.action === 'left');
+
+    const waitlistJoinsList = waitlistJoins.map((event) => `<li>${event.name} - ${event.show} / ${event.date}</li>`).join('');
+    const waitlistLeavesList = waitlistLeaves.map((event) => `<li>${event.name} - ${event.show} / ${event.date}</li>`).join('');
+
     // send email
     await transporter.sendMail({
         from: '"Vinyl Steve" <info@vinylsteve.com>', // sender address
         to: ['johnbastone@optonline.net', 'ryanbsy@gmail.com'], // recipient
         subject: "Daily Summary from Vinyl Steve - John's Shows", // subject line
-        text: `Daily Summary for ${yesterday} \n RSVPs Confirmed: \n ${rsvpList} \n Cancellations: \n ${cancellationList}`, // plain text body
+        text: `Daily Summary for ${yesterday} \n RSVPs Confirmed: \n ${rsvpList} \n Cancellations: \n ${cancellationList} \n Dealers Joined Waiting List: \n ${waitlistJoinsList} \n Dealers Left Waiting List: \n ${waitlistLeavesList}`, // plain text body
         html: `<h3>Daily Summary for ${yesterday}:<h3>
                 <h4>RSVPs Confirmed</h4>
                 ${rsvpList}
                 <h4>Cancellations</h4>
-                ${cancellationList}`
+                ${cancellationList}
+                <h4>Dealers Joined Waiting List</h4>
+                ${waitlistJoinsList}
+                <h4>Dealers Left Waiting List</h4>
+                ${waitlistLeavesList}`
     });
 }
 
@@ -124,4 +169,4 @@ emailJohn()
     .catch((err) => {
         console.error(err);
     });
-
+    

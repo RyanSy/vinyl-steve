@@ -1,6 +1,7 @@
 const Show = require('../models/show');
 const Dealer = require('../models/dealer');
 // const Rsvp = require('../models/rsvp');
+const WaitlistEvent = require('../models/waitlistEvent');
 const moment = require('moment');
 const todaysDate = moment().format('YYYY-MM-DD');
 const helper_functions = require('../util/helperFunctions');
@@ -336,6 +337,12 @@ exports.delete_from_waiting_list = async (req, res) => {
     const showId = req.body.show_id;
     const userId = req.body.user_id;
 
+    // read the show + matching waiting_list entry first so we still have
+    // the dealer's name/email and the show's name/date/posted_by to log,
+    // since $pull below removes that entry from the document entirely
+    const show = await Show.findOne({ _id: showId });
+    const waitlistEntry = show ? show.waiting_list.find((entry) => entry.user_id === userId) : null;
+
     // update show db
     const filter = {
         _id: showId,
@@ -352,6 +359,23 @@ exports.delete_from_waiting_list = async (req, res) => {
         console.log(err);
         res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
     });
+
+    // log waitlist leave (admin-removed) for the daily summary email
+    if (show && waitlistEntry) {
+        const waitlistLeaveEvent = new WaitlistEvent({
+            name: waitlistEntry.name,
+            email: waitlistEntry.email,
+            show: show.name,
+            date: show.date,
+            posted_by: show.posted_by,
+            action: 'left',
+            eventAt: new Date()
+        });
+
+        await waitlistLeaveEvent.save().catch((err) => {
+            console.log(err);
+        });
+    }
 
     res.redirect(`/admin/waitinglist/${showId}`);
 }
