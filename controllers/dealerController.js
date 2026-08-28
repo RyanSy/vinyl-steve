@@ -1,6 +1,7 @@
 const Show = require('../models/show');
 const Dealer = require('../models/dealer');
 const Cancellation = require('../models/cancellation');
+const WaitlistEvent = require('../models/waitlistEvent');
 const moment = require('moment');
 const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
@@ -333,6 +334,21 @@ exports.save_dealer_to_waitinglist = async (req, res) => {
         { $push: { waiting_list: { user_id: userId, name: name, email: email } } }
     );
 
+    // log waitlist join for the daily summary email
+    const waitlistJoinEvent = new WaitlistEvent({
+        name: name,
+        email: email,
+        show: show.name,
+        date: show.date,
+        posted_by: show.posted_by,
+        action: 'joined',
+        eventAt: new Date()
+    });
+
+    await waitlistJoinEvent.save().catch((err) => {
+        console.log(err);
+    });
+
     // send waiting list confirmation email
     const senderEmail = getSenderEmail(show.posted_by);
 
@@ -359,6 +375,12 @@ exports.leave_waiting_list = async (req, res) => {
     const showId = req.body.show_id;
     const email = req.session.email;
 
+    // read the show + matching waiting_list entry first so we still have
+    // the dealer's name and the show's name/date/posted_by to log, since
+    // $pull below removes that entry from the document entirely
+    const show = await Show.findOne({ _id: showId });
+    const waitlistEntry = show ? show.waiting_list.find((entry) => entry.email === email) : null;
+
     await Show.updateOne(
         { _id: showId },
         { $pull: { waiting_list: { email: email } } }
@@ -366,6 +388,23 @@ exports.leave_waiting_list = async (req, res) => {
         console.log(err);
         res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
     });
+
+    // log waitlist leave for the daily summary email
+    if (show) {
+        const waitlistLeaveEvent = new WaitlistEvent({
+            name: waitlistEntry ? waitlistEntry.name : req.session.name,
+            email: email,
+            show: show.name,
+            date: show.date,
+            posted_by: show.posted_by,
+            action: 'left',
+            eventAt: new Date()
+        });
+
+        await waitlistLeaveEvent.save().catch((err) => {
+            console.log(err);
+        });
+    }
 
     res.redirect('/my-rsvps');
 }
