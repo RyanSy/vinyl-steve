@@ -113,40 +113,35 @@ exports.show_dealer_rsvps = async (req, res) => {
     try {
         const result = await Dealer.find({ email: email });
 
-        if (!result[0] || result[0].shows.length === 0) {
-            // No dealer found or dealer has no RSVP history
-            message = 'You have no shows listed.';
-        } else {
-            const allShows = result[0].shows;
+        const allShows = result[0].shows;
 
-            for (let i = 0; i < allShows.length; i++) {
-                const dealerShow = allShows[i];
+        for (let i = 0; i < allShows.length; i++) {
+            const dealerShow = allShows[i];
+            
+            // Fetch the full show details using the ID stored in the dealer's array
+            const showData = await Show.findOne({ _id: dealerShow.id }); 
+
+            if (showData) {
+                const rawDate = showData.date; // Assuming this is in a sortable format like YYYY-MM-DD
+                const formattedDate = moment(rawDate).format('MMM D, YYYY');
                 
-                // Fetch the full show details using the ID stored in the dealer's array
-                const showData = await Show.findOne({ _id: dealerShow.id }); 
+                // Assign the formatted date and location for display
+                dealerShow.date = formattedDate; 
+                dealerShow.city = showData.city; 
+                dealerShow.state = showData.state; 
 
-                if (showData) {
-                    const rawDate = showData.date; // Assuming this is in a sortable format like YYYY-MM-DD
-                    const formattedDate = moment(rawDate).format('MMM D, YYYY');
-                    
-                    // Assign the formatted date and location for display
-                    dealerShow.date = formattedDate; 
-                    dealerShow.city = showData.city; 
-                    dealerShow.state = showData.state; 
-
-                    // Check if the show date is today or in the future
-                    if (moment().isSameOrBefore(rawDate, 'day')) {
-                        shows.push(dealerShow); // Only push upcoming shows
-                    } 
-                    // Past shows are now ignored and not added to the 'shows' array.
-                } else {
-                    console.log(`Show with ID ${dealerShow.id} not found and was skipped.`);
-                }
+                // Check if the show date is today or in the future
+                if (moment().isSameOrBefore(rawDate, 'day')) {
+                    shows.push(dealerShow); // Only push upcoming shows
+                } 
+                // Past shows are now ignored and not added to the 'shows' array.
+            } else {
+                console.log(`Show with ID ${dealerShow.id} not found and was skipped.`);
             }
-
-            // Apply sorting (ascending, next show first)
-            shows = sortByDate(shows, true); 
         }
+
+        // Apply sorting (ascending, next show first)
+        shows = sortByDate(shows, true);
 
         // Waiting list is stored on the Show doc itself (waiting_list array),
         // not on the Dealer doc, so it needs its own query.
