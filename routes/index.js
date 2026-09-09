@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
     } else if (req.oidc.user.email == 'clubmekon@gmail.com' || req.oidc.user.email == 'recordriots@gmail.com' || req.oidc.user.email == 'recordshowmania@gmail.com' || req.oidc.user.email == 'exilecds@optonline.net' || req.oidc.user.email == 'ryanb.sy@gmail.com') {
         res.redirect('/admin');
     } else {
-        res.redirect('/home');
+        res.redirect('/my-rsvps');
     }
 });
 

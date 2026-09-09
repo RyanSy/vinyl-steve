@@ -80,7 +80,7 @@ exports.save_dealer_info = async (req, res, next) => {
             console.log(err);
             res.render('error', {userName: req.oidc.user.name, userEmail: req.oidc.user.email});
         });
-    res.redirect('/my-rsvps');
+    res.redirect('/home');
 }
 
 // show dealer rsvps - dealer view
